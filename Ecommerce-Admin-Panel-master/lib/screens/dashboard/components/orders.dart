@@ -23,7 +23,7 @@ class Orders extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Orders",
+              "Pedidos",
               style: Theme.of(context).textTheme.subtitle1,
             ),
             // ElevatedButton.icon(

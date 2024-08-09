@@ -20,7 +20,7 @@ class PersonelInformation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Pesronel Information",
+            "Información Personal",
             style: TextStyle(fontSize: 30),
           ),
           Divider(
@@ -44,7 +44,7 @@ class PersonelInformation extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 80,
                               child: Text(
-                                "Name",
+                                "Nombre",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -71,7 +71,7 @@ class PersonelInformation extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 80,
                               child: Text(
-                                "Email",
+                                "Correo",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -99,7 +99,7 @@ class PersonelInformation extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 80,
                               child: Text(
-                                "User Id",
+                                "ID Usuario",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15

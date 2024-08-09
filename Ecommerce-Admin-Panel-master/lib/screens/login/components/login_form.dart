@@ -1,5 +1,5 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/shared/components/default_button.dart';
 import 'package:ecommerce_admin_panel/shared/components/default_text_form.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class LoginForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Login Screen",
+            "Iniciar sesión",
             style: TextStyle(fontSize: 30),
           ),
           SizedBox(
@@ -30,9 +30,9 @@ class LoginForm extends StatelessWidget {
           defaultTextFormField(
             controller: text_emailcontroller,
             inputtype: TextInputType.emailAddress,
-            hinttext: "Email",
+            hinttext: "Correo",
             onvalidate: (value) {
-              if (value!.isEmpty) return "email must not be empty";
+              if (value!.isEmpty) return "El correo no debe estar vacio.";
             },
           ),
           SizedBox(
@@ -53,9 +53,9 @@ class LoginForm extends StatelessWidget {
               obscure: authcontroller.showpassword,
               controller: text_passwordcontroller,
               inputtype: TextInputType.text,
-              hinttext: "Password",
+              hinttext: "Contraseña",
               onvalidate: (value) {
-                if (value!.isEmpty) return "password must not be empty";
+                if (value!.isEmpty) return "La contraseña no debe estar vacia.";
                 return null;
               },
             );
@@ -66,7 +66,7 @@ class LoginForm extends StatelessWidget {
           context.watch<AuthController>().isloadingSignIn
               ? CircularProgressIndicator()
               : defaultButton(
-                  text: "Sign In",
+                  text: "Registro",
                   height: 50,
                   onpress: () {
                     if (_formkey.currentState!.validate()) {
@@ -77,8 +77,8 @@ class LoginForm extends StatelessWidget {
                           if (value != null) {
                             text_emailcontroller.clear();
                             text_passwordcontroller.clear();
-                            print("sign in successfully");
-                            context.read<MenuController>()..buildMenu();
+                            print("Registro completado");
+                            context.read<CustomMenuController>()..buildMenu();
                           } else {}
                         });
                     }

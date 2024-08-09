@@ -1,4 +1,4 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/orders_controller.dart';
 import 'package:ecommerce_admin_panel/models/MyOrders.dart';
 import 'package:ecommerce_admin_panel/models/ordermodel.dart';
@@ -27,28 +27,28 @@ class OrderInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: () {
           switch (order.title) {
-            case "All Orders":
+            case "Todos los pedidos":
               context
                   .read<OrdersController>()
                   .onchangeTableOrderStatus(OrderStatus.all);
               break;
-            case "Packaging":
+            case "Empaque":
               context
                   .read<OrdersController>()
                   .onchangeTableOrderStatus(OrderStatus.packaging);
               break;
-            case "Delivered":
+            case "Enviado":
               context
                   .read<OrdersController>()
                   .onchangeTableOrderStatus(OrderStatus.delivered);
               break;
-            case "Completed":
+            case "Completado":
               context
                   .read<OrdersController>()
                   .onchangeTableOrderStatus(OrderStatus.completed);
               break;
           }
-          context.read<MenuController>().onChangeSelectedMenu(1);
+          context.read<CustomMenuController>().onChangeSelectedMenu(1);
         },
         child: Padding(
           padding: EdgeInsets.all(
@@ -93,7 +93,7 @@ class OrderInfoCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (order.title != "All Orders")
+                  if (order.title != "Todos los pedidos")
                     ProgressLine(
                       color: order.color,
                       percentage: order.percentage!,

@@ -54,16 +54,16 @@ class OrdersScreen extends StatelessWidget {
                   //minWidth: 600,
                   columns: [
                     DataColumn(
-                      label: Text("Order Id"),
+                      label: Text("ID Pedido"),
                     ),
                     DataColumn(
-                      label: Text("Order Date"),
+                      label: Text("Fecha pedido"),
                     ),
                     DataColumn(
-                      label: Text("Status"),
+                      label: Text("Estatus"),
                     ),
                     DataColumn(
-                      label: Text("Total Price"),
+                      label: Text("Precio total"),
                     ),
                     // DataColumn(
                     //   label: Text("User Id"),

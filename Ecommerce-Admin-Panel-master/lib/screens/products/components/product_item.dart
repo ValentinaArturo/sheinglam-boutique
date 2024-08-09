@@ -75,13 +75,13 @@ class ProductItem extends StatelessWidget {
                       itemBuilder: (context) => [
                             PopupMenuItem(
                               onTap: () {},
-                              child: Text('Edit'),
+                              child: Text('Editar'),
                               value: 1,
                             ),
                             PopupMenuItem(
                               onTap: () {},
                               child: Text(
-                                'Delete',
+                                'Borrar',
                                 style: TextStyle(color: Colors.red),
                               ),
                               value: 2,

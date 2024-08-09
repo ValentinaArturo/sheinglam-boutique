@@ -23,7 +23,7 @@ class OrderItems extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Order Items",
+            "Articulos del pedido",
             style: TextStyle(fontSize: 30),
           ),
           Divider(
@@ -83,7 +83,7 @@ class OrderItems extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Product Id  :  ' ${item.productId.toString()} '",
+                                  "ID producto  :  ' ${item.productId.toString()} '",
                                 ),
                                 SizedBox(
                                   height: 10,

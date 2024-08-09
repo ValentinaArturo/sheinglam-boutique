@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cloud_firestore;
 import 'package:ecommerce_admin_panel/models/Address.dart';
 import 'package:ecommerce_admin_panel/models/CartProduct.dart';
 import 'package:ecommerce_admin_panel/models/UserModel.dart';
@@ -7,7 +7,7 @@ class Order {
   double? totalprice;
   String? uId;
   String? orderId;
-  Timestamp? orderdate;
+  cloud_firestore.Timestamp? orderdate;
   String? status;
   Address? shippingAddress; // Address
   UserModel? personelInformation; // userModel
@@ -31,7 +31,7 @@ class Order {
         : 0;
     uId = map["uId"] != null ? map["uId"].toString() : '';
     orderId = map["orderId"] != null ? map["orderId"].toString() : '';
-    orderdate = map["orderdate"] != null ? map["orderdate"] : Timestamp.now();
+    orderdate = map["orderdate"] != null ? map["orderdate"] : cloud_firestore.Timestamp.now();
     status = map["status"] != null ? map["status"] : '';
     shippingAddress = Address.fromJson(map['shippingAddress']);
     personelInformation = UserModel.fromjson(map['personelInformation']);

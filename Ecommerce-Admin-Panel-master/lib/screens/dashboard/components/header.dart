@@ -1,4 +1,4 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/orders_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/product_controller.dart';
@@ -6,6 +6,7 @@ import 'package:ecommerce_admin_panel/shared/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../controllers/menu_controller.dart';
 import '../../../shared/constants.dart';
 
 class Header extends StatelessWidget {
@@ -25,7 +26,7 @@ class Header extends StatelessWidget {
         if (!Responsive.isMobile(context))
           Expanded(
             child: Text(
-              "${context.watch<MenuController>().screens_title[context.watch<MenuController>().currentSelectedIndex]}",
+              "${context.watch<CustomMenuController>().screens_title[context.watch<CustomMenuController>().currentSelectedIndex]}",
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
@@ -89,15 +90,17 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       onChanged: (value) {
-        if (context.read<MenuController>().currentSelectedIndex == 1) {
-        } else if (context.read<MenuController>().currentSelectedIndex == 2) {
+        if (context.read<CustomMenuController>().currentSelectedIndex == 1) {
+        } else {
+          if (context.read<CustomMenuController>().currentSelectedIndex == 2) {
           context.read<ProductController>().searchproduct(
               value.trim().length > 2 ? value.trim().toString() : '');
+        }
         }
       },
       controller: searchController,
       decoration: InputDecoration(
-        hintText: "Search",
+        hintText: "Buscar",
         fillColor: secondaryColor,
         filled: true,
         border: OutlineInputBorder(

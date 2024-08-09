@@ -28,7 +28,7 @@ class ProductScreen extends StatelessWidget {
                     ),
                     onPressed: () {},
                     icon: Icon(Icons.add),
-                    label: Text("Add New"),
+                    label: Text("Agregar Nuevo"),
                   ),
                 ],
               ),

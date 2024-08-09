@@ -1,11 +1,6 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
-import 'package:ecommerce_admin_panel/controllers/dashboard_controller.dart';
-import 'package:ecommerce_admin_panel/controllers/product_controller.dart';
-import 'package:ecommerce_admin_panel/main.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/models/menu_model.dart';
-import 'package:ecommerce_admin_panel/screens/dashboard/dashboard_screen.dart';
-import 'package:ecommerce_admin_panel/screens/main/main_screen.dart';
 import 'package:ecommerce_admin_panel/shared/constants.dart';
 import 'package:ecommerce_admin_panel/shared/responsive.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +20,7 @@ class SideMenu extends StatelessWidget {
           DrawerHeader(
             child: Image.asset("assets/images/logo.png"),
           ),
-          Consumer<MenuController>(
+          Consumer<CustomMenuController>(
             builder: (context, menuController, child) =>
                 DrawerListTile(listOfModel: menuController.menuModelList),
           )
@@ -67,7 +62,7 @@ class DrawerListTile extends StatelessWidget {
                 //       MaterialPageRoute(builder: (context) => MainScreen()));
                 // } else {
                 // }
-                context.read<MenuController>().onChangeSelectedMenu(i);
+                context.read<CustomMenuController>().onChangeSelectedMenu(i);
 
                 // if (i == 2)
                 //   await context.read<ProductController>()
@@ -79,7 +74,7 @@ class DrawerListTile extends StatelessWidget {
               } else {
                 context.read<AuthController>()
                   ..SignOut().then((value) {
-                    context.read<MenuController>()..buildMenu();
+                    context.read<CustomMenuController>()..buildMenu();
                   });
               }
               // if (i == 0) {

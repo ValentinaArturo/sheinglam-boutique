@@ -23,7 +23,7 @@ class OrderDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Details Order",
+            "Detalles del pedido",
             style: TextStyle(fontSize: 30),
           ),
           Divider(
@@ -47,7 +47,7 @@ class OrderDetails extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
                               child: Text(
-                                "Order Id",
+                                "ID del pedido",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -74,7 +74,7 @@ class OrderDetails extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
                               child: Text(
-                                "Order Date",
+                                "Fecha del pedido",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -133,7 +133,7 @@ class OrderDetails extends StatelessWidget {
                         children: [
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
-                              child: Text("Total Price",
+                              child: Text("Precio total",
                                   style: TextStyle(
                                       fontSize: !Responsive.isDesktop(context)
                                           ? 15

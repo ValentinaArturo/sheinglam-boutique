@@ -19,7 +19,7 @@ class TopSellingPieChart extends StatelessWidget {
           color: secondaryColor,
         ),
         child: SfCircularChart(
-            title: ChartTitle(text: 'Top 5 Selling Products'),
+            title: ChartTitle(text: 'Top 5 productos vendidos'),
             legend: Legend(isVisible: true),
             series: <CircularSeries>[
               // Renders radial bar chart

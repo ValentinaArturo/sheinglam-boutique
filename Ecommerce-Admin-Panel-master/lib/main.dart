@@ -1,4 +1,4 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/dashboard_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/orders_controller.dart';
@@ -29,9 +29,9 @@ Future<void> main() async {
     ChangeNotifierProvider(
       create: (context) => AuthController(),
     ),
-    ChangeNotifierProxyProvider<AuthController, MenuController>(
-      update: (context, auth, previousMenu) => MenuController(auth),
-      create: (BuildContext context) => MenuController(null),
+    ChangeNotifierProxyProvider<AuthController, CustomMenuController>(
+      update: (context, auth, previousMenu) => CustomMenuController(auth),
+      create: (BuildContext context) => CustomMenuController(null),
     ),
     ChangeNotifierProvider(
       create: (context) => OrdersController()..getAllorders(),

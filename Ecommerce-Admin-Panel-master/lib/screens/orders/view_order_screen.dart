@@ -1,4 +1,4 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
 import 'package:ecommerce_admin_panel/models/ordermodel.dart';
 import 'package:ecommerce_admin_panel/screens/dashboard/components/header.dart';

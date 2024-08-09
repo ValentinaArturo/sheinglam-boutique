@@ -18,7 +18,7 @@ class OrdersPieChart extends StatelessWidget {
           color: secondaryColor,
         ),
         child: SfCircularChart(
-            title: ChartTitle(text: 'Orders Status'),
+            title: ChartTitle(text: 'Estatus de pedido'),
             legend: Legend(isVisible: true),
             // tooltipBehavior:
             //     TooltipBehavior(enable: true, format: 'point.x : point.y%'),

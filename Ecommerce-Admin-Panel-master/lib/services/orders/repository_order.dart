@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cloud_firestore;
 import 'package:ecommerce_admin_panel/models/ordermodel.dart';
 import 'package:ecommerce_admin_panel/services/orders/irepository_order.dart';
 
 class RepositoryOrder implements IrepositoryOrder {
-  final databasereference = FirebaseFirestore.instance;
+  final databasereference = cloud_firestore.FirebaseFirestore.instance;
 
   @override
   Future<List<Order>> getorders() async {

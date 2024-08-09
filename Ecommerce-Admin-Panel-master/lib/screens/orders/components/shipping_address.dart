@@ -23,7 +23,7 @@ class ShippingAddress extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Shipping Address",
+            "Dirección de envio",
             style: TextStyle(fontSize: 30),
           ),
           Divider(
@@ -47,7 +47,7 @@ class ShippingAddress extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
                               child: Text(
-                                "Name",
+                                "Nombre",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -76,7 +76,7 @@ class ShippingAddress extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
                               child: Text(
-                                "Phone",
+                                "Telefono",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15
@@ -107,7 +107,7 @@ class ShippingAddress extends StatelessWidget {
                           Container(
                               width: Responsive.isDesktop(context) ? 150 : 100,
                               child: Text(
-                                "Address",
+                                "Dirección",
                                 style: TextStyle(
                                     fontSize: !Responsive.isDesktop(context)
                                         ? 15

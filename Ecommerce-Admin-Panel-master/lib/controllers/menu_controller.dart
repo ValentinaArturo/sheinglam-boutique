@@ -10,7 +10,7 @@ import 'package:ecommerce_admin_panel/screens/products/products_screen.dart';
 import 'package:ecommerce_admin_panel/shared/constants.dart';
 import 'package:flutter/material.dart';
 
-class MenuController extends ChangeNotifier {
+class CustomMenuController extends ChangeNotifier {
   final AuthController? _authProvider;
 
   int currentSelectedIndex = 0;
@@ -47,7 +47,7 @@ class MenuController extends ChangeNotifier {
     }
   }
 
-  MenuController(this._authProvider) {
+  CustomMenuController(this._authProvider) {
     buildMenu();
   }
 

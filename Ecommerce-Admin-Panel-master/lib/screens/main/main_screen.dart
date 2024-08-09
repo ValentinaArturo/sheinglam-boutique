@@ -1,5 +1,5 @@
-import 'package:ecommerce_admin_panel/controllers/MenuController.dart';
 import 'package:ecommerce_admin_panel/controllers/auth_controller.dart';
+import 'package:ecommerce_admin_panel/controllers/menu_controller.dart';
 import 'package:ecommerce_admin_panel/screens/dashboard/components/header.dart';
 import 'package:ecommerce_admin_panel/shared/constants.dart';
 import 'package:ecommerce_admin_panel/shared/responsive.dart';
@@ -14,7 +14,7 @@ class MainScreen extends StatelessWidget {
     var authprovider = Provider.of<AuthController>(context);
 
     return Scaffold(
-      key: context.read<MenuController>().getscaffoldKey,
+      key: context.read<CustomMenuController>().getscaffoldKey,
       drawer: SideMenu(),
       body: SafeArea(
         child: Row(
@@ -38,11 +38,11 @@ class MainScreen extends StatelessWidget {
                     children: [
                       if (authprovider.currentuserModel != null)
                         Header(fct: () {
-                          context.read<MenuController>().main_controlMenu();
+                          context.read<CustomMenuController>().main_controlMenu();
                         }),
                       SizedBox(height: defaultPadding),
-                      context.watch<MenuController>().screens[
-                          context.watch<MenuController>().currentSelectedIndex],
+                      context.watch<CustomMenuController>().screens[
+                          context.watch<CustomMenuController>().currentSelectedIndex],
                     ],
                   ),
                 ),
