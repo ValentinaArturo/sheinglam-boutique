@@ -10,26 +10,13 @@ class AuthController extends ChangeNotifier {
 
   UserModel? currentuserModel;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<UserModel?> signIn(String email, String password) async {
     UserModel? userModel;
     isloadingSignIn = true;
     notifyListeners();
     try {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) async {
-        userModel = UserModel(
-            email: value.user?.email,
-            name: value.user?.displayName,
-            pic: '',
-            userId: value.user?.uid);
-        isloadingSignIn = false;
-        currentuserModel = userModel;
 
-        notifyListeners();
-      });
     } catch (e) {
       isloadingSignIn = false;
 
@@ -47,7 +34,6 @@ class AuthController extends ChangeNotifier {
   }
 
   Future SignOut() async {
-    await FirebaseAuth.instance.signOut();
     currentuserModel = null;
     notifyListeners();
   }

@@ -70,17 +70,7 @@ class LoginForm extends StatelessWidget {
                   height: 50,
                   onpress: () {
                     if (_formkey.currentState!.validate()) {
-                      context.read<AuthController>()
-                        ..signIn(text_emailcontroller.text.trim(),
-                                text_passwordcontroller.text.toString())
-                            .then((value) {
-                          if (value != null) {
-                            text_emailcontroller.clear();
-                            text_passwordcontroller.clear();
-                            print("Registro completado");
-                            context.read<CustomMenuController>()..buildMenu();
-                          } else {}
-                        });
+
                     }
                   }),
         ],

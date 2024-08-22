@@ -55,28 +55,28 @@ class DrawerListTile extends StatelessWidget {
             selected: true,
             selectedColor: Colors.grey.shade400,
             onTap: () async {
-              if (i != 3) {
-                // if (context.read<MenuController>().isInMainScreen == false) {
-                //   context.read<MenuController>()..onChangeSelectedMenu(i);
-                //   Navigator.push(context,
-                //       MaterialPageRoute(builder: (context) => MainScreen()));
-                // } else {
-                // }
-                context.read<CustomMenuController>().onChangeSelectedMenu(i);
-
-                // if (i == 2)
-                //   await context.read<ProductController>()
-                //     ..getallProduct();
-
-                if (Responsive.isMobile(context) ||
-                    Responsive.isBigMobile(context) ||
-                    Responsive.isTablet(context)) Navigator.pop(context);
-              } else {
-                context.read<AuthController>()
-                  ..SignOut().then((value) {
-                    context.read<CustomMenuController>()..buildMenu();
-                  });
-              }
+              // if (i != 3) {
+              //   // if (context.read<MenuController>().isInMainScreen == false) {
+              //   //   context.read<MenuController>()..onChangeSelectedMenu(i);
+              //   //   Navigator.push(context,
+              //   //       MaterialPageRoute(builder: (context) => MainScreen()));
+              //   // } else {
+              //   // }
+              //   //context.read<CustomMenuController>().onChangeSelectedMenu(i);
+              //
+              //   // if (i == 2)
+              //   //   await context.read<ProductController>()
+              //   //     ..getallProduct();
+              //
+              //   if (Responsive.isMobile(context) ||
+              //       Responsive.isBigMobile(context) ||
+              //       Responsive.isTablet(context)) Navigator.pop(context);
+              // } else {
+              //   context.read<AuthController>()
+              //     ..SignOut().then((value) {
+              //       context.read<CustomMenuController>()..buildMenu();
+              //     });
+              // }
               // if (i == 0) {
               //   context.read<DashBoardController>()..getAllorders();
               // }
