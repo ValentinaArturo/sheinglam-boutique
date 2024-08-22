@@ -13,9 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tienda Web',
+      title: 'Admin SheinGlamBoutique',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.pink,
       ),
       initialRoute: '/login',
       routes: {
