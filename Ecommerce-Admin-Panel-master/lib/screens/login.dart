@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Lógica de autenticación
+                Navigator.pushReplacementNamed(context, '/productos');
               },
               child: Text('Login'),
             ),

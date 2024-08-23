@@ -1,3 +1,4 @@
+import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:flutter/material.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -6,6 +7,7 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MenuDrawer(),
       appBar: AppBar(
         title: Text('Lista de Pedidos'),
         actions: [

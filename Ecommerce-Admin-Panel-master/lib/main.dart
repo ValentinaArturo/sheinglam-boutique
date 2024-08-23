@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Admin SheinGlamBoutique',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.amber,
       ),
       initialRoute: '/login',
       routes: {
