@@ -3,7 +3,7 @@ package com.tienda.tienda.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "dirección_envío")
+@Table(name = "direccion_envio")
 public class DireccionEnvio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class DireccionEnvio {
     private String codigoPostal;
 
     @ManyToOne
-    @JoinColumn(name = "país_id")
+    @JoinColumn(name = "pais_id")
     private Pais pais;
 
     // Getters and Setters

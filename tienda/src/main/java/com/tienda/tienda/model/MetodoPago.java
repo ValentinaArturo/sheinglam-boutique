@@ -4,7 +4,7 @@ package com.tienda.tienda.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "método_pago")
+@Table(name = "metodo_pago")
 public class MetodoPago {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

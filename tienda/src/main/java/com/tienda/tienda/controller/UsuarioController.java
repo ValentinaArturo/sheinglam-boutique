@@ -30,7 +30,6 @@ public class UsuarioController {
         }
     }
     
-    // Nuevo endpoint para obtener un usuario por email y contraseña
     @GetMapping("/login")
     public ResponseEntity<Usuario> getUsuarioByEmailAndPassword(
             @RequestParam String email, 

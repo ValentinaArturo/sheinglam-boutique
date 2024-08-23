@@ -5,6 +5,10 @@ import 'package:ecommerce_admin_panel/screens/orders.dart';
 import 'package:ecommerce_admin_panel/screens/products.dart';
 import 'package:ecommerce_admin_panel/screens/returns.dart';
 import 'package:ecommerce_admin_panel/screens/shipments.dart';
+import 'package:ecommerce_admin_panel/screens/unathorized.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/pedidos': (context) => AuthGuard(child: OrdersScreen()),
         '/devoluciones': (context) => AuthGuard(child: ReturnsScreen()),
         '/envios': (context) => AuthGuard(child: ShipmentsScreen()),
+        '/no-autorizado': (context) => Unathorized(),
       },
     );
   }

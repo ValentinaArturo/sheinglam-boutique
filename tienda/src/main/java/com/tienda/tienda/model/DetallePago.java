@@ -15,7 +15,7 @@ public class DetallePago {
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "método_pago_id")
+    @JoinColumn(name = "metodo_pago_id")
     private MetodoPago metodoPago;
     
     private double monto;

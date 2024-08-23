@@ -3,7 +3,7 @@ package com.tienda.tienda.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "producto_promoción")
+@Table(name = "producto_promocion")
 public class ProductoPromocion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class ProductoPromocion {
     private Producto producto;
 
     @ManyToOne
-    @JoinColumn(name = "promoción_id")
+    @JoinColumn(name = "promocion_id")
     private Promocion promocion;
 
     // Getters and Setters

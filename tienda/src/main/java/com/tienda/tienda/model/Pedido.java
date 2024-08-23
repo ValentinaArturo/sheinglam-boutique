@@ -19,7 +19,7 @@ public class Pedido {
     private double total;
 
     @ManyToOne
-    @JoinColumn(name = "método_pago_id")
+    @JoinColumn(name = "metodo_pago_id")
     private MetodoPago metodoPago;
 
     private String nit;

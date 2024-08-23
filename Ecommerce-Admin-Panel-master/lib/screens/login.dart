@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:ecommerce_admin_panel/auth/auth.dart';
+import 'package:ecommerce_admin_panel/resources/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -13,20 +15,33 @@ class LoginScreen extends StatelessWidget {
     final password = _passwordController.text;
 
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/usuarios/login?email=$email&password=$password'),
+      Uri.parse('${baseUrl}usuarios/login?email=$email&password=$password'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
     );
 
     if (response.statusCode == 200) {
-      // Si la autenticación es exitosa, marca como autenticado
-      Provider.of<AuthProvider>(context, listen: false).login();
-      Navigator.pushReplacementNamed(context, '/productos');
+      final usuario = json.decode(response.body);
+
+      // Suponiendo que la respuesta contiene un campo 'rol'
+      String role = usuario['rol']['nombre'];
+
+      if (role == 'Admin' || role == 'Vendor') {
+        Provider.of<AuthProvider>(context, listen: false).login(role);
+        Navigator.pushReplacementNamed(context, '/productos');
+      } else {
+        Navigator.pushReplacementNamed(context, '/no-autorizado');
+      }
     } else if (response.statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Email o contraseña incorrectos')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al iniciar sesión. Inténtalo de nuevo más tarde.')),
+        SnackBar(
+            content:
+                Text('Error al iniciar sesión. Inténtalo de nuevo más tarde.')),
       );
     }
   }
