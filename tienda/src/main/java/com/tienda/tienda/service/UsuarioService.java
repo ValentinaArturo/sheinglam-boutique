@@ -28,4 +28,7 @@ public class UsuarioService {
     public void deleteUsuario(int id) {
         usuarioRepository.deleteById(id);
     }
+    public Usuario getUsuarioByEmailAndPassword(String email, String password) {
+        return usuarioRepository.findByCorreoElectronicoAndContraseña(email, password);
+    }
 }

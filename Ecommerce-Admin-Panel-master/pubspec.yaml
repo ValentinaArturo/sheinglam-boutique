@@ -46,6 +46,8 @@ dependencies:
   cloud_firestore: ^4.10.0  # Update to the latest version
   firebase_auth: ^4.8.0     # Update to the latest version
   firebase_core: ^2.18.0    # Update to the latest version
+  http: ^1.2.2
+
   #firebase_core_desktop: ^1.0.0 #for desktop
 
   # The following adds the Cupertino Icons font to your application.

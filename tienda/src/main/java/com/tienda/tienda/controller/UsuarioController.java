@@ -29,6 +29,19 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    // Nuevo endpoint para obtener un usuario por email y contraseña
+    @GetMapping("/login")
+    public ResponseEntity<Usuario> getUsuarioByEmailAndPassword(
+            @RequestParam String email, 
+            @RequestParam String password) {
+        Usuario usuario = usuarioService.getUsuarioByEmailAndPassword(email, password);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(401).build(); // 401 Unauthorized si las credenciales no son válidas
+        }
+    }
 
     @PostMapping
     public Usuario createUsuario(@RequestBody Usuario usuario) {
