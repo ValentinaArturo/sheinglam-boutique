@@ -1,133 +1,162 @@
 import 'package:flutter/material.dart';
-import 'package:my_fashion_app/models/product.dart';
-import 'package:my_fashion_app/pages/product_detail_screen.dart';
-import 'package:my_fashion_app/services/product_service.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:my_fashion_app/model/product.dart';
 
-class Productss extends StatefulWidget {
-  const Productss({Key? key});
+class HomeScreen extends StatelessWidget {
+  final List<Product> productos = [
+    Product(
+        nombre: 'Producto 1',
+        imagen: 'assets/images/product1.png',
+        precio: 29.99),
+    Product(
+        nombre: 'Producto 2',
+        imagen: 'assets/images/product2.png',
+        precio: 39.99),
+    Product(
+        nombre: 'Producto 3',
+        imagen: 'assets/images/product3.png',
+        precio: 49.99),
+    Product(
+        nombre: 'Producto 4',
+        imagen: 'assets/images/product4.png',
+        precio: 59.99),
+    Product(
+        nombre: 'Producto 5',
+        imagen: 'assets/images/product5.png',
+        precio: 69.99),
+    Product(
+        nombre: 'Producto 6',
+        imagen: 'assets/images/product1.png',
+        precio: 79.99),
+    Product(
+        nombre: 'Producto 7',
+        imagen: 'assets/images/product2.png',
+        precio: 89.99),
+    Product(
+        nombre: 'Producto 8',
+        imagen: 'assets/images/product3.png',
+        precio: 99.99),
+    Product(
+        nombre: 'Producto 9',
+        imagen: 'assets/images/product4.png',
+        precio: 109.99),
+    Product(
+        nombre: 'Producto 10',
+        imagen: 'assets/images/product5.png',
+        precio: 119.99),
+  ];
 
-  @override
-  _Productss createState() => _Productss();
-}
-
-class _Productss extends State<Productss> {
-  final ProductService productService = ProductService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 0, 0),
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 87, 7, 7),
-        title: Text('All our products'),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
+      backgroundColor: Colors.black,
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.white,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.shopping_cart_outlined),
+            label: 'Carrito',
+            onTap: () => Navigator.pushNamed(context, '/cart'),
           ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          SpeedDialChild(
+            child: const Icon(Icons.list_alt),
+            label: 'Pedidos',
+            onTap: () => Navigator.pushNamed(context, '/orders'),
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.person),
+            label: 'Perfil',
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+          ),
+        ],
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 100,
+        centerTitle: true,
+        title: Image.asset(
+          'assets/images/SG.jpg',
+          height: 100,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                'Select your favourite item that you are interested in from our products',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Color.fromARGB(255, 251, 255, 0),
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'times new roman',
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Buscar productos...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                  ),
+                  onChanged: (value) {
+                    // Implementar la lógica de búsqueda aquí
+                  },
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                'Here is the list of our available products',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            FutureBuilder<List<Product>>(
-              future: productService.getProducts(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Product>> snapshot) {
-                if (snapshot.hasData) {
-                  List<Product> products = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: products.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Product product = products[index];
+                const SizedBox(height: 20),
+                Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(8.0),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 2 / 3,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
+                    ),
+                    itemCount: productos.length,
+                    // Usar el número de productos en la lista
+                    itemBuilder: (context, index) {
+                      final producto = productos[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductDetailScreen(product: product),
-                            ),
-                          );
+                          Navigator.pushNamed(context, '/product_detail');
                         },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 87, 7, 7),
-                            borderRadius: BorderRadius.circular(20),
+                        child: Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                          child: Row(
+                          elevation: 4,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  product.image,
-                                  fit: BoxFit.cover,
-                                  width: 100,
-                                  height: 100,
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(15.0),
+                                  ),
+                                  child: Image.asset(
+                                    producto.imagen,
+                                    fit: BoxFit.fitHeight,
+                                    width: double.infinity,
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: 20),
-                              Expanded(
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      product.title,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
+                                      producto.nombre,
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      '\$${product.price.toString()}',
+                                      '\$${producto.precio.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      product.description,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
+                                        color: Colors.grey[600],
                                       ),
                                     ),
                                   ],
@@ -138,30 +167,12 @@ class _Productss extends State<Productss> {
                         ),
                       );
                     },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                // By default, show a loading spinner.
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 10.0),
-                      Text(
-                        'Loading...',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
