@@ -9,7 +9,7 @@ class MenuDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.pink,
+              color: Color(0xFFAB9144),
             ),
             child: Text(
               'Menú de Navegación',

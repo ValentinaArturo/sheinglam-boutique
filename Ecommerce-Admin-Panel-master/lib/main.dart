@@ -9,9 +9,6 @@ import 'package:ecommerce_admin_panel/screens/unathorized.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -28,7 +25,24 @@ class MyApp extends StatelessWidget {
       title: 'Admin SheinGlamBoutique',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        scaffoldBackgroundColor: Colors.white,
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xFFFFD700),  // Botones dorados
+          textTheme: ButtonTextTheme.primary,
+        ),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+          displayLarge: TextStyle(color: Colors.black),
+          displayMedium: TextStyle(color: Colors.black),
+          displaySmall: TextStyle(color: Colors.black),
+          headlineMedium: TextStyle(color: Colors.black),
+          headlineSmall: TextStyle(color: Colors.black),
+          titleLarge: TextStyle(color: Colors.black),
+          titleMedium: TextStyle(color: Colors.black),
+          titleSmall: TextStyle(color: Colors.black),
+          labelLarge: TextStyle(color: Colors.white),
+        ),
       ),
       initialRoute: '/login',
       routes: {
@@ -37,7 +51,7 @@ class MyApp extends StatelessWidget {
         '/pedidos': (context) => AuthGuard(child: OrdersScreen()),
         '/devoluciones': (context) => AuthGuard(child: ReturnsScreen()),
         '/envios': (context) => AuthGuard(child: ShipmentsScreen()),
-        '/no-autorizado': (context) => Unathorized(),
+        '/no-autorizado': (context) => Unauthorized(),
       },
     );
   }

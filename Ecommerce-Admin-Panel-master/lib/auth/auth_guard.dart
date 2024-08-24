@@ -16,7 +16,7 @@ class AuthGuard extends StatelessWidget {
         (auth.role == 'Admin' || auth.role == 'Vendor')) {
       return child;
     } else {
-      return Unathorized();
+      return Unauthorized();
     }
   }
 }

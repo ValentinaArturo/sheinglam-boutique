@@ -49,27 +49,94 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/fondo.jpg',
+              fit: BoxFit.cover,
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/SG.jpg',
+                    height: 300,
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 500,
+                    child: TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Correo',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(color: Color(0xFFFFD700)), // Color dorado cuando está enfocado
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 500,
+                    child: TextField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(color: Color(0xFFFFD700)), // Color dorado cuando está enfocado
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      ),
+                      obscureText: true,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 500,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pushReplacementNamed(context, '/productos'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFAB9144), // Color dorado para el botón
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 15.0),
+                      ),
+                      child: Text(
+                        'Iniciar Sesión',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _login(context),
-              child: Text('Login'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
