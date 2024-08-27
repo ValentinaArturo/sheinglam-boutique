@@ -20,6 +20,13 @@ class MenuDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: Icon(Icons.supervised_user_circle_outlined),
+            title: Text('Usuarios'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/usuarios');
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.shopping_bag),
             title: Text('Productos'),
             onTap: () {
@@ -45,6 +52,13 @@ class MenuDrawer extends StatelessWidget {
             title: Text('Envíos'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/envios');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.topic_outlined),
+            title: Text('Categorias'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/categorias');
             },
           ),
           ListTile(

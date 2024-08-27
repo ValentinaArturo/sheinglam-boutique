@@ -1,73 +1,128 @@
-import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:flutter/material.dart';
 
-class ShipmentsScreen extends StatefulWidget {
+class CategoriesScreen extends StatefulWidget {
   @override
-  _ShipmentsScreenState createState() => _ShipmentsScreenState();
+  _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
-class _ShipmentsScreenState extends State<ShipmentsScreen> {
-  final List<Map<String, dynamic>> envios = [
+class _CategoriesScreenState extends State<CategoriesScreen> {
+  final List<Map<String, String>> categorias = [
     {
-      'nombre': 'Envío 1',
-      'departamento': 'Guatemala',
-      'precio': 50.0,
+      'nombre': 'Categoría 1',
+      'descripcion': 'Descripción de la categoría 1',
     },
     {
-      'nombre': 'Envío 2',
-      'departamento': 'Quetzaltenango',
-      'precio': 75.0,
+      'nombre': 'Categoría 2',
+      'descripcion': 'Descripción de la categoría 2',
     },
     {
-      'nombre': 'Envío 3',
-      'departamento': 'Huehuetenango',
-      'precio': 100.0,
+      'nombre': 'Categoría 3',
+      'descripcion': 'Descripción de la categoría 3',
     },
   ];
 
-  late List<Map<String, dynamic>> filteredEnvios;
+  late List<Map<String, String>> filteredCategorias;
 
   @override
   void initState() {
     super.initState();
-    filteredEnvios = envios;
+    filteredCategorias = categorias;
   }
 
-  void _agregarEnvio(BuildContext context) {
-    // Lógica para agregar un nuevo envío
+  void _agregarCategoria(BuildContext context) {
+    _showCategoryModal(context);
   }
 
-  void _editarEnvio(BuildContext context, int index) {
-    // Lógica para editar un envío existente
+  void _editarCategoria(BuildContext context, int index) {
+    _showCategoryModal(context, categoria: filteredCategorias[index], index: index);
   }
 
-  void _eliminarEnvio(int index) {
+  void _eliminarCategoria(int index) {
     setState(() {
-      filteredEnvios.removeAt(index);
+      filteredCategorias.removeAt(index);
     });
   }
 
-  void _filterEnvios(String query) {
+  void _filterCategorias(String query) {
     setState(() {
-      filteredEnvios = envios.where((envio) {
-        final nombreLower = envio['nombre'].toLowerCase();
-        final departamentoLower = envio['departamento'].toLowerCase();
+      filteredCategorias = categorias.where((categoria) {
+        final nombreLower = categoria['nombre']!.toLowerCase();
+        final descripcionLower = categoria['descripcion']!.toLowerCase();
         final queryLower = query.toLowerCase();
 
-        return nombreLower.contains(queryLower) || departamentoLower.contains(queryLower);
+        return nombreLower.contains(queryLower) || descripcionLower.contains(queryLower);
       }).toList();
     });
+  }
+
+  void _showCategoryModal(BuildContext context, {Map<String, String>? categoria, int? index}) {
+    String nombre = categoria?['nombre'] ?? '';
+    String descripcion = categoria?['descripcion'] ?? '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(categoria == null ? 'Agregar Categoría' : 'Editar Categoría'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Nombre'),
+                controller: TextEditingController(text: nombre),
+                onChanged: (value) {
+                  nombre = value;
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Descripción'),
+                controller: TextEditingController(text: descripcion),
+                onChanged: (value) {
+                  descripcion = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (categoria == null) {
+                  // Agregar nueva categoría
+                  setState(() {
+                    categorias.add({'nombre': nombre, 'descripcion': descripcion});
+                    filteredCategorias = categorias;
+                  });
+                } else {
+                  // Editar categoría existente
+                  setState(() {
+                    filteredCategorias[index!] = {'nombre': nombre, 'descripcion': descripcion};
+                    categorias[categorias.indexOf(categoria)] = {'nombre': nombre, 'descripcion': descripcion};
+                  });
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Guardar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MenuDrawer(),
       appBar: AppBar(
-        title: Text('Lista de Envíos'),
+        title: Text('Lista de Categorías'),
         actions: [
           TextButton.icon(
-            onPressed: () => _agregarEnvio(context),
+            onPressed: () => _agregarCategoria(context),
             icon: Icon(Icons.add, color: Colors.black),
             label: Text(
               'Agregar',
@@ -88,14 +143,13 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
           // Contenido principal
           Container(
             margin: EdgeInsets.symmetric(horizontal: 150.0),
-
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
                   TextField(
                     decoration: InputDecoration(
-                      hintText: 'Buscar envíos...',
+                      hintText: 'Buscar categorías...',
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
@@ -106,7 +160,7 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                         borderSide: BorderSide(color: Colors.black),
                       ),
                     ),
-                    onChanged: _filterEnvios,
+                    onChanged: _filterCategorias,
                   ),
                   SizedBox(height: 20),
                   Expanded(
@@ -115,10 +169,9 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                         border: TableBorder.all(color: Colors.grey),
                         columnWidths: {
                           0: FlexColumnWidth(3),
-                          1: FlexColumnWidth(2),
-                          2: FlexColumnWidth(2),
+                          1: FlexColumnWidth(4),
+                          2: FixedColumnWidth(100),
                           3: FixedColumnWidth(100),
-                          4: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
@@ -136,14 +189,7 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Departamento',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Precio',
+                                  'Descripción',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -163,33 +209,29 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                               ),
                             ],
                           ),
-                          ...filteredEnvios.map((envio) {
+                          ...filteredCategorias.map((categoria) {
                             return TableRow(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(envio['nombre']),
+                                  child: Text(categoria['nombre']!),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(envio['departamento']),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text('\$${envio['precio']}'),
+                                  child: Text(categoria['descripcion']!),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
                                     icon: Icon(Icons.edit, color: Colors.black),
-                                    onPressed: () => _editarEnvio(context, filteredEnvios.indexOf(envio)),
+                                    onPressed: () => _editarCategoria(context, filteredCategorias.indexOf(categoria)),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
                                     icon: Icon(Icons.delete, color: Colors.black),
-                                    onPressed: () => _eliminarEnvio(filteredEnvios.indexOf(envio)),
+                                    onPressed: () => _eliminarCategoria(filteredCategorias.indexOf(categoria)),
                                   ),
                                 ),
                               ],

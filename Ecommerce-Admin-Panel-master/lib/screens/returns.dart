@@ -101,18 +101,6 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
       drawer: MenuDrawer(),
       appBar: AppBar(
         title: Text('Lista de Devoluciones'),
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              // Lógica para agregar una nueva devolución
-            },
-            icon: Icon(Icons.add, color: Colors.white),
-            label: Text(
-              'Agregar',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
       ),
       body: Stack(
         children: [

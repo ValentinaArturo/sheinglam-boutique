@@ -1,11 +1,13 @@
 import 'package:ecommerce_admin_panel/auth/auth.dart';
 import 'package:ecommerce_admin_panel/auth/auth_guard.dart';
+import 'package:ecommerce_admin_panel/screens/categories.dart';
 import 'package:ecommerce_admin_panel/screens/login.dart';
 import 'package:ecommerce_admin_panel/screens/orders.dart';
 import 'package:ecommerce_admin_panel/screens/products.dart';
 import 'package:ecommerce_admin_panel/screens/returns.dart';
 import 'package:ecommerce_admin_panel/screens/shipments.dart';
 import 'package:ecommerce_admin_panel/screens/unathorized.dart';
+import 'package:ecommerce_admin_panel/screens/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         buttonTheme: ButtonThemeData(
-          buttonColor: Color(0xFFFFD700),  // Botones dorados
+          buttonColor: Color(0xFFFFD700), // Botones dorados
           textTheme: ButtonTextTheme.primary,
         ),
         textTheme: TextTheme(
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
         '/devoluciones': (context) => AuthGuard(child: ReturnsScreen()),
         '/envios': (context) => AuthGuard(child: ShipmentsScreen()),
         '/no-autorizado': (context) => Unauthorized(),
+        '/usuarios': (context) => UsersScreen(),
+        '/categorias': (context) => CategoriesScreen(),
       },
     );
   }

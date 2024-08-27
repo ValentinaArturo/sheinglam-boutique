@@ -1,64 +1,137 @@
-import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:flutter/material.dart';
 
-class ProductsScreen extends StatefulWidget {
+class UsersScreen extends StatefulWidget {
   @override
-  _ProductsScreenState createState() => _ProductsScreenState();
+  _UsersScreenState createState() => _UsersScreenState();
 }
 
-class _ProductsScreenState extends State<ProductsScreen> {
-  final List<Map<String, String>> productos = [
+class _UsersScreenState extends State<UsersScreen> {
+  final List<Map<String, String>> usuarios = [
     {
-      'titulo': 'Producto 1',
-      'descripcion': 'Descripción del producto 1',
-      'categoria': 'Categoría 1',
-      'talla': 'M',
+      'nombre': 'Usuario 1',
+      'correo': 'usuario1@example.com',
+      'telefono': '123-456-7890',
+      'rol': 'admin',
     },
     {
-      'titulo': 'Producto 2',
-      'descripcion': 'Descripción del producto 2',
-      'categoria': 'Categoría 2',
-      'talla': 'L',
+      'nombre': 'Usuario 2',
+      'correo': 'usuario2@example.com',
+      'telefono': '234-567-8901',
+      'rol': 'user',
     },
     {
-      'titulo': 'Producto 3',
-      'descripcion': 'Descripción del producto 3',
-      'categoria': 'Categoría 3',
-      'talla': 'S',
+      'nombre': 'Usuario 3',
+      'correo': 'usuario3@example.com',
+      'telefono': '345-678-9012',
+      'rol': 'user',
     },
   ];
 
-  List<Map<String, String>> filteredProductos = [];
+  List<Map<String, String>> filteredUsuarios = [];
 
   @override
   void initState() {
     super.initState();
-    filteredProductos = productos;
+    filteredUsuarios = usuarios;
   }
 
-  void _filterProductos(String query) {
-    final results = productos.where((producto) {
-      final tituloLower = producto['titulo']!.toLowerCase();
+  void _filterUsuarios(String query) {
+    final results = usuarios.where((usuario) {
+      final nombreLower = usuario['nombre']!.toLowerCase();
       final queryLower = query.toLowerCase();
 
-      return tituloLower.contains(queryLower);
+      return nombreLower.contains(queryLower);
     }).toList();
 
     setState(() {
-      filteredProductos = results;
+      filteredUsuarios = results;
     });
+  }
+
+  void _showEditModal(Map<String, String> usuario) {
+    String nombre = usuario['nombre']!;
+    String correo = usuario['correo']!;
+    String telefono = usuario['telefono']!;
+    String rol = usuario['rol']!;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Editar Usuario'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Nombre'),
+                controller: TextEditingController(text: nombre),
+                onChanged: (value) {
+                  nombre = value;
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Correo'),
+                controller: TextEditingController(text: correo),
+                onChanged: (value) {
+                  correo = value;
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Teléfono'),
+                controller: TextEditingController(text: telefono),
+                onChanged: (value) {
+                  telefono = value;
+                },
+              ),
+              if (rol == 'admin')
+                DropdownButtonFormField<String>(
+                  value: rol,
+                  decoration: InputDecoration(labelText: 'Rol'),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Admin'),
+                      value: 'admin',
+                    ),
+                    DropdownMenuItem(
+                      child: Text('User'),
+                      value: 'user',
+                    ),
+                  ],
+                  onChanged: (value) {
+                    rol = value!;
+                  },
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Lógica para guardar cambios
+                Navigator.of(context).pop();
+              },
+              child: Text('Guardar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MenuDrawer(),
       appBar: AppBar(
-        title: Text('Lista de Productos'),
+        title: Text('Lista de Usuarios'),
         actions: [
           TextButton.icon(
             onPressed: () {
-              // Lógica para agregar un nuevo producto
+              // Lógica para agregar un nuevo usuario
             },
             icon: Icon(Icons.add, color: Colors.black),
             label: Text(
@@ -84,7 +157,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   padding: const EdgeInsets.all(15.0),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Buscar productos...',
+                      hintText: 'Buscar usuarios...',
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
@@ -95,7 +168,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         borderSide: BorderSide(color: Colors.black),
                       ),
                     ),
-                    onChanged: _filterProductos,
+                    onChanged: _filterUsuarios,
                   ),
                 ),
                 Expanded(
@@ -105,10 +178,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       columnWidths: {
                         0: FlexColumnWidth(3),
                         1: FlexColumnWidth(4),
-                        2: FlexColumnWidth(2),
-                        3: FlexColumnWidth(1),
+                        2: FlexColumnWidth(3),
+                        3: FixedColumnWidth(100),
                         4: FixedColumnWidth(100),
-                        5: FixedColumnWidth(100),
                       },
                       children: [
                         TableRow(
@@ -119,28 +191,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Título',
+                                'Nombre',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Descripción',
+                                'Correo',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Categoría',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Talla',
+                                'Teléfono',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -160,31 +225,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             ),
                           ],
                         ),
-                        ...filteredProductos.map((producto) {
+                        ...filteredUsuarios.map((usuario) {
                           return TableRow(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(producto['titulo']!),
+                                child: Text(usuario['nombre']!),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(producto['descripcion']!),
+                                child: Text(usuario['correo']!),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(producto['categoria']!),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(producto['talla']!),
+                                child: Text(usuario['telefono']!),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: IconButton(
                                   icon: Icon(Icons.edit, color: Colors.black),
                                   onPressed: () {
-                                    // Lógica para editar el producto
+                                    _showEditModal(usuario);
                                   },
                                 ),
                               ),
@@ -193,7 +254,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 child: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.black),
                                   onPressed: () {
-                                    // Lógica para eliminar el producto
+                                    // Lógica para eliminar el usuario
                                   },
                                 ),
                               ),

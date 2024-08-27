@@ -94,18 +94,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       drawer: MenuDrawer(),
       appBar: AppBar(
         title: Text('Lista de Pedidos'),
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              // Lógica para agregar un nuevo pedido
-            },
-            icon: Icon(Icons.add, color: Colors.white),
-            label: Text(
-              'Agregar',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
       ),
       body: Stack(
         children: [
