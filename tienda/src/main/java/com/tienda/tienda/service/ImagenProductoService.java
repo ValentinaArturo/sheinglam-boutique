@@ -4,9 +4,11 @@ import com.tienda.tienda.model.ImagenProducto;
 import com.tienda.tienda.repository.ImagenProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+@CrossOrigin
 @Service
 public class ImagenProductoService {
 

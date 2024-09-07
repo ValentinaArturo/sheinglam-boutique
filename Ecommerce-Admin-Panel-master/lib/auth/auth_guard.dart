@@ -11,12 +11,12 @@ class AuthGuard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
-
-    if (auth.isAuthenticated &&
-        (auth.role == 'Admin' || auth.role == 'Vendor')) {
-      return child;
-    } else {
-      return Unauthorized();
-    }
+    return child;
+    // if (auth.isAuthenticated &&
+    //     (auth.role == 'Admin' || auth.role == 'Vendor')) {
+    //   return child;
+    // } else {
+    //   return Unauthorized();
+    // }
   }
 }

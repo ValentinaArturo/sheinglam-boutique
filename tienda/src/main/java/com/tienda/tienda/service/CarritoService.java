@@ -4,9 +4,11 @@ import com.tienda.tienda.model.Carrito;
 import com.tienda.tienda.repository.CarritoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+@CrossOrigin
 @Service
 public class CarritoService {
 
