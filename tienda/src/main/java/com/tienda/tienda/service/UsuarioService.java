@@ -45,6 +45,6 @@ public class UsuarioService {
         if (usuario != null && passwordEncoder.matches(password, usuario.getContraseña())) {
             return usuario;
         }
-        return null; // Retorna null si las contraseñas no coinciden
+        return null; 
     }
 }

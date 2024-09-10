@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ecommerce_admin_panel/auth/auth.dart';
+import 'package:ecommerce_admin_panel/repository/user_repository.dart';
 import 'package:ecommerce_admin_panel/resources/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -14,21 +15,36 @@ class LoginScreen extends StatelessWidget {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    final response = await http.get(
-      Uri.parse('${baseUrl}usuarios/login?email=$email&password=$password'),
+    // Crear el cuerpo de la solicitud
+    final body = jsonEncode({
+      'email': email,
+      'password': password,
+    });
+
+    // Hacer la petición POST al endpoint /auth/login
+    final response = await http.post(
+      Uri.parse('${baseUrl}auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: body,
     );
 
     if (response.statusCode == 200) {
-      final usuario = json.decode(response.body);
+      // Parsear la respuesta que incluye el token y los datos del usuario
+      final responseData = json.decode(response.body);
+      final String token = responseData['token'];
+      final usuario = responseData['usuario'];
+      final UserRepository userRepository = UserRepository();
+      userRepository.setToken(token);
 
-      // Suponiendo que la respuesta contiene un campo 'rol'
+      // Extraer el rol del usuario
       String role = usuario['rol']['nombre'];
 
+      // Almacenar el token y navegar según el rol
+      Provider.of<AuthProvider>(context, listen: false).login(role);
+
       if (role == 'Admin' || role == 'Vendor') {
-        Provider.of<AuthProvider>(context, listen: false).login(role);
         Navigator.pushReplacementNamed(context, '/productos');
       } else {
         Navigator.pushReplacementNamed(context, '/no-autorizado');
@@ -75,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Correo',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                          borderRadius: BorderRadius.circular(30.0),
                           borderSide: BorderSide(color: Colors.black),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -84,9 +100,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(color: Color(0xFFFFD700)), // Color dorado cuando está enfocado
+                          borderSide: BorderSide(color: Color(0xFFFFD700)),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 15.0),
                       ),
                     ),
                   ),
@@ -98,7 +115,7 @@ class LoginScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Contraseña',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                          borderRadius: BorderRadius.circular(30.0),
                           borderSide: BorderSide(color: Colors.black),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -107,9 +124,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(color: Color(0xFFFFD700)), // Color dorado cuando está enfocado
+                          borderSide: BorderSide(color: Color(0xFFFFD700)),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 15.0),
                       ),
                       obscureText: true,
                     ),
@@ -118,11 +136,11 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: 500,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pushReplacementNamed(context, '/productos'),
+                      onPressed: () => _login(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFAB9144), // Color dorado para el botón
+                        backgroundColor: Color(0xFFAB9144),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
+                          borderRadius: BorderRadius.circular(30.0),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 15.0),
                       ),

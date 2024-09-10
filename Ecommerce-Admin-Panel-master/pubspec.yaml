@@ -47,6 +47,7 @@ dependencies:
   firebase_auth: ^4.8.0     # Update to the latest version
   firebase_core: ^2.18.0    # Update to the latest version
   http: ^1.2.2
+  flutter_secure_storage: ^9.0.0
 
   #firebase_core_desktop: ^1.0.0 #for desktop
 
