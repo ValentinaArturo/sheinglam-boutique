@@ -1,7 +1,12 @@
 package com.tienda.tienda.controller;
 
+import com.tienda.tienda.dto.ClienteDTO;
 import com.tienda.tienda.model.Cliente;
+import com.tienda.tienda.model.DireccionEnvio;
+import com.tienda.tienda.model.Usuario;
 import com.tienda.tienda.service.ClienteService;
+import com.tienda.tienda.service.DireccionEnvioService;
+import com.tienda.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +19,12 @@ public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private DireccionEnvioService direccionEnvioService;
 
     @GetMapping
     public List<Cliente> getAllClientes() {
@@ -31,8 +42,17 @@ public class ClienteController {
     }
 
     @PostMapping
-    public Cliente createCliente(@RequestBody Cliente cliente) {
-        return clienteService.saveCliente(cliente);
+    public ResponseEntity<Cliente> createCliente(@RequestBody ClienteDTO clienteDTO) {
+        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario());
+        clienteDTO.getCliente().setUsuario(usuario);
+        Cliente cliente = clienteService.saveCliente(clienteDTO.getCliente());
+
+        if (clienteDTO.getDireccionEnvio() != null) {
+            clienteDTO.getDireccionEnvio().setCliente(cliente);
+            direccionEnvioService.saveDireccionEnvio(clienteDTO.getDireccionEnvio());
+        }
+
+        return ResponseEntity.ok(cliente);
     }
 
     @PutMapping("/{id}")

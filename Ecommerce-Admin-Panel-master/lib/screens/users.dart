@@ -1,3 +1,4 @@
+import 'package:ecommerce_admin_panel/services/user_service.dart';
 import 'package:flutter/material.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -6,40 +7,46 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  final List<Map<String, String>> usuarios = [
-    {
-      'nombre': 'Usuario 1',
-      'correo': 'usuario1@example.com',
-      'telefono': '123-456-7890',
-      'rol': 'admin',
-    },
-    {
-      'nombre': 'Usuario 2',
-      'correo': 'usuario2@example.com',
-      'telefono': '234-567-8901',
-      'rol': 'user',
-    },
-    {
-      'nombre': 'Usuario 3',
-      'correo': 'usuario3@example.com',
-      'telefono': '345-678-9012',
-      'rol': 'user',
-    },
-  ];
+  final UserService _userService = UserService();
 
+  List<Map<String, String>> usuarios = [];
   List<Map<String, String>> filteredUsuarios = [];
+  List<String> paises = [];
+  List<String> ciudades = [];
+  List<String> roles = [];
+
+  String selectedPais = '';
+  String selectedCiudad = '';
+  String selectedRol = '';
 
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+    _loadUsuarios();
+  }
+
+  void _loadInitialData() async {
+    paises = await _userService.getPaises();
+    roles = await _userService.getRoles();
+    setState(() {});
+  }
+
+  void _loadCiudades(String pais) async {
+    ciudades = await _userService.getCiudades(pais);
+    setState(() {});
+  }
+
+  void _loadUsuarios() async {
+    usuarios = await _userService.getUsuarios();
     filteredUsuarios = usuarios;
+    setState(() {});
   }
 
   void _filterUsuarios(String query) {
     final results = usuarios.where((usuario) {
       final nombreLower = usuario['nombre']!.toLowerCase();
       final queryLower = query.toLowerCase();
-
       return nombreLower.contains(queryLower);
     }).toList();
 
@@ -53,60 +60,100 @@ class _UsersScreenState extends State<UsersScreen> {
     String correo = usuario['correo']!;
     String telefono = usuario['telefono']!;
     String rol = usuario['rol']!;
+    String pais = usuario['pais']!;
+    String ciudad = usuario['ciudad']!;
+    String? direccion = usuario['direccion'];
+
+    TextEditingController nombreController =
+    TextEditingController(text: nombre);
+    TextEditingController correoController =
+    TextEditingController(text: correo);
+    TextEditingController telefonoController =
+    TextEditingController(text: telefono);
+    TextEditingController direccionController =
+    TextEditingController(text: direccion);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Editar Usuario'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: 'Nombre'),
-                controller: TextEditingController(text: nombre),
-                onChanged: (value) {
-                  nombre = value;
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Correo'),
-                controller: TextEditingController(text: correo),
-                onChanged: (value) {
-                  correo = value;
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Teléfono'),
-                controller: TextEditingController(text: telefono),
-                onChanged: (value) {
-                  telefono = value;
-                },
-              ),
-              if (rol == 'admin')
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: InputDecoration(labelText: 'Nombre'),
+                  controller: nombreController,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Correo'),
+                  controller: correoController,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Teléfono'),
+                  controller: telefonoController,
+                ),
+                DropdownButtonFormField<String>(
+                  value: pais,
+                  decoration: InputDecoration(labelText: 'País'),
+                  items: paises.map((String pais) {
+                    return DropdownMenuItem(
+                      value: pais,
+                      child: Text(pais),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    selectedPais = value!;
+                    _loadCiudades(selectedPais);
+                  },
+                ),
+                DropdownButtonFormField<String>(
+                  value: ciudad,
+                  decoration: InputDecoration(labelText: 'Ciudad'),
+                  items: ciudades.map((String ciudad) {
+                    return DropdownMenuItem(
+                      value: ciudad,
+                      child: Text(ciudad),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    selectedCiudad = value!;
+                  },
+                ),
                 DropdownButtonFormField<String>(
                   value: rol,
                   decoration: InputDecoration(labelText: 'Rol'),
-                  items: [
-                    DropdownMenuItem(
-                      child: Text('Admin'),
-                      value: 'admin',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('User'),
-                      value: 'user',
-                    ),
-                  ],
+                  items: roles.map((String rol) {
+                    return DropdownMenuItem(
+                      value: rol,
+                      child: Text(rol),
+                    );
+                  }).toList(),
                   onChanged: (value) {
-                    rol = value!;
+                    selectedRol = value!;
                   },
                 ),
-            ],
+                TextField(
+                  decoration: InputDecoration(labelText: 'Direccion'),
+                  controller: direccionController,
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                // Lógica para guardar cambios
+                // Lógica para guardar los cambios del usuario en el servicio
+                _saveUsuario({
+                  'nombre': nombreController.text,
+                  'correo': correoController.text,
+                  'telefono': telefonoController.text,
+                  'rol': selectedRol,
+                  'pais': selectedPais,
+                  'ciudad': selectedCiudad,
+                  'direccion': direccionController.text,
+                });
                 Navigator.of(context).pop();
               },
               child: Text('Guardar'),
@@ -123,6 +170,16 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
+  void _saveUsuario(Map<String, String> usuario) async {
+    await _userService.editarUsuario(0,usuario);
+    _loadUsuarios(); // Recargar la lista de usuarios
+  }
+
+  void _deleteUsuario(Map<String, String> usuario) async {
+    await _userService.eliminarUsuario(0);
+    _loadUsuarios(); // Recargar la lista de usuarios
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,6 +189,15 @@ class _UsersScreenState extends State<UsersScreen> {
           TextButton.icon(
             onPressed: () {
               // Lógica para agregar un nuevo usuario
+              _showEditModal({
+                'nombre': '',
+                'correo': '',
+                'telefono': '',
+                'rol': '',
+                'pais': '',
+                'ciudad': '',
+                'direccion': '',
+              });
             },
             icon: Icon(Icons.add, color: Colors.black),
             label: Text(
@@ -225,8 +291,8 @@ class _UsersScreenState extends State<UsersScreen> {
                             ),
                           ],
                         ),
-                        ...filteredUsuarios.map((usuario) {
-                          return TableRow(
+                        for (var usuario in filteredUsuarios)
+                          TableRow(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -243,24 +309,19 @@ class _UsersScreenState extends State<UsersScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.black),
-                                  onPressed: () {
-                                    _showEditModal(usuario);
-                                  },
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () => _showEditModal(usuario),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.black),
-                                  onPressed: () {
-                                    // Lógica para eliminar el usuario
-                                  },
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () => _deleteUsuario(usuario),
                                 ),
                               ),
                             ],
-                          );
-                        }).toList(),
+                          ),
                       ],
                     ),
                   ),
