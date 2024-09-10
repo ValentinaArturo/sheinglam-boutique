@@ -1,4 +1,5 @@
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
+import 'package:ecommerce_admin_panel/services/shipment_service.dart';
 import 'package:flutter/material.dart';
 
 class ShipmentsScreen extends StatefulWidget {
@@ -7,54 +8,86 @@ class ShipmentsScreen extends StatefulWidget {
 }
 
 class _ShipmentsScreenState extends State<ShipmentsScreen> {
-  final List<Map<String, dynamic>> envios = [
-    {
-      'nombre': 'Envío 1',
-      'departamento': 'Guatemala',
-      'precio': 50.0,
-    },
-    {
-      'nombre': 'Envío 2',
-      'departamento': 'Quetzaltenango',
-      'precio': 75.0,
-    },
-    {
-      'nombre': 'Envío 3',
-      'departamento': 'Huehuetenango',
-      'precio': 100.0,
-    },
-  ];
-
-  late List<Map<String, dynamic>> filteredEnvios;
+  final ShipmentService _envioService = ShipmentService();
+  List<Map<String, dynamic>> _envios = [];
+  late List<Map<String, dynamic>> _filteredEnvios;
 
   @override
   void initState() {
     super.initState();
-    filteredEnvios = envios;
+    _loadEnvios();
   }
 
-  void _agregarEnvio(BuildContext context) {
-    // Lógica para agregar un nuevo envío
+  Future<void> _loadEnvios() async {
+    try {
+      final envios = await _envioService.getEnvios();
+      setState(() {
+        _envios = envios;
+        _filteredEnvios = _envios;
+      });
+    } catch (e) {
+      // Manejo de errores
+      print('Error loading envíos: $e');
+    }
   }
 
-  void _editarEnvio(BuildContext context, int index) {
-    // Lógica para editar un envío existente
+  Future<void> _agregarEnvio(BuildContext context) async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => _EnvioDialog(),
+    );
+
+    if (result != null) {
+      try {
+        await _envioService.createEnvio(result);
+        _loadEnvios(); // Recargar envíos después de agregar
+      } catch (e) {
+        // Manejo de errores
+        print('Error adding envío: $e');
+      }
+    }
   }
 
-  void _eliminarEnvio(int index) {
-    setState(() {
-      filteredEnvios.removeAt(index);
-    });
+  Future<void> _editarEnvio(BuildContext context, int index) async {
+    final envio = _filteredEnvios[index];
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => _EnvioDialog(envio: envio),
+    );
+
+    if (result != null) {
+      try {
+        await _envioService.updateEnvio(envio['idEnvio'], result);
+        _loadEnvios(); // Recargar envíos después de editar
+      } catch (e) {
+        // Manejo de errores
+        print('Error updating envío: $e');
+      }
+    }
+  }
+
+  void _eliminarEnvio(int index) async {
+    try {
+      final envioId = _filteredEnvios[index]['idEnvio'];
+      await _envioService.deleteEnvio(envioId);
+      setState(() {
+        _filteredEnvios.removeAt(index);
+      });
+    } catch (e) {
+      // Manejo de errores
+      print('Error deleting envío: $e');
+    }
   }
 
   void _filterEnvios(String query) {
     setState(() {
-      filteredEnvios = envios.where((envio) {
+      _filteredEnvios = _envios.where((envio) {
         final nombreLower = envio['nombre'].toLowerCase();
         final departamentoLower = envio['departamento'].toLowerCase();
         final queryLower = query.toLowerCase();
 
-        return nombreLower.contains(queryLower) || departamentoLower.contains(queryLower);
+        return nombreLower.contains(queryLower) ||
+            departamentoLower.contains(queryLower);
       }).toList();
     });
   }
@@ -88,7 +121,6 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
           // Contenido principal
           Container(
             margin: EdgeInsets.symmetric(horizontal: 150.0),
-
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -163,7 +195,7 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                               ),
                             ],
                           ),
-                          ...filteredEnvios.map((envio) {
+                          ..._filteredEnvios.map((envio) {
                             return TableRow(
                               children: [
                                 Padding(
@@ -182,14 +214,17 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
                                     icon: Icon(Icons.edit, color: Colors.black),
-                                    onPressed: () => _editarEnvio(context, filteredEnvios.indexOf(envio)),
+                                    onPressed: () => _editarEnvio(context,
+                                        _filteredEnvios.indexOf(envio)),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.black),
-                                    onPressed: () => _eliminarEnvio(filteredEnvios.indexOf(envio)),
+                                    icon:
+                                        Icon(Icons.delete, color: Colors.black),
+                                    onPressed: () => _eliminarEnvio(
+                                        _filteredEnvios.indexOf(envio)),
                                   ),
                                 ),
                               ],
@@ -205,6 +240,93 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _EnvioDialog extends StatefulWidget {
+  final Map<String, dynamic>? envio;
+
+  _EnvioDialog({this.envio});
+
+  @override
+  __EnvioDialogState createState() => __EnvioDialogState();
+}
+
+class __EnvioDialogState extends State<_EnvioDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nombreController;
+  late TextEditingController _departamentoController;
+  late TextEditingController _precioController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nombreController =
+        TextEditingController(text: widget.envio?['nombre'] ?? '');
+    _departamentoController =
+        TextEditingController(text: widget.envio?['departamento'] ?? '');
+    _precioController =
+        TextEditingController(text: widget.envio?['precio']?.toString() ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nombreController.dispose();
+    _departamentoController.dispose();
+    _precioController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.envio == null ? 'Agregar Envío' : 'Editar Envío'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _nombreController,
+              decoration: InputDecoration(labelText: 'Nombre'),
+              validator: (value) =>
+                  value!.isEmpty ? 'El nombre es obligatorio' : null,
+            ),
+            TextFormField(
+              controller: _departamentoController,
+              decoration: InputDecoration(labelText: 'Departamento'),
+              validator: (value) =>
+                  value!.isEmpty ? 'El departamento es obligatorio' : null,
+            ),
+            TextFormField(
+              controller: _precioController,
+              decoration: InputDecoration(labelText: 'Precio'),
+              keyboardType: TextInputType.number,
+              validator: (value) =>
+                  value!.isEmpty ? 'El precio es obligatorio' : null,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.of(context).pop({
+                'nombre': _nombreController.text,
+                'departamento': _departamentoController.text,
+                'precio': double.parse(_precioController.text),
+              });
+            }
+          },
+          child: Text(widget.envio == null ? 'Agregar' : 'Actualizar'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Cancelar'),
+        ),
+      ],
     );
   }
 }
