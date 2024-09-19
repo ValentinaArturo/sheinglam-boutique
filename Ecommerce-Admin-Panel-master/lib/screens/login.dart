@@ -12,54 +12,54 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login(BuildContext context) async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    // Crear el cuerpo de la solicitud
-    final body = jsonEncode({
-      'email': email,
-      'password': password,
-    });
-
-    // Hacer la petición POST al endpoint /auth/login
-    final response = await http.post(
-      Uri.parse('${baseUrl}auth/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body,
-    );
-
-    if (response.statusCode == 200) {
-      // Parsear la respuesta que incluye el token y los datos del usuario
-      final responseData = json.decode(response.body);
-      final String token = responseData['token'];
-      final usuario = responseData['usuario'];
-      final UserRepository userRepository = UserRepository();
-      userRepository.setToken(token);
-
-      // Extraer el rol del usuario
-      String role = usuario['rol']['nombre'];
-
-      // Almacenar el token y navegar según el rol
-      Provider.of<AuthProvider>(context, listen: false).login(role);
-
-      if (role == 'Admin' || role == 'Vendor') {
-        Navigator.pushReplacementNamed(context, '/productos');
-      } else {
-        Navigator.pushReplacementNamed(context, '/no-autorizado');
-      }
-    } else if (response.statusCode == 401) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email o contraseña incorrectos')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('Error al iniciar sesión. Inténtalo de nuevo más tarde.')),
-      );
-    }
+    // final email = _emailController.text;
+    // final password = _passwordController.text;
+    //
+    // // Crear el cuerpo de la solicitud
+    // final body = jsonEncode({
+    //   'email': email,
+    //   'password': password,
+    // });
+    //
+    // // Hacer la petición POST al endpoint /auth/login
+    // final response = await http.post(
+    //   Uri.parse('${baseUrl}auth/login'),
+    //   headers: <String, String>{
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: body,
+    // );
+    //
+    // if (response.statusCode == 200) {
+    //   // Parsear la respuesta que incluye el token y los datos del usuario
+    //   final responseData = json.decode(response.body);
+    //   final String token = responseData['token'];
+    //   final usuario = responseData['usuario'];
+    //   final UserRepository userRepository = UserRepository();
+    //   userRepository.setToken(token);
+    //
+    //   // Extraer el rol del usuario
+    //   String role = usuario['rol']['nombre'];
+    //
+    //   // Almacenar el token y navegar según el rol
+    //   Provider.of<AuthProvider>(context, listen: false).login(role);
+    //
+    //   if (role == 'Admin' || role == 'Vendor') {
+    //     Navigator.pushReplacementNamed(context, '/productos');
+    //   } else {
+    //     Navigator.pushReplacementNamed(context, '/no-autorizado');
+    //   }
+    // } else if (response.statusCode == 401) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('Email o contraseña incorrectos')),
+    //   );
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //         content:
+    //             Text('Error al iniciar sesión. Inténtalo de nuevo más tarde.')),
+    //   );
+    // }
   }
 
   @override
@@ -136,7 +136,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: 500,
                     child: ElevatedButton(
-                      onPressed: () => _login(context),
+                      onPressed: () =>  Navigator.pushReplacementNamed(context, '/productos'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFAB9144),
                         shape: RoundedRectangleBorder(

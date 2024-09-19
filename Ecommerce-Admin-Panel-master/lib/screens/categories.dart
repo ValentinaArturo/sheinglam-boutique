@@ -1,3 +1,4 @@
+import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/model/category.dart';
 import 'package:ecommerce_admin_panel/services/category_service.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchCategories(); // Carga las categorías al iniciar
+    //_fetchCategories(); // Carga las categorías al iniciar
   }
 
   // Función para cargar las categorías desde el backend
@@ -123,6 +124,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MenuDrawer(),
       appBar: AppBar(
         title: Text('Lista de Categorías'),
         actions: [

@@ -10,12 +10,12 @@ class ShipmentsScreen extends StatefulWidget {
 class _ShipmentsScreenState extends State<ShipmentsScreen> {
   final ShipmentService _envioService = ShipmentService();
   List<Map<String, dynamic>> _envios = [];
-  late List<Map<String, dynamic>> _filteredEnvios;
+  late List<Map<String, dynamic>> _filteredEnvios = [];
 
   @override
   void initState() {
     super.initState();
-    _loadEnvios();
+    //_loadEnvios();
   }
 
   Future<void> _loadEnvios() async {

@@ -1,3 +1,4 @@
+import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/services/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +23,8 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
-    _loadUsuarios();
+    // _loadInitialData();
+    // _loadUsuarios();
   }
 
   void _loadInitialData() async {
@@ -38,9 +39,9 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   void _loadUsuarios() async {
-    usuarios = await _userService.getUsuarios();
-    filteredUsuarios = usuarios;
-    setState(() {});
+    // usuarios = await _userService.getUsuarios();
+    // filteredUsuarios = usuarios;
+    // setState(() {});
   }
 
   void _filterUsuarios(String query) {
@@ -183,6 +184,7 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MenuDrawer(),
       appBar: AppBar(
         title: Text('Lista de Usuarios'),
         actions: [
