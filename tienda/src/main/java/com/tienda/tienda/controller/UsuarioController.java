@@ -1,9 +1,11 @@
 package com.tienda.tienda.controller;
 
 import com.tienda.tienda.model.Usuario;
+import com.tienda.tienda.service.PasswordService;
 import com.tienda.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,10 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<Usuario> getAllUsuarios() {
@@ -34,8 +40,9 @@ public class UsuarioController {
     public ResponseEntity<Usuario> getUsuarioByEmailAndPassword(
             @RequestParam String email, 
             @RequestParam String password) {
-        Usuario usuario = usuarioService.getUsuarioByEmailAndPassword(email, password);
-        if (usuario != null) {
+        Usuario usuario = usuarioService.getUsuarioByEmail(email);
+        
+        if (usuario != null && passwordEncoder.matches(password, usuario.getContraseña())) {
             return ResponseEntity.ok(usuario);
         } else {
             return ResponseEntity.status(401).build(); // 401 Unauthorized si las credenciales no son válidas
@@ -44,19 +51,21 @@ public class UsuarioController {
 
     @PostMapping
     public Usuario createUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.saveUsuario(usuario);
+        String password = passwordEncoder.encode(usuario.getContraseña());
+        return usuarioService.saveUsuario(usuario, password);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable int id, @RequestBody Usuario usuarioDetails) {
-        Usuario usuario = usuarioService.getUsuarioById(id);
+        Usuario usuario = usuarioService.getUsuarioById(id);        
         if (usuario != null) {
             usuario.setNombre(usuarioDetails.getNombre());
             usuario.setApellido(usuarioDetails.getApellido());
             usuario.setCorreoElectronico(usuarioDetails.getCorreoElectronico());
             usuario.setContraseña(usuarioDetails.getContraseña());
             usuario.setRol(usuarioDetails.getRol());
-            return ResponseEntity.ok(usuarioService.saveUsuario(usuario));
+            String password = passwordEncoder.encode(usuario.getContraseña());
+            return ResponseEntity.ok(usuarioService.saveUsuario(usuario, password));
         } else {
             return ResponseEntity.notFound().build();
         }

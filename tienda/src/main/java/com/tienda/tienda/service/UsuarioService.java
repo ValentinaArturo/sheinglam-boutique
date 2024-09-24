@@ -18,9 +18,6 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
@@ -29,8 +26,7 @@ public class UsuarioService {
         return usuarioRepository.findById(id).orElse(null);
     }
 
-    public Usuario saveUsuario(Usuario usuario) {
-        String encodedPassword = passwordEncoder.encode(usuario.getContraseña());
+    public Usuario saveUsuario(Usuario usuario, String encodedPassword) {
         usuario.setContraseña(encodedPassword);
         return usuarioRepository.save(usuario);
     }
@@ -42,7 +38,16 @@ public class UsuarioService {
     public Usuario getUsuarioByEmailAndPassword(String email, String password) {
         Usuario usuario = usuarioRepository.findByCorreoElectronicoAndContraseña(email, password);
         
-        if (usuario != null && passwordEncoder.matches(password, usuario.getContraseña())) {
+        if (usuario != null) {
+            return usuario;
+        }
+        return null; 
+    }
+
+    public Usuario getUsuarioByEmail(String email) {
+        Usuario usuario = usuarioRepository.findByCorreoElectronico(email);
+        
+        if (usuario != null) {
             return usuario;
         }
         return null; 
