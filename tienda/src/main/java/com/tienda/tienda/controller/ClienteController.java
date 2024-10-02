@@ -43,7 +43,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<Cliente> createCliente(@RequestBody ClienteDTO clienteDTO) {
-        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario());
+        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario(),clienteDTO.getUsuario().getContraseña());
         clienteDTO.getCliente().setUsuario(usuario);
         Cliente cliente = clienteService.saveCliente(clienteDTO.getCliente());
 
