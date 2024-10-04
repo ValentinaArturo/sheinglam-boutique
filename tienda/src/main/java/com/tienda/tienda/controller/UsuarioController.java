@@ -1,7 +1,6 @@
 package com.tienda.tienda.controller;
 
 import com.tienda.tienda.model.Usuario;
-import com.tienda.tienda.service.PasswordService;
 import com.tienda.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -80,4 +79,6 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+ 
 }

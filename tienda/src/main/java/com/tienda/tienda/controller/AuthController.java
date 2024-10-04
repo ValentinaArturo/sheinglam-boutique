@@ -27,13 +27,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
         Usuario usuario = usuarioService.getUsuarioByEmail(email);
-        
         if (usuario != null && passwordEncoder.matches(password, usuario.getContraseña())) {
             String token = authService.generateToken(usuario.getNombre());
 
             return ResponseEntity.ok(new JwtResponse(token, usuario));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         }
     }
 

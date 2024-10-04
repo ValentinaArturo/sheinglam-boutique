@@ -9,6 +9,7 @@ import com.tienda.tienda.service.DireccionEnvioService;
 import com.tienda.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class ClienteController {
 
     @Autowired
     private DireccionEnvioService direccionEnvioService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<Cliente> getAllClientes() {
@@ -43,7 +46,8 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<Cliente> createCliente(@RequestBody ClienteDTO clienteDTO) {
-        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario(),clienteDTO.getUsuario().getContraseña());
+    	String password = passwordEncoder.encode(clienteDTO.getUsuario().getContraseña());
+        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario(),password);
         clienteDTO.getCliente().setUsuario(usuario);
         Cliente cliente = clienteService.saveCliente(clienteDTO.getCliente());
 

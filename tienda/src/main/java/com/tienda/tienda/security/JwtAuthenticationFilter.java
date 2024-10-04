@@ -16,24 +16,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.authService = authService;
     }
 
-   
+    @Override
+    protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
+                                    jakarta.servlet.http.HttpServletResponse response, 
+                                    jakarta.servlet.FilterChain filterChain)
+            throws jakarta.servlet.ServletException, IOException {
 
-	@Override
-	protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
-			jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
-			throws jakarta.servlet.ServletException, IOException {
-		 String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
-	        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-	            String token = authorizationHeader.substring(7);
-	            if (authService.validateToken(token)) {
-	                String username = authService.extractUsername(token);
-	                UsernamePasswordAuthenticationToken authentication = 
-	                    new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
-	                SecurityContextHolder.getContext().setAuthentication(authentication);
-	            }
-	        }
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            // Validar el token sin `UserDetails`
+            if (authService.validateToken(token)) { 
+                String username = authService.extractUsername(token);
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
 
-	        filterChain.doFilter(request, response); // Usar filterChain en lugar de chain
-	}
+        filterChain.doFilter(request, response);
+    }
 }
