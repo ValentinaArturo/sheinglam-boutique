@@ -51,7 +51,7 @@ public class ProductoPromocionController {
     public ResponseEntity<Void> deleteProductoPromocion(@PathVariable int id) {
         if (productoPromocionService.getProductoPromocionById(id) != null) {
             productoPromocionService.deleteProductoPromocion(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

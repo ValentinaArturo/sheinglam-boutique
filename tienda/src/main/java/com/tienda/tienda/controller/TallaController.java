@@ -50,7 +50,7 @@ public class TallaController {
     public ResponseEntity<Void> deleteTalla(@PathVariable int id) {
         if (tallaService.getTallaById(id) != null) {
             tallaService.deleteTalla(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

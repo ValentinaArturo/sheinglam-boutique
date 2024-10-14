@@ -54,7 +54,7 @@ public class RevisionProductoController {
     public ResponseEntity<Void> deleteRevisionProducto(@PathVariable int id) {
         if (revisionProductoService.getRevisionProductoById(id) != null) {
             revisionProductoService.deleteRevisionProducto(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -53,7 +53,7 @@ public class EnvioController {
     public ResponseEntity<Void> deleteEnvio(@PathVariable int id) {
         if (envioService.getEnvioById(id) != null) {
             envioService.deleteEnvio(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

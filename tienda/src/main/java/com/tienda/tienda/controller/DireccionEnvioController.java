@@ -54,7 +54,7 @@ public class DireccionEnvioController {
     public ResponseEntity<Void> deleteDireccionEnvio(@PathVariable int id) {
         if (direccionEnvioService.getDireccionEnvioById(id) != null) {
             direccionEnvioService.deleteDireccionEnvio(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

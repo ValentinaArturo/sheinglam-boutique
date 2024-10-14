@@ -53,7 +53,7 @@ public class MovimientoInventarioController {
     public ResponseEntity<Void> deleteMovimientoInventario(@PathVariable int id) {
         if (movimientoInventarioService.getMovimientoInventarioById(id) != null) {
             movimientoInventarioService.deleteMovimientoInventario(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

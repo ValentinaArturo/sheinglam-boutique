@@ -50,7 +50,7 @@ public class RolController {
     public ResponseEntity<Void> deleteRol(@PathVariable int id) {
         if (rolService.getRolById(id) != null) {
             rolService.deleteRol(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

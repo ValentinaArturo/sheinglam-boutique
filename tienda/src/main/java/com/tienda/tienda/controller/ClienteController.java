@@ -76,7 +76,7 @@ public class ClienteController {
     public ResponseEntity<Void> deleteCliente(@PathVariable int id) {
         if (clienteService.getClienteById(id) != null) {
             clienteService.deleteCliente(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

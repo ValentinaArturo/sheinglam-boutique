@@ -53,7 +53,7 @@ public class DetallePagoController {
     public ResponseEntity<Void> deleteDetallePago(@PathVariable int id) {
         if (detallePagoService.getDetallePagoById(id) != null) {
             detallePagoService.deleteDetallePago(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

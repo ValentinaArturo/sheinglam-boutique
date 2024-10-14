@@ -53,7 +53,7 @@ public class DevolucionController {
     public ResponseEntity<Void> deleteDevolucion(@PathVariable int id) {
         if (devolucionService.getDevolucionById(id) != null) {
             devolucionService.deleteDevolucion(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

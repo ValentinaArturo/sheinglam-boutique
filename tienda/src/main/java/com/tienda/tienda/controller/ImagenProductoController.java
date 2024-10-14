@@ -51,7 +51,7 @@ public class ImagenProductoController {
     public ResponseEntity<Void> deleteImagenProducto(@PathVariable int id) {
         if (imagenProductoService.getImagenProductoById(id) != null) {
             imagenProductoService.deleteImagenProducto(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

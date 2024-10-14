@@ -54,7 +54,7 @@ public class DetalleFacturaController {
     public ResponseEntity<Void> deleteDetalleFactura(@PathVariable int id) {
         if (detalleFacturaService.getDetalleFacturaById(id) != null) {
             detalleFacturaService.deleteDetalleFactura(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

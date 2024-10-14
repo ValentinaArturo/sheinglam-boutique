@@ -52,7 +52,7 @@ public class PromocionController {
     public ResponseEntity<Void> deletePromocion(@PathVariable int id) {
         if (promocionService.getPromocionById(id) != null) {
             promocionService.deletePromocion(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

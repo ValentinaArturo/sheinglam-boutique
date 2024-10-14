@@ -54,7 +54,7 @@ public class PedidoController {
     public ResponseEntity<Void> deletePedido(@PathVariable int id) {
         if (pedidoService.getPedidoById(id) != null) {
             pedidoService.deletePedido(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

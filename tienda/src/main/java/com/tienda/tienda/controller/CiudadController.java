@@ -50,7 +50,7 @@ public class CiudadController {
     public ResponseEntity<Void> deleteCiudad(@PathVariable int id) {
         if (ciudadService.getCiudadById(id) != null) {
             ciudadService.deleteCiudad(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
