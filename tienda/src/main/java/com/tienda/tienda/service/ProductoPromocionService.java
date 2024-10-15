@@ -30,4 +30,8 @@ public class ProductoPromocionService {
     public void deleteProductoPromocion(int id) {
         productoPromocionRepository.deleteById(id);
     }
+    
+    public List<ProductoPromocion> getPromocionesByProductoId(int productoId) {
+        return productoPromocionRepository.findByProductoId(productoId);
+    }
 }

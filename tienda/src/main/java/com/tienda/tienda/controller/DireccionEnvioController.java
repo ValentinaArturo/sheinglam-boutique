@@ -29,6 +29,16 @@ public class DireccionEnvioController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<List<DireccionEnvio>> getDireccionesEnvioByClienteId(@PathVariable int clienteId) {
+        List<DireccionEnvio> direccionesEnvio = direccionEnvioService.getDireccionesEnvioByClienteId(clienteId);
+        if (!direccionesEnvio.isEmpty()) {
+            return ResponseEntity.ok(direccionesEnvio);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping
     public DireccionEnvio createDireccionEnvio(@RequestBody DireccionEnvio direccionEnvio) {

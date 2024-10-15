@@ -29,6 +29,16 @@ public class ProductoPromocionController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping("/producto/{productoId}")
+    public ResponseEntity<List<ProductoPromocion>> getPromocionesPorProducto(@PathVariable int productoId) {
+        List<ProductoPromocion> promociones = productoPromocionService.getPromocionesByProductoId(productoId);
+        if (promociones != null && !promociones.isEmpty()) {
+            return ResponseEntity.ok(promociones);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping
     public ProductoPromocion createProductoPromocion(@RequestBody ProductoPromocion productoPromocion) {

@@ -1,26 +1,20 @@
-import 'package:ecommerce_admin_panel/auth/auth.dart';
-import 'package:ecommerce_admin_panel/auth/auth_guard.dart';
-import 'package:ecommerce_admin_panel/screens/categories.dart';
-import 'package:ecommerce_admin_panel/screens/login.dart';
-import 'package:ecommerce_admin_panel/screens/orders.dart';
-import 'package:ecommerce_admin_panel/screens/products.dart';
+import 'package:ecommerce_admin_panel/screens/categorias/categories.dart';
+import 'package:ecommerce_admin_panel/screens/login/login.dart';
+import 'package:ecommerce_admin_panel/screens/ordenes/orders.dart';
+import 'package:ecommerce_admin_panel/screens/productos/products.dart';
 import 'package:ecommerce_admin_panel/screens/returns.dart';
 import 'package:ecommerce_admin_panel/screens/shipments.dart';
 import 'package:ecommerce_admin_panel/screens/unathorized.dart';
-import 'package:ecommerce_admin_panel/screens/users.dart';
+import 'package:ecommerce_admin_panel/screens/users/users.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,11 +22,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        buttonTheme: ButtonThemeData(
+        buttonTheme: const ButtonThemeData(
           buttonColor: Color(0xFFFFD700), // Botones dorados
           textTheme: ButtonTextTheme.primary,
         ),
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.black),
           bodyMedium: TextStyle(color: Colors.black),
           displayLarge: TextStyle(color: Colors.black),
@@ -46,16 +40,16 @@ class MyApp extends StatelessWidget {
           labelLarge: TextStyle(color: Colors.white),
         ),
       ),
-      initialRoute: '/login',
+      home: const LoginPage(),
       routes: {
-        '/login': (context) => LoginScreen(),
-        '/productos': (context) => AuthGuard(child: ProductsScreen()),
-        '/pedidos': (context) => AuthGuard(child: OrdersScreen()),
-        '/devoluciones': (context) => AuthGuard(child: ReturnsScreen()),
-        '/envios': (context) => AuthGuard(child: ShipmentsScreen()),
+        '/login': (context) => const LoginScreen(),
+        '/productos': (context) => ProductsScreen(),
+        '/pedidos': (context) => const OrdersPage(),
+        '/devoluciones': (context) => ReturnsScreen(),
+        '/envios': (context) => ShipmentsScreen(),
         '/no-autorizado': (context) => Unauthorized(),
-        '/usuarios': (context) => UsersScreen(),
-        '/categorias': (context) => CategoriesScreen(),
+        '/usuarios': (context) => const UsersPage(),
+        '/categorias': (context) => const CategoriaPage(),
       },
     );
   }
