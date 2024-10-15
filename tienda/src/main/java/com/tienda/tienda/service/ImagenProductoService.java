@@ -30,4 +30,7 @@ public class ImagenProductoService {
     public void deleteImagenProducto(int id) {
         imagenProductoRepository.deleteById(id);
     }
+    public List<ImagenProducto> getImagenesByProductoId(int productoId) {
+        return imagenProductoRepository.findByProductoId_idProducto(productoId);
+    }
 }

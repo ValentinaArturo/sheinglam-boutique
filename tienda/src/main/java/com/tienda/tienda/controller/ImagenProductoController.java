@@ -34,7 +34,15 @@ public class ImagenProductoController {
     public ImagenProducto createImagenProducto(@RequestBody ImagenProducto imagenProducto) {
         return imagenProductoService.saveImagenProducto(imagenProducto);
     }
-
+    @GetMapping("/producto/{productoId}")
+    public ResponseEntity<List<ImagenProducto>> getImagenesByProductoId(@PathVariable int productoId) {
+        List<ImagenProducto> imagenes = imagenProductoService.getImagenesByProductoId(productoId);
+        if (imagenes != null && !imagenes.isEmpty()) {
+            return ResponseEntity.ok(imagenes);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PutMapping("/{id}")
     public ResponseEntity<ImagenProducto> updateImagenProducto(@PathVariable int id, @RequestBody ImagenProducto imagenProductoDetails) {
         ImagenProducto imagenProducto = imagenProductoService.getImagenProductoById(id);
