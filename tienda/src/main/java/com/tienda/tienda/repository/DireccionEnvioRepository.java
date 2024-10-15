@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DireccionEnvioRepository extends JpaRepository<DireccionEnvio, Integer> {
 
-	List<DireccionEnvio> findByClienteId(int clienteId);
+	List<DireccionEnvio> findByCliente_IdCliente(int clienteId);
 }

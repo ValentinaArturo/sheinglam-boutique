@@ -32,6 +32,6 @@ public class ProductoPromocionService {
     }
     
     public List<ProductoPromocion> getPromocionesByProductoId(int productoId) {
-        return productoPromocionRepository.findByProductoId(productoId);
+        return productoPromocionRepository.findByProducto_IdProducto(productoId);
     }
 }
