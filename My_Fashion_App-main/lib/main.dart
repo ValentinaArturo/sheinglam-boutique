@@ -1,7 +1,8 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:my_fashion_app/screens/ar_view_screen.dart';
 import 'package:my_fashion_app/screens/cart.dart';
 import 'package:my_fashion_app/screens/edit_profile.dart';
-import 'package:my_fashion_app/screens/login.dart';
 import 'package:my_fashion_app/screens/orders.dart';
 import 'package:my_fashion_app/screens/payment.dart';
 import 'package:my_fashion_app/screens/product_detail.dart';
@@ -12,7 +13,15 @@ import 'package:my_fashion_app/screens/register.dart';
 import 'package:my_fashion_app/screens/return_form.dart';
 import 'package:my_fashion_app/screens/returns.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print(e.description);
+  }
   runApp(ShoppingApp());
 }
 
@@ -102,7 +111,7 @@ class ShoppingApp extends StatelessWidget {
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.white),
       ),
       routes: {
-        '/': (context) => LoginScreen(),
+        '/': (context) => const AugmentedReality(),
         '/register': (context) => RegisterScreen(),
         '/recover': (context) => RecoverPasswordScreen(),
         '/home': (context) => HomeScreen(),
