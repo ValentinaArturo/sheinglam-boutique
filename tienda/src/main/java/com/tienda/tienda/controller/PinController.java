@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tienda.tienda.service.PinService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/pin")
 public class PinController {

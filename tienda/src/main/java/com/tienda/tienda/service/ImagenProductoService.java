@@ -31,6 +31,6 @@ public class ImagenProductoService {
         imagenProductoRepository.deleteById(id);
     }
     public List<ImagenProducto> getImagenesByProductoId(int productoId) {
-        return imagenProductoRepository.findByProductoId_idProducto(productoId);
+        return imagenProductoRepository.findByProducto_IdProducto(productoId);
     }
 }
