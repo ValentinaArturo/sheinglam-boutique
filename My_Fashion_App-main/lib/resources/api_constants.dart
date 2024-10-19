@@ -1,0 +1,9 @@
+const String baseUrl = 'https://sheinglam-boutique.xyz/';
+const String authPath = 'auth/login';
+const String usuarioPath = 'api/usuarios';
+const String clientePath = 'api/clientes';
+const String categoriaPath = 'api/categorias';
+const String pedidoPath = 'api/pedidos-estados';
+const String productoPath = 'api/productos-categorias';
+const String imageProductoPath = 'api/imagenes-producto';
+const String carritoPath = 'api/carrito-productos';

@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_secure_storage:
   url_launcher: ^6.3.0
   cupertino_icons:
   flutter_screenutil: ^5.8.4
@@ -39,10 +40,13 @@ dependencies:
   flutter_svg:
   flutter_animate:
   get:
-  provider: ^6.0.0
   http: ^0.13.3
   image_picker: ^1.1.2
   flutter_speed_dial: ^5.0.0+1
+  flutter_bloc:
+  equatable:
+  lottie:
+  dio:
 
   # Otras dependencias que podrías necesitar
 
