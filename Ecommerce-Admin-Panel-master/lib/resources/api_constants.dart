@@ -1,1 +1,13 @@
-const String baseUrl = 'http://localhost:8095/api/';
+const String baseUrl = 'https://sheinglam-boutique.xyz/';
+const String authPath = 'auth/login';
+const String usuarioPath = 'api/usuarios';
+const String clientePath = 'api/clientes';
+const String ciudadPath = 'api/ciudades';
+const String categoriaPath = 'api/categorias';
+const String pedidoPath = 'api/pedidos-estados';
+const String direccionEnvioPath = 'api/direcciones-envios';
+const String productoPath = 'api/productos';
+const String tallaPath = 'api/tallas';
+const String colorPath = 'api/colores';
+const String proveedorPath = 'api/proveedores';
+const String imagenProductoPath = 'api/imagenes-producto';
