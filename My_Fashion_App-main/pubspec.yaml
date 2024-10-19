@@ -40,15 +40,20 @@ dependencies:
   flutter_svg:
   flutter_animate:
   get:
-  http: ^0.13.3
+  provider: ^6.0.0
+  http: ^1.2.2
   image_picker: ^1.1.2
   flutter_speed_dial: ^5.0.0+1
   flutter_bloc:
   equatable:
   lottie:
   dio:
+  ar_core: ^0.0.2+7
+  camera: ^0.9.4+16
 
-  # Otras dependencias que podrías necesitar
+
+
+    # Otras dependencias que podrías necesitar
 
   flutter:
     sdk: flutter
