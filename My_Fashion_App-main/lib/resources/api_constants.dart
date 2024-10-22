@@ -7,3 +7,4 @@ const String pedidoPath = 'api/pedidos-estados';
 const String productoPath = 'api/productos-categorias';
 const String imageProductoPath = 'api/imagenes-producto';
 const String carritoPath = 'api/carrito-productos';
+const String addressPath = 'api/direcciones-envio';

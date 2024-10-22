@@ -29,3 +29,4 @@ const totalVacationAvailable = 'totalVacationAvailable';
 const periodVacationAvailable = 'periodVacationAvailable';
 const daysVacationAvailable = 'daysVacationAvailable';
 const contractTypeName = 'contractTypeName';
+const userLocalData = 'currentUserData';

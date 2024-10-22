@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:my_fashion_app/model/product.dart';
+import 'package:my_fashion_app/resources/constants.dart';
+import 'package:my_fashion_app/screens/orders/model/order_list_model.dart';
 import 'package:my_fashion_app/screens/return_form.dart';
 import 'package:my_fashion_app/screens/review_modal.dart';
 
 class OrderDetailScreen extends StatelessWidget {
-  final List<Product> productos;
+  final List<OrderListModel> productos;
   final double total;
   final String estado;
 
-  OrderDetailScreen(
-      {required this.productos, required this.total, required this.estado});
+  const OrderDetailScreen({
+    super.key,
+    required this.productos,
+    required this.total,
+    required this.estado,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalle del Pedido'),
+        title: const Text('Detalle del Pedido'),
         centerTitle: true,
       ),
       body: Padding(
@@ -23,14 +28,14 @@ class OrderDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Productos del Pedido',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: productos.length,
@@ -38,20 +43,25 @@ class OrderDetailScreen extends StatelessWidget {
                   final producto = productos[index];
                   return Card(
                     elevation: 10,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: ListTile(
-                      contentPadding: EdgeInsets.all(16.0),
+                      contentPadding: const EdgeInsets.all(16.0),
                       leading: Image.asset(
-                        producto.imagen,
+                        '${imagePath}product1.png',
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
                       ),
-                      title: Text(producto.nombre),
-                      subtitle: Text('\$${producto.precio.toStringAsFixed(2)}'),
+                      title: Text(
+                        producto.pedido!.cliente!.usuario!.nombre ??
+                            emptyString,
+                      ),
+                      subtitle: Text(
+                        '\$${producto.pedido!.total!.toStringAsFixed(2)}',
+                      ),
                       trailing: estado == 'Completado'
                           ? PopupMenuButton<String>(
                               elevation: 10,
@@ -71,16 +81,16 @@ class OrderDetailScreen extends StatelessWidget {
                                 }
                               },
                               itemBuilder: (BuildContext context) => [
-                                PopupMenuItem(
+                                const PopupMenuItem(
                                   value: 'Review',
                                   child: Text('Review'),
                                 ),
-                                PopupMenuItem(
+                                const PopupMenuItem(
                                   value: 'Devolución',
                                   child: Text('Devolución'),
                                 ),
                               ],
-                              icon: Icon(Icons.more_vert),
+                              icon: const Icon(Icons.more_vert),
                             )
                           : null,
                     ),
@@ -88,13 +98,13 @@ class OrderDetailScreen extends StatelessWidget {
                 },
               ),
             ),
-            Divider(),
+            const Divider(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Total:',
                     style: TextStyle(
                       fontSize: 18.0,
@@ -103,7 +113,7 @@ class OrderDetailScreen extends StatelessWidget {
                   ),
                   Text(
                     '\$${total.toStringAsFixed(2)}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),

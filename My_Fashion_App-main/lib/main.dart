@@ -1,11 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:my_fashion_app/screens/ar_view_screen.dart';
-import 'package:my_fashion_app/screens/cart.dart';
-import 'package:my_fashion_app/screens/edit_profile.dart';
+import 'package:my_fashion_app/screens/cart/cart.dart';
+import 'package:my_fashion_app/screens/editProfile/edit_profile.dart';
 import 'package:my_fashion_app/screens/login/login.dart';
-import 'package:my_fashion_app/screens/orders.dart';
-import 'package:my_fashion_app/screens/payment.dart';
+import 'package:my_fashion_app/screens/orders/orders.dart';
+import 'package:my_fashion_app/screens/payment/payment.dart';
 import 'package:my_fashion_app/screens/productDetail/product_detail.dart';
 import 'package:my_fashion_app/screens/productos/products.dart';
 import 'package:my_fashion_app/screens/profile.dart';
@@ -117,13 +117,13 @@ class ShoppingApp extends StatelessWidget {
         '/recover': (context) => const RecoverPasswordScreen(),
         '/home': (context) => const HomePage(),
         '/product_detail': (context) => const ProductDetailPage(),
-        '/cart': (context) => CartScreen(),
-        '/orders': (context) => OrdersScreen(),
+        '/cart': (context) => const CartPage(),
+        '/orders': (context) => const OrdersPage(),
         '/profile': (context) => ProfileScreen(),
         '/returns': (context) => ReturnsScreen(),
         '/return_form': (context) => ReturnFormScreen(),
         '/payment': (context) => PaymentScreen(),
-        '/edit_profile': (context) => EditProfileScreen(),
+        '/edit_profile': (context) => const EditProfilePage(),
       },
     );
   }

@@ -47,9 +47,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: event.password,
       );
 
-      _userRepository.setToken(
-        resp.token,
-      );
+      _userRepository.setToken(resp.token);
+      _userRepository.setUserId(resp.usuario.idUsuario.toString());
 
       emit(
         LoginSuccess(),
