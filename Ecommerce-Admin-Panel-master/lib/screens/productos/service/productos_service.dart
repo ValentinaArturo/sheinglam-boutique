@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/factory/client_factory.dart';
 import 'package:ecommerce_admin_panel/resources/api_constants.dart';
+import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/imagen_producto_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/producto_promocion_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.dart';
 
@@ -15,6 +17,29 @@ class ProductoService {
   ProductoService.withClient(
     this.client,
   );
+
+  Future<List<CategoriaListModel>> getCategoria() async {
+    final response = await client.get(
+      categoriaPath,
+    );
+    return List<CategoriaListModel>.from(
+      response.data.map(
+        (categoria) => CategoriaListModel.fromJson(categoria),
+      ),
+    );
+  }
+
+  Future<List<ProductoPromocionListModel>> getProductoPromocion() async {
+    final response = await client.get(
+      productosPromocionesPath,
+    );
+    return List<ProductoPromocionListModel>.from(
+      response.data.map(
+        (productoPromocion) =>
+            ProductoPromocionListModel.fromJson(productoPromocion),
+      ),
+    );
+  }
 
   Future<List<ProductoListModel>> getProducto() async {
     final response = await client.get(
@@ -78,6 +103,40 @@ class ProductoService {
       '$imagenProductoPath/$id',
     );
     return ImagenProductoModel.fromJson(response.data);
+  }
+
+  Future<Response<dynamic>> createCategoriaProducto({
+    required int idProducto,
+    required int idCategoria,
+  }) async {
+    return await client.post(
+      categoriaProductoPath,
+      data: {
+        "producto": {
+          "idProducto": idProducto,
+        },
+        "categoria": {
+          "idCategoria": idCategoria,
+        }
+      },
+    );
+  }
+
+  Future<Response<dynamic>> createProductoPromocion({
+    required int idProducto,
+    required int idPromocion,
+  }) async {
+    return await client.post(
+      productosPromocionesPath,
+      data: {
+        "producto": {
+          "idProducto": idProducto,
+        },
+        "promocion": {
+          "idPromocion": idPromocion,
+        }
+      },
+    );
   }
 
   Future<ImagenProductoModel> createImagenProducto({

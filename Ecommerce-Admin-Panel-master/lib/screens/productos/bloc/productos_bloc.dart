@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/resources/constants.dart';
+import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/producto_promocion_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/service/productos_service.dart';
@@ -38,6 +40,65 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       final List<ProductoListModel> resp = await service.getProducto();
       emit(
         ProductoSuccess(productos: resp),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> getCategoria(
+    CategoriaShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      final List<CategoriaListModel> resp = await service.getCategoria();
+      emit(
+        CategoriaSuccess(categorias: resp),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> getProductoPromocion(
+    ProductoPromocionShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      final List<ProductoPromocionListModel> resp =
+          await service.getProductoPromocion();
+      emit(
+        ProductoPromocionSuccess(promociones: resp),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
@@ -192,6 +253,64 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       await service.createImagenProducto(
         idProducto: event.idProducto,
         imagenProducto: event.imagen,
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> createCategoria(
+    CategoriaSaved event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      await service.createCategoriaProducto(
+        idProducto: event.idProducto,
+        idCategoria: event.idCategoria,
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> createProductoPromocion(
+    ProductoPromocionSaved event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      await service.createProductoPromocion(
+        idProducto: event.idProducto,
+        idPromocion: event.idPromocion,
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||

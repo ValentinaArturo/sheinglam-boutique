@@ -9,6 +9,10 @@ abstract class ProductoEvent extends Equatable {
 
 final class ProductoShown extends ProductoEvent {}
 
+final class CategoriaShown extends ProductoEvent {}
+
+final class ProductoPromocionShown extends ProductoEvent {}
+
 final class ProveedorShown extends ProductoEvent {}
 
 final class TallaShown extends ProductoEvent {}
@@ -50,6 +54,26 @@ final class ProductoSaved extends ProductoEvent {
     required this.idColor,
     required this.stock,
     required this.idProveedor,
+  });
+}
+
+final class CategoriaSaved extends ProductoEvent {
+  final int idProducto;
+  final int idCategoria;
+
+  const CategoriaSaved({
+    required this.idProducto,
+    required this.idCategoria,
+  });
+}
+
+final class ProductoPromocionSaved extends ProductoEvent {
+  final int idProducto;
+  final int idPromocion;
+
+  const ProductoPromocionSaved({
+    required this.idProducto,
+    required this.idPromocion,
   });
 }
 

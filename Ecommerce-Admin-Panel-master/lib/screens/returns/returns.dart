@@ -1,5 +1,6 @@
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
+import 'package:ecommerce_admin_panel/common/loader/loader.dart';
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/screens/returns/bloc/return_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/returns/model/return_model.dart';
@@ -365,13 +366,21 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                                 ),
                               ],
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
+            ),
+            Builder(
+              builder: (context) {
+                if (_isLoading) {
+                  return const Loader();
+                }
+                return Container();
+              },
             ),
           ],
         ),

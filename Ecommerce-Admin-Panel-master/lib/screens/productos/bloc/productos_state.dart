@@ -14,6 +14,22 @@ final class ProductoSuccess extends ProductoState {
   });
 }
 
+final class CategoriaSuccess extends ProductoState {
+  final List<CategoriaListModel> categorias;
+
+  CategoriaSuccess({
+    required this.categorias,
+  });
+}
+
+final class ProductoPromocionSuccess extends ProductoState {
+  final List<ProductoPromocionListModel> promociones;
+
+  ProductoPromocionSuccess({
+    required this.promociones,
+  });
+}
+
 final class ProveedorSuccess extends ProductoState {
   final List<ProveedorListModel> proveedores;
 
@@ -39,6 +55,10 @@ final class ColorSuccess extends ProductoState {
 }
 
 final class ProductoCreatedSuccess extends ProductoState {}
+
+final class CategoriaCreatedSuccess extends ProductoState {}
+
+final class ProductoPromocionCreatedSuccess extends ProductoState {}
 
 final class ProductoEditedSuccess extends ProductoState {}
 

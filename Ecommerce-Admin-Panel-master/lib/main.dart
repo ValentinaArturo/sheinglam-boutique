@@ -2,8 +2,10 @@ import 'package:ecommerce_admin_panel/screens/categorias/categories.dart';
 import 'package:ecommerce_admin_panel/screens/login/login.dart';
 import 'package:ecommerce_admin_panel/screens/ordenes/orders.dart';
 import 'package:ecommerce_admin_panel/screens/productos/products.dart';
-import 'package:ecommerce_admin_panel/screens/returns.dart';
-import 'package:ecommerce_admin_panel/screens/shipments.dart';
+import 'package:ecommerce_admin_panel/screens/promociones/promociones.dart';
+import 'package:ecommerce_admin_panel/screens/proveedores/proveedor.dart';
+import 'package:ecommerce_admin_panel/screens/returns/returns.dart';
+import 'package:ecommerce_admin_panel/screens/shipment/shipments.dart';
 import 'package:ecommerce_admin_panel/screens/unathorized.dart';
 import 'package:ecommerce_admin_panel/screens/users/users.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +47,13 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/productos': (context) => const ProductsPage(),
         '/pedidos': (context) => const OrdersPage(),
-        '/devoluciones': (context) => ReturnsScreen(),
+        '/devoluciones': (context) => const ReturnPage(),
         '/envios': (context) => ShipmentsScreen(),
         '/no-autorizado': (context) => Unauthorized(),
         '/usuarios': (context) => const UsersPage(),
         '/categorias': (context) => const CategoriaPage(),
+        '/promociones': (context) => const PromocionesPage(),
+        '/proveedores': (context) => const ProveedorPage(),
       },
     );
   }

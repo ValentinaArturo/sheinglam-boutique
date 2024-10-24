@@ -2,9 +2,11 @@ import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
+import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/bloc/productos_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/producto_promocion_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +32,15 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  TextEditingController _nombre = TextEditingController();
-  TextEditingController _descripcion = TextEditingController();
-  TextEditingController _precio = TextEditingController();
-  TextEditingController _stock = TextEditingController();
+  final TextEditingController _nombre = TextEditingController();
+  final TextEditingController _descripcion = TextEditingController();
+  final TextEditingController _precio = TextEditingController();
+  final TextEditingController _stock = TextEditingController();
 
   List<ProductoListModel> productos = [];
+  List<CategoriaListModel> categorias = [];
   List<ProveedorListModel> proveedores = [];
+  List<ProductoPromocionListModel> productoPromociones = [];
   List<TallaListModel> tallas = [];
   List<ColorListModel> colores = [];
   List<ProductoListModel> filteredProductos = [];
@@ -57,11 +61,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _getProveedores();
     _getTallas();
     _getColores();
+    _getCategorias();
+    _getCategorias();
+    _getProductoPromocion();
   }
 
   void _getProductos() {
     context.read<ProductoBloc>().add(
           ProductoShown(),
+        );
+  }
+
+  void _getCategorias() {
+    context.read<ProductoBloc>().add(
+          CategoriaShown(),
+        );
+  }
+
+  void _getProductoPromocion() {
+    context.read<ProductoBloc>().add(
+          ProductoPromocionShown(),
         );
   }
 
@@ -262,12 +281,42 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 filteredProductos = loadedState.productos;
               });
               break;
+            case const (CategoriaSuccess):
+              final loadedState = state as CategoriaSuccess;
+              setState(() {
+                _isLoading = false;
+                categorias = loadedState.categorias;
+              });
+              break;
+            case const (ProductoPromocionSuccess):
+              final loadedState = state as ProductoPromocionSuccess;
+              setState(() {
+                _isLoading = false;
+                productoPromociones = loadedState.promociones;
+              });
+              break;
             case const (ProductoCreatedSuccess):
               _getProductos();
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Productos',
                 description: "Producto creado correctamente",
+              );
+              break;
+            case const (CategoriaCreatedSuccess):
+              _getProductos();
+              CustomStateDialog.showAlertDialog(
+                context,
+                title: 'Categoria',
+                description: "Categoria creada correctamente",
+              );
+              break;
+            case const (ProductoPromocionCreatedSuccess):
+              _getProductos();
+              CustomStateDialog.showAlertDialog(
+                context,
+                title: 'Producto Promocion',
+                description: "Producto Promocion creada correctamente",
               );
               break;
             case const (ProductoEditedSuccess):
