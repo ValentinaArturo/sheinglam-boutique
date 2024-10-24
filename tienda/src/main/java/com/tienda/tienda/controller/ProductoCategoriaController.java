@@ -51,7 +51,7 @@ public class ProductoCategoriaController {
     public ResponseEntity<Void> deleteProductoCategoria(@PathVariable int id) {
         if (productoCategoriaService.getProductoCategoriaById(id) != null) {
             productoCategoriaService.deleteProductoCategoria(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

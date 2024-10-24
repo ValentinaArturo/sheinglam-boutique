@@ -1,6 +1,8 @@
 package com.tienda.tienda.controller;
 
+import com.tienda.tienda.dto.TarifaEnvioDTO;
 import com.tienda.tienda.model.Envio;
+import com.tienda.tienda.model.TarifaEnvio;
 import com.tienda.tienda.service.EnvioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +55,19 @@ public class EnvioController {
     public ResponseEntity<Void> deleteEnvio(@PathVariable int id) {
         if (envioService.getEnvioById(id) != null) {
             envioService.deleteEnvio(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/{departamento}")
+    public TarifaEnvioDTO getTarifaEnvio(@PathVariable String departamento) {
+        double tarifa = TarifaEnvio.getTarifa(departamento);
+        if (tarifa != -1.0) {
+            return new TarifaEnvioDTO(departamento, tarifa);
+        } else {
+            return new TarifaEnvioDTO(departamento, 0.0); // o manejar el caso de departamento no válido
         }
     }
 }

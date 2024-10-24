@@ -50,7 +50,7 @@ public class MetodoPagoController {
     public ResponseEntity<Void> deleteMetodoPago(@PathVariable int id) {
         if (metodoPagoService.getMetodoPagoById(id) != null) {
             metodoPagoService.deleteMetodoPago(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

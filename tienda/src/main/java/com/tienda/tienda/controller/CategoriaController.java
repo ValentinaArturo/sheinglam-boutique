@@ -50,7 +50,7 @@ public class CategoriaController {
     public ResponseEntity<Void> deleteCategoria(@PathVariable int id) {
         if (categoriaService.getCategoriaById(id) != null) {
             categoriaService.deleteCategoria(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

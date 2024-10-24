@@ -52,7 +52,7 @@ public class FacturaController {
     public ResponseEntity<Void> deleteFactura(@PathVariable int id) {
         if (facturaService.getFacturaById(id) != null) {
             facturaService.deleteFactura(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

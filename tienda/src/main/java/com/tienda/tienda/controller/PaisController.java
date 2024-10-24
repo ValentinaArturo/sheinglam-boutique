@@ -50,7 +50,7 @@ public class PaisController {
     public ResponseEntity<Void> deletePais(@PathVariable int id) {
         if (paisService.getPaisById(id) != null) {
             paisService.deletePais(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

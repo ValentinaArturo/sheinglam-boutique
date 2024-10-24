@@ -54,7 +54,17 @@ public class DireccionEnvioController {
     public ResponseEntity<Void> deleteDireccionEnvio(@PathVariable int id) {
         if (direccionEnvioService.getDireccionEnvioById(id) != null) {
             direccionEnvioService.deleteDireccionEnvio(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/cliente/{clienteId}")
+    public ResponseEntity<List<DireccionEnvio>> getDireccionesEnvioByClienteId(@PathVariable int clienteId) {
+        List<DireccionEnvio> direccionesEnvio = direccionEnvioService.getDireccionesEnvioByClienteId(clienteId);
+        if (!direccionesEnvio.isEmpty()) {
+            return ResponseEntity.ok(direccionesEnvio);
         } else {
             return ResponseEntity.notFound().build();
         }

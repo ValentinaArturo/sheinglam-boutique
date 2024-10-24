@@ -52,7 +52,7 @@ public class CarritoProductoController {
     public ResponseEntity<Void> deleteCarritoProducto(@PathVariable int id) {
         if (carritoProductoService.getCarritoProductoById(id) != null) {
             carritoProductoService.deleteCarritoProducto(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

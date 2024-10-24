@@ -50,7 +50,7 @@ public class EstadoPedidoController {
     public ResponseEntity<Void> deleteEstadoPedido(@PathVariable int id) {
         if (estadoPedidoService.getEstadoPedidoById(id) != null) {
             estadoPedidoService.deleteEstadoPedido(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

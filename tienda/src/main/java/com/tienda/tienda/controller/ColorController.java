@@ -50,7 +50,7 @@ public class ColorController {
     public ResponseEntity<Void> deleteColor(@PathVariable int id) {
         if (colorService.getColorById(id) != null) {
             colorService.deleteColor(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

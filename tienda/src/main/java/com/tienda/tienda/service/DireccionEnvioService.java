@@ -30,4 +30,8 @@ public class DireccionEnvioService {
     public void deleteDireccionEnvio(int id) {
         direccionEnvioRepository.deleteById(id);
     }
+    
+    public List<DireccionEnvio> getDireccionesEnvioByClienteId(int clienteId) {
+        return direccionEnvioRepository.findByCliente_IdCliente(clienteId);
+    }
 }

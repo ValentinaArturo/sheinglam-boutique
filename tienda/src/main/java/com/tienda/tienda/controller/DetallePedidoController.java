@@ -54,7 +54,7 @@ public class DetallePedidoController {
     public ResponseEntity<Void> deleteDetallePedido(@PathVariable int id) {
         if (detallePedidoService.getDetallePedidoById(id) != null) {
             detallePedidoService.deleteDetallePedido(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

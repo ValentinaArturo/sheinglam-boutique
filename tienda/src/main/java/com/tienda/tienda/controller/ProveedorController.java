@@ -54,7 +54,7 @@ public class ProveedorController {
     public ResponseEntity<Void> deleteProveedor(@PathVariable int id) {
         if (proveedorService.getProveedorById(id) != null) {
             proveedorService.deleteProveedor(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
