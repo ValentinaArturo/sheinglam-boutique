@@ -10,4 +10,6 @@ const String productoPath = 'api/productos';
 const String tallaPath = 'api/tallas';
 const String colorPath = 'api/colores';
 const String proveedorPath = 'api/proveedores';
+const String promocionPath = '/api/promociones';
 const String imagenProductoPath = 'api/imagenes-producto';
+const String returnsPath = 'api/devoluciones';
