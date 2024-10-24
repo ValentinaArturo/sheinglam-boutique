@@ -1,14 +1,14 @@
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
-import 'package:ecommerce_admin_panel/services/shipment_service.dart';
 import 'package:flutter/material.dart';
 
 class ShipmentsScreen extends StatefulWidget {
+  const ShipmentsScreen({super.key});
+
   @override
   _ShipmentsScreenState createState() => _ShipmentsScreenState();
 }
 
 class _ShipmentsScreenState extends State<ShipmentsScreen> {
-  final ShipmentService _envioService = ShipmentService();
   List<Map<String, dynamic>> _envios = [];
   late List<Map<String, dynamic>> _filteredEnvios = [];
 
@@ -18,66 +18,13 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
     //_loadEnvios();
   }
 
-  Future<void> _loadEnvios() async {
-    try {
-      final envios = await _envioService.getEnvios();
-      setState(() {
-        _envios = envios;
-        _filteredEnvios = _envios;
-      });
-    } catch (e) {
-      // Manejo de errores
-      print('Error loading envíos: $e');
-    }
-  }
+  Future<void> _loadEnvios() async {}
 
-  Future<void> _agregarEnvio(BuildContext context) async {
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) => _EnvioDialog(),
-    );
+  Future<void> _agregarEnvio(BuildContext context) async {}
 
-    if (result != null) {
-      try {
-        await _envioService.createEnvio(result);
-        _loadEnvios(); // Recargar envíos después de agregar
-      } catch (e) {
-        // Manejo de errores
-        print('Error adding envío: $e');
-      }
-    }
-  }
+  Future<void> _editarEnvio(BuildContext context, int index) async {}
 
-  Future<void> _editarEnvio(BuildContext context, int index) async {
-    final envio = _filteredEnvios[index];
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) => _EnvioDialog(envio: envio),
-    );
-
-    if (result != null) {
-      try {
-        await _envioService.updateEnvio(envio['idEnvio'], result);
-        _loadEnvios(); // Recargar envíos después de editar
-      } catch (e) {
-        // Manejo de errores
-        print('Error updating envío: $e');
-      }
-    }
-  }
-
-  void _eliminarEnvio(int index) async {
-    try {
-      final envioId = _filteredEnvios[index]['idEnvio'];
-      await _envioService.deleteEnvio(envioId);
-      setState(() {
-        _filteredEnvios.removeAt(index);
-      });
-    } catch (e) {
-      // Manejo de errores
-      print('Error deleting envío: $e');
-    }
-  }
+  void _eliminarEnvio(int index) async {}
 
   void _filterEnvios(String query) {
     setState(() {
