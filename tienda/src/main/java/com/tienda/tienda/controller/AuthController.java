@@ -23,7 +23,8 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
         Usuario usuario = usuarioService.getUsuarioByEmail(email);
