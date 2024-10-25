@@ -67,19 +67,68 @@ public class ClienteController {
         
         return ResponseEntity.ok(cliente);
     }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable int id, @RequestBody Cliente clienteDetails) {
-        Cliente cliente = clienteService.getClienteById(id);
-        if (cliente != null) {
-            cliente.setUsuario(clienteDetails.getUsuario());
-            cliente.setDireccion(clienteDetails.getDireccion());
-            cliente.setTelefono(clienteDetails.getTelefono());
-            return ResponseEntity.ok(clienteService.saveCliente(cliente));
-        } else {
+    public ResponseEntity<?> updateCliente(@PathVariable int id, @RequestBody ClienteDTO clienteDTO) {
+        Cliente clienteExistente = clienteService.getClienteById(id);
+        if (clienteExistente == null) {
             return ResponseEntity.notFound().build();
         }
+        
+        String email = clienteDTO.getUsuario().getCorreoElectronico();
+        Usuario usuarioExistente = usuarioService.getUsuarioByEmail(email);
+        if (usuarioExistente != null && usuarioExistente.getIdUsuario() != clienteExistente.getUsuario().getIdUsuario()) {
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("El correo ya está registrado por otro usuario.");
+        }
+
+        Usuario usuarioActual = clienteExistente.getUsuario();
+        usuarioActual.setNombre(clienteDTO.getUsuario().getNombre());
+        usuarioActual.setApellido(clienteDTO.getUsuario().getApellido());
+        usuarioActual.setCorreoElectronico(clienteDTO.getUsuario().getCorreoElectronico());
+        usuarioActual.setRol(clienteDTO.getUsuario().getRol());
+
+        String passwordToSave;
+        String nuevaContraseña = clienteDTO.getUsuario().getContraseña();
+        
+        // Verificar si hay una nueva contraseña y si es diferente a la existente
+        if (nuevaContraseña != null && !nuevaContraseña.isEmpty() && !nuevaContraseña.equals(usuarioActual.getContraseña())) {
+            passwordToSave = passwordEncoder.encode(nuevaContraseña);
+            usuarioActual.setContraseña(passwordToSave);
+        } else {
+            passwordToSave = usuarioActual.getContraseña(); // Mantener la contraseña existente
+        }
+
+        usuarioService.saveUsuario(usuarioActual, passwordToSave); // Guardar cambios del usuario
+
+
+        clienteExistente.setDireccion(clienteDTO.getCliente().getDireccion());
+        clienteExistente.setTelefono(clienteDTO.getCliente().getTelefono());
+
+        // Verificar si el cliente ya tiene una dirección de envío
+        List<DireccionEnvio> direccionesExistentes = direccionEnvioService.getDireccionesEnvioByClienteId(id);
+        DireccionEnvio direccionExistente = !direccionesExistentes.isEmpty() ? direccionesExistentes.get(0) : null;
+
+        if (clienteDTO.getDireccionEnvio() != null) {
+            if (direccionExistente == null) {
+                // Crear una nueva dirección de envío si no existe
+                direccionExistente = new DireccionEnvio();
+                direccionExistente.setCliente(clienteExistente);
+            }
+            
+            direccionExistente.setDireccion(clienteDTO.getDireccionEnvio().getDireccion());
+            direccionExistente.setCiudad(clienteDTO.getDireccionEnvio().getCiudad());
+            direccionExistente.setCodigoPostal(clienteDTO.getDireccionEnvio().getCodigoPostal());
+            direccionExistente.setPais(clienteDTO.getDireccionEnvio().getPais());
+            
+            direccionEnvioService.saveDireccionEnvio(direccionExistente);  // Guardar o actualizar la dirección de envío
+        }
+
+        Cliente clienteActualizado = clienteService.saveCliente(clienteExistente);
+        return ResponseEntity.ok(clienteActualizado);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable int id) {
