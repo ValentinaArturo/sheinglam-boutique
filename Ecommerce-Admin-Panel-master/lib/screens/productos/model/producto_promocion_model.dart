@@ -27,7 +27,7 @@ class Producto {
   final String? descripcion;
   final double? precio;
   final Talla? talla;
-  final Color? color;
+  final ColorPP? color;
   final int? stock;
   final Proveedor? proveedor;
 
@@ -48,7 +48,7 @@ class Producto {
         descripcion: json["descripcion"],
         precio: json["precio"]?.toDouble(),
         talla: json["talla"] == null ? null : Talla.fromJson(json["talla"]),
-        color: json["color"] == null ? null : Color.fromJson(json["color"]),
+        color: json["color"] == null ? null : ColorPP.fromJson(json["color"]),
         stock: json["stock"],
         proveedor: json["proveedor"] == null
             ? null
@@ -56,16 +56,16 @@ class Producto {
       );
 }
 
-class Color {
+class ColorPP {
   final int? idColor;
   final String? color;
 
-  Color({
+  ColorPP({
     this.idColor,
     this.color,
   });
 
-  factory Color.fromJson(Map<String, dynamic> json) => Color(
+  factory ColorPP.fromJson(Map<String, dynamic> json) => ColorPP(
         idColor: json["idColor"],
         color: json["color"],
       );

@@ -61,6 +61,14 @@ final class ImageDeleted extends ProductoEvent {
   });
 }
 
+final class ColorCreated extends ProductoEvent {
+  final String color;
+
+  const ColorCreated({
+    required this.color,
+  });
+}
+
 final class ProductoSaved extends ProductoEvent {
   final String nombre;
   final String descripcion;

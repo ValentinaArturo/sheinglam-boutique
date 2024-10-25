@@ -37,9 +37,41 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
     on<ImagenesProductoShown>(getImagenesProductos);
     on<ImageDeleted>(deleteImagenProducto);
     on<ProductoPromocionDeleted>(deleteProductoPromocion);
+    on<ColorCreated>(createColor);
   }
 
   final ProductoService service = ProductoService();
+
+  Future<void> createColor(
+    ColorCreated event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      await service.createColor(
+        nombre: event.color,
+      );
+      emit(
+        ColorCreatedSuccess(),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> deleteProductoPromocion(
     ProductoPromocionDeleted event,

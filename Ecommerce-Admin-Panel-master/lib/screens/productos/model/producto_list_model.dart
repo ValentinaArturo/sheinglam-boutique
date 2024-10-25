@@ -4,7 +4,7 @@ class ProductoListModel {
   final String descripcion;
   final double precio;
   final Talla talla;
-  final Color color;
+  final ColorP color;
   final int stock;
   final Proveedor proveedor;
 
@@ -26,22 +26,22 @@ class ProductoListModel {
         descripcion: json["descripcion"],
         precio: json["precio"]?.toDouble(),
         talla: Talla.fromJson(json["talla"]),
-        color: Color.fromJson(json["color"]),
+        color: ColorP.fromJson(json["color"]),
         stock: json["stock"],
         proveedor: Proveedor.fromJson(json["proveedor"]),
       );
 }
 
-class Color {
+class ColorP {
   final int idColor;
   final String color;
 
-  Color({
+  ColorP({
     required this.idColor,
     required this.color,
   });
 
-  factory Color.fromJson(Map<String, dynamic> json) => Color(
+  factory ColorP.fromJson(Map<String, dynamic> json) => ColorP(
         idColor: json["idColor"],
         color: json["color"],
       );

@@ -265,4 +265,15 @@ class ProductoService {
       '$productoPath/$id',
     );
   }
+
+  Future<Response<dynamic>> createColor({
+    required String nombre,
+  }) async {
+    return await client.post(
+      colorPath,
+      data: {
+        "color": nombre,
+      },
+    );
+  }
 }

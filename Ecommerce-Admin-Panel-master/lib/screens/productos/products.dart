@@ -17,6 +17,7 @@ import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.d
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
@@ -224,17 +225,35 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             ))
                         .toList(),
                   ),
-                  DropdownButton(
-                    value: idColor,
-                    onChanged: (value) {
-                      setState(() => idColor = value);
-                    },
-                    items: colores
-                        .map<DropdownMenuItem>((color) => DropdownMenuItem(
-                              value: color.idColor,
-                              child: Text(color.color),
-                            ))
-                        .toList(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DropdownButton(
+                        value: idColor,
+                        onChanged: (value) {
+                          setState(() => idColor = value);
+                        },
+                        items: colores
+                            .map<DropdownMenuItem>((color) => DropdownMenuItem(
+                                  value: color.idColor,
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    decoration: BoxDecoration(
+                                      color: Color(int.parse(color.color)),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          _selectColor();
+                        },
+                      ),
+                    ],
                   ),
                   DropdownButton(
                     value: idProveedor,
@@ -431,6 +450,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             case const (ProductoPromocionDeletedSuccess):
               _getProductoPromocion();
               break;
+            case const (ColorCreatedSuccess):
+              _getColores();
+              break;
           }
         },
         child: Stack(
@@ -475,7 +497,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           4: FlexColumnWidth(1),
                           5: FlexColumnWidth(2),
                           6: FixedColumnWidth(100),
-                          7: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
@@ -529,13 +550,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Editar',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Eliminar',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -742,6 +756,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                         color: Colors.black),
                                     onPressed: () {
                                       setState(() {
+                                        _idProducto = producto.idProducto;
                                         _nombre.text = producto.nombre;
                                         _descripcion.text =
                                             producto.descripcion;
@@ -757,16 +772,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     },
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.black),
-                                    onPressed: () {
-                                      // Lógica para eliminar el producto
-                                    },
-                                  ),
-                                ),
+                                
                               ],
                             );
                           }),
@@ -947,49 +953,88 @@ class _ProductsScreenState extends State<ProductsScreen> {
     showDialog(
       context: context,
       builder: (con) {
-        return StatefulBuilder(
-          builder: (con, setState) {
-            return AlertDialog(
-              title:
-                  Text("Seleccionar Promoción para ${productoSeleccionado.nombre}"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButton<ProductoPromocionListModel>(
-                    hint: Text("Seleccione una promoción"),
-                    value: promocionSeleccionada,
-                    onChanged: (ProductoPromocionListModel? newValue) {
-                      setState(() {
-                        promocionSeleccionada = newValue;
-                      });
-                    },
-                    items: promociones
-                        .map<DropdownMenuItem<ProductoPromocionListModel>>((ProductoPromocionListModel promocion) {
-                      return DropdownMenuItem<ProductoPromocionListModel>(
-                        value: promocion,
-                        child: Text(promocion.promocion!.nombre!),
+        return StatefulBuilder(builder: (con, setState) {
+          return AlertDialog(
+            title: Text(
+                "Seleccionar Promoción para ${productoSeleccionado.nombre}"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButton<ProductoPromocionListModel>(
+                  hint: Text("Seleccione una promoción"),
+                  value: promocionSeleccionada,
+                  onChanged: (ProductoPromocionListModel? newValue) {
+                    setState(() {
+                      promocionSeleccionada = newValue;
+                    });
+                  },
+                  items: promociones
+                      .map<DropdownMenuItem<ProductoPromocionListModel>>(
+                          (ProductoPromocionListModel promocion) {
+                    return DropdownMenuItem<ProductoPromocionListModel>(
+                      value: promocion,
+                      child: Text(promocion.promocion!.nombre!),
+                    );
+                  }).toList(),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (promocionSeleccionada != null) {
+                      context.read<ProductoBloc>().add(
+                            ProductoPromocionSaved(
+                              idProducto: productoSeleccionado.idProducto!,
+                              idPromocion: promocionSeleccionada!
+                                  .promocion!.idPromocion!,
+                            ),
+                          );
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Guardar"),
+                ),
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  void _selectColor() {
+    showDialog<Color>(
+      context: context,
+      builder: (BuildContext con) {
+        Color tempColor = Color(0xFFFFFFFF); // Usa el color actual
+        return AlertDialog(
+          title: Text('Selecciona un color'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: tempColor,
+              onColorChanged: (Color color) {
+                tempColor = color;
+              },
+              showLabel: true,
+              pickerAreaHeightPercent: 0.8,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+                child: const Text('Seleccionar'),
+                onPressed: () {
+                  context.read<ProductoBloc>().add(
+                        ColorCreated(
+                          color:
+                              '0x${tempColor.value.toRadixString(16).toUpperCase()}',
+                        ),
                       );
-                    }).toList(),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (promocionSeleccionada != null) {
-                        context.read<ProductoBloc>().add(
-                              ProductoPromocionSaved(
-                                idProducto: productoSeleccionado.idProducto!,
-                                idPromocion: promocionSeleccionada!.promocion!.idPromocion!,
-                              ),
-                            );
-                      }
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("Guardar"),
-                  ),
-                ],
-              ),
-            );
-          }
+                  Navigator.of(context).pop();
+                }),
+          ],
         );
       },
     );
