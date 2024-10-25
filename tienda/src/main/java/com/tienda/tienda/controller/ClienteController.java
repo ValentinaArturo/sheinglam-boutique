@@ -8,6 +8,7 @@ import com.tienda.tienda.service.ClienteService;
 import com.tienda.tienda.service.DireccionEnvioService;
 import com.tienda.tienda.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -45,17 +46,25 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> createCliente(@RequestBody ClienteDTO clienteDTO) {
-    	String password = passwordEncoder.encode(clienteDTO.getUsuario().getContraseña());
-        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario(),password);
+    public ResponseEntity<?> createCliente(@RequestBody ClienteDTO clienteDTO) {
+        String email = clienteDTO.getUsuario().getCorreoElectronico();
+        
+        if (usuarioService.getUsuarioByEmail(email) != null) {
+            return ResponseEntity
+                .status(HttpStatus.CONFLICT) 
+                .body("El correo ya está registrado.");
+        }
+        
+        String password = passwordEncoder.encode(clienteDTO.getUsuario().getContraseña());
+        Usuario usuario = usuarioService.saveUsuario(clienteDTO.getUsuario(), password);
         clienteDTO.getCliente().setUsuario(usuario);
         Cliente cliente = clienteService.saveCliente(clienteDTO.getCliente());
-
+        
         if (clienteDTO.getDireccionEnvio() != null) {
             clienteDTO.getDireccionEnvio().setCliente(cliente);
             direccionEnvioService.saveDireccionEnvio(clienteDTO.getDireccionEnvio());
         }
-
+        
         return ResponseEntity.ok(cliente);
     }
 
