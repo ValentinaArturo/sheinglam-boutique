@@ -167,6 +167,14 @@ class ProductoService {
     );
   }
 
+  Future<Response<dynamic>> deleteProductoPromocion({
+    required int idProductoPromocion,
+  }) async {
+    return await client.delete(
+      productosPromocionesPath + '/' + idProductoPromocion.toString(),
+    );
+  }
+
   Future<ImagenProductoModel> createImagenProducto({
     required int idProducto,
     required String imagenProducto,
@@ -176,11 +184,19 @@ class ProductoService {
       data: {
         "imagenProducto": imagenProducto,
         "producto": {
-          "id": idProducto,
+          "idProducto": idProducto,
         }
       },
     );
     return ImagenProductoModel.fromJson(response.data);
+  }
+
+  Future<dynamic> deleteImagenProducto({
+    required String idImagenProducto,
+  }) async {
+    return await client.delete(
+      imagenProductoPath + '/' + idImagenProducto,
+    );
   }
 
   Future<Response<dynamic>> createProducto({

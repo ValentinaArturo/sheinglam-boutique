@@ -76,10 +76,14 @@ final class ImagenProductoSuccess extends ProductoState {
 
 final class ImagenCreatedSuccess extends ProductoState {}
 
+final class ImagenDeletedSuccess extends ProductoState {}
+
 
 final class CategoriaCreatedSuccess extends ProductoState {}
 
 final class ProductoPromocionCreatedSuccess extends ProductoState {}
+
+final class ProductoPromocionDeletedSuccess extends ProductoState {}
 
 final class ProductoEditedSuccess extends ProductoState {}
 

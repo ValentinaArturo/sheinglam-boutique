@@ -167,6 +167,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
   }
 
+  void _deleteImagenByProduct({
+    required int imagenProducto,
+  }) {
+    context.read<ProductoBloc>().add(
+          ImageDeleted(
+            imagenproductoId: imagenProducto.toString(),
+          ),
+        );
+  }
+
   void _filterProductos(String query) {
     final results = productos.where((producto) {
       final tituloLower = producto.nombre.toLowerCase();
@@ -325,15 +335,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
               );
               break;
             case const (CategoriaCreatedSuccess):
-              _getProductos();
-              CustomStateDialog.showAlertDialog(
-                context,
-                title: 'Categoria',
-                description: "Categoria creada correctamente",
-              );
+              _getProductoCategoria();
               break;
             case const (ProductoPromocionCreatedSuccess):
-              _getProductos();
+              _getProductoPromocion();
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Producto Promocion',
@@ -414,8 +419,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 _isLoading = false;
               });
               break;
+            case const (ImagenDeletedSuccess):
+              _getImagenproducto();
+              break;
             case const (ImagenCreatedSuccess):
               _getImagenproducto();
+              break;
+            case const (ProductoCategoriaEditedSuccess):
+              _getProductoCategoria();
+              break;
+            case const (ProductoPromocionDeletedSuccess):
+              _getProductoPromocion();
               break;
           }
         },
@@ -457,10 +471,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           0: FlexColumnWidth(3),
                           1: FlexColumnWidth(4),
                           2: FlexColumnWidth(2),
-                          3: FlexColumnWidth(1),
+                          3: FlexColumnWidth(2),
                           4: FlexColumnWidth(1),
-                          5: FixedColumnWidth(100),
+                          5: FlexColumnWidth(2),
                           6: FixedColumnWidth(100),
+                          7: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
@@ -500,6 +515,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Talla',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Promoción',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -555,7 +577,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                               const EdgeInsets
                                                                   .all(8.0),
                                                           child: SizedBox(
-                                                            width: 300,
+                                                            width: 250,
                                                             child: Image.memory(
                                                               convertirBase64ABytes(
                                                                   imagenProducto
@@ -569,11 +591,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                           right: 0,
                                                           child: IconButton(
                                                             icon: const Icon(
-                                                              Icons.edit,
+                                                              Icons
+                                                                  .cancel_outlined,
                                                               color:
                                                                   Colors.black,
                                                             ),
                                                             onPressed: () {
+                                                              _deleteImagenByProduct(
+                                                                imagenProducto:
+                                                                    imagenProducto
+                                                                        .idImagen,
+                                                              );
                                                             },
                                                           ),
                                                         ),
@@ -604,16 +632,108 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    obtenerCategoriaProducto(
-                                      producto.idProducto,
-                                      productosCategorias,
-                                    ).categoria!.nombre,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        obtenerCategoriaProducto(
+                                          producto.idProducto,
+                                          productosCategorias,
+                                        ).categoria.nombre,
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          obtenerCategoriaProducto(
+                                                    producto.idProducto,
+                                                    productosCategorias,
+                                                  ).categoria.nombre ==
+                                                  'Sin categoría'
+                                              ? Icons.add
+                                              : Icons.edit,
+                                          color: Colors.black,
+                                        ),
+                                        onPressed: () {
+                                          mostrarDialogoCategoria(
+                                            context,
+                                            categorias,
+                                            obtenerCategoriaProducto(
+                                              producto.idProducto,
+                                              productosCategorias,
+                                            ),
+                                            producto.idProducto,
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(producto.talla.talla),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width: 100.0,
+                                        child: Text(
+                                          obtenerPromocionPorProducto(
+                                                          producto.idProducto,
+                                                          productoPromociones)!
+                                                      .promocion!
+                                                      .nombre ==
+                                                  ''
+                                              ? 'Sin promoción'
+                                              : obtenerPromocionPorProducto(
+                                                      producto.idProducto,
+                                                      productoPromociones)!
+                                                  .promocion!
+                                                  .nombre!,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                            obtenerPromocionPorProducto(
+                                                            producto.idProducto,
+                                                            productoPromociones)!
+                                                        .promocion!
+                                                        .nombre !=
+                                                    ''
+                                                ? Icons.delete
+                                                : Icons.add,
+                                            color: Colors.black),
+                                        onPressed: () {
+                                          obtenerPromocionPorProducto(
+                                                          producto.idProducto,
+                                                          productoPromociones)!
+                                                      .promocion!
+                                                      .nombre !=
+                                                  ''
+                                              ? context
+                                                  .read<ProductoBloc>()
+                                                  .add(
+                                                    ProductoPromocionDeleted(
+                                                      idProductoPromocion:
+                                                          obtenerPromocionPorProducto(
+                                                                  producto
+                                                                      .idProducto,
+                                                                  productoPromociones)!
+                                                              .idProductoPromocion!,
+                                                    ),
+                                                  )
+                                              : mostrarDialogoSeleccionPromocion(
+                                                  context,
+                                                  productoPromociones,
+                                                  producto,
+                                                );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -731,5 +851,147 @@ class _ProductsScreenState extends State<ProductsScreen> {
         productoId: idProducto,
       );
     }
+  }
+
+  void mostrarDialogoCategoria(
+    BuildContext context,
+    List<CategoriaListModel> categorias,
+    CategoriaPorductoListModel categoriaSeleccionada,
+    int producto,
+  ) {
+    showDialog(
+      context: context,
+      builder: (con) {
+        String? categoriaSeleccionadaId =
+            categoriaSeleccionada.categoria.nombre == 'Sin categoría'
+                ? categorias.first.idCategoria.toString()
+                : categoriaSeleccionada.categoria.idCategoria.toString();
+        return AlertDialog(
+          title: Text('Seleccionar Categoría'),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButton<String>(
+                    value: categoriaSeleccionadaId,
+                    items: categorias.map((CategoriaListModel categoria) {
+                      return DropdownMenuItem<String>(
+                        value: categoria.idCategoria.toString(),
+                        child: Text(categoria.nombre),
+                      );
+                    }).toList(),
+                    onChanged: (String? nuevoValor) {
+                      setState(() {
+                        categoriaSeleccionadaId = nuevoValor!;
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                categoriaSeleccionada.categoria.nombre == 'Sin categoría'
+                    ? context.read<ProductoBloc>().add(
+                          CategoriaSaved(
+                            idProducto: producto,
+                            idCategoria: int.parse(categoriaSeleccionadaId!),
+                          ),
+                        )
+                    : context.read<ProductoBloc>().add(
+                          ProductoCategoriaEditedShown(
+                            idProducto: producto,
+                            idCategoria: int.parse(categoriaSeleccionadaId!),
+                            idProductoCategoria:
+                                categoriaSeleccionada.idProductoCategoria,
+                          ),
+                        );
+                Navigator.of(context).pop();
+              },
+              child: Text('Guardar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  ProductoPromocionListModel? obtenerPromocionPorProducto(
+      int idProducto, List<ProductoPromocionListModel> productosPromociones) {
+    var productoPromocion = productosPromociones.firstWhere(
+      (pp) => pp.producto?.idProducto == idProducto,
+      orElse: () => ProductoPromocionListModel(
+        promocion: Promocion(nombre: ''),
+      ),
+    );
+
+    return productoPromocion;
+  }
+
+  void mostrarDialogoSeleccionPromocion(
+    BuildContext context,
+    List<ProductoPromocionListModel> promociones,
+    ProductoListModel productoSeleccionado,
+  ) {
+    ProductoPromocionListModel? promocionSeleccionada;
+
+    showDialog(
+      context: context,
+      builder: (con) {
+        return StatefulBuilder(
+          builder: (con, setState) {
+            return AlertDialog(
+              title:
+                  Text("Seleccionar Promoción para ${productoSeleccionado.nombre}"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButton<ProductoPromocionListModel>(
+                    hint: Text("Seleccione una promoción"),
+                    value: promocionSeleccionada,
+                    onChanged: (ProductoPromocionListModel? newValue) {
+                      setState(() {
+                        promocionSeleccionada = newValue;
+                      });
+                    },
+                    items: promociones
+                        .map<DropdownMenuItem<ProductoPromocionListModel>>((ProductoPromocionListModel promocion) {
+                      return DropdownMenuItem<ProductoPromocionListModel>(
+                        value: promocion,
+                        child: Text(promocion.promocion!.nombre!),
+                      );
+                    }).toList(),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (promocionSeleccionada != null) {
+                        context.read<ProductoBloc>().add(
+                              ProductoPromocionSaved(
+                                idProducto: productoSeleccionado.idProducto!,
+                                idPromocion: promocionSeleccionada!.promocion!.idPromocion!,
+                              ),
+                            );
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Guardar"),
+                  ),
+                ],
+              ),
+            );
+          }
+        );
+      },
+    );
   }
 }

@@ -35,19 +35,79 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
     on<ProductoCategoriaShown>(getProductocategoria);
     on<ProductoCategoriaEditedShown>(editProductoCategoria);
     on<ImagenesProductoShown>(getImagenesProductos);
+    on<ImageDeleted>(deleteImagenProducto);
+    on<ProductoPromocionDeleted>(deleteProductoPromocion);
   }
 
   final ProductoService service = ProductoService();
-  Future<void> getImagenesProductos(
-      ImagenesProductoShown event,
-      Emitter<BaseState> emit,
-      ) async {
+
+  Future<void> deleteProductoPromocion(
+    ProductoPromocionDeleted event,
+    Emitter<BaseState> emit,
+  ) async {
     emit(
       ProductoInProgress(),
     );
     try {
-      final List<ImagenProductoModel> resp =
-      await service.getImagenProducto();
+      await service.deleteProductoPromocion(
+          idProductoPromocion: event.idProductoPromocion);
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> deleteImagenProducto(
+    ImageDeleted event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      await service.deleteImagenProducto(
+        idImagenProducto: event.imagenproductoId,
+      );
+      emit(
+        ProductoPromocionDeletedSuccess(),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> getImagenesProductos(
+    ImagenesProductoShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      final List<ImagenProductoModel> resp = await service.getImagenProducto();
       emit(
         ImagenProductoSuccess(imagenesProductos: resp),
       );
@@ -67,6 +127,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       }
     }
   }
+
   Future<void> editProductoCategoria(
     ProductoCategoriaEditedShown event,
     Emitter<BaseState> emit,
@@ -387,6 +448,9 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
         idProducto: event.idProducto,
         idCategoria: event.idCategoria,
       );
+      emit(
+        CategoriaCreatedSuccess(),
+      );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
           error.response!.statusCode! >= 500 ||
@@ -415,6 +479,9 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       await service.createProductoPromocion(
         idProducto: event.idProducto,
         idPromocion: event.idPromocion,
+      );
+      emit(
+        ProductoPromocionCreatedSuccess(),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||

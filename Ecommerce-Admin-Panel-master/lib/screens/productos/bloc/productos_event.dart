@@ -53,6 +53,14 @@ final class ImageCreated extends ProductoEvent {
   });
 }
 
+final class ImageDeleted extends ProductoEvent {
+  final String imagenproductoId;
+
+  const ImageDeleted({
+    required this.imagenproductoId,
+  });
+}
+
 final class ProductoSaved extends ProductoEvent {
   final String nombre;
   final String descripcion;
@@ -90,6 +98,14 @@ final class ProductoPromocionSaved extends ProductoEvent {
   const ProductoPromocionSaved({
     required this.idProducto,
     required this.idPromocion,
+  });
+}
+
+final class ProductoPromocionDeleted extends ProductoEvent {
+  final int idProductoPromocion;
+
+  const ProductoPromocionDeleted({
+    required this.idProductoPromocion,
   });
 }
 
