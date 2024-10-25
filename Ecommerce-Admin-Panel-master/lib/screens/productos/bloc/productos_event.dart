@@ -13,6 +13,22 @@ final class CategoriaShown extends ProductoEvent {}
 
 final class ProductoPromocionShown extends ProductoEvent {}
 
+final class ProductoCategoriaShown extends ProductoEvent {}
+
+final class ImagenesProductoShown extends ProductoEvent {}
+
+final class ProductoCategoriaEditedShown extends ProductoEvent {
+  final int idProducto;
+  final int idCategoria;
+  final int idProductoCategoria;
+
+  ProductoCategoriaEditedShown({
+    required this.idProducto,
+    required this.idCategoria,
+    required this.idProductoCategoria,
+  });
+}
+
 final class ProveedorShown extends ProductoEvent {}
 
 final class TallaShown extends ProductoEvent {}

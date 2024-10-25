@@ -1,14 +1,20 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/bloc/productos_bloc.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/categoria_producto_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/imagen_producto_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_promocion_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,18 +44,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final TextEditingController _stock = TextEditingController();
 
   List<ProductoListModel> productos = [];
+  List<CategoriaPorductoListModel> productosCategorias = [];
   List<CategoriaListModel> categorias = [];
   List<ProveedorListModel> proveedores = [];
   List<ProductoPromocionListModel> productoPromociones = [];
   List<TallaListModel> tallas = [];
   List<ColorListModel> colores = [];
   List<ProductoListModel> filteredProductos = [];
+  List<ImagenProductoModel> imagenesProductos = [];
+  Uint8List? imagenBytes;
+  String? imagenBase64;
 
   bool _isLoading = false;
   late int? idTalla;
   late int? idColor;
   late int? idProveedor;
   late int? _idProducto;
+  late int? idCategoria;
 
   @override
   void initState() {
@@ -57,13 +68,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
     idProveedor = null;
     idColor = null;
     idTalla = null;
+
     _getProductos();
     _getProveedores();
     _getTallas();
     _getColores();
     _getCategorias();
-    _getCategorias();
     _getProductoPromocion();
+    _getProductoCategoria();
   }
 
   void _getProductos() {
@@ -84,6 +96,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
   }
 
+  void _getProductoCategoria() {
+    context.read<ProductoBloc>().add(
+          ProductoCategoriaShown(),
+        );
+  }
+
   void _getProveedores() {
     context.read<ProductoBloc>().add(
           ProveedorShown(),
@@ -99,6 +117,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void _getColores() {
     context.read<ProductoBloc>().add(
           ColorShown(),
+        );
+  }
+
+  void _getImagenproducto() {
+    context.read<ProductoBloc>().add(
+          ImagenesProductoShown(),
         );
   }
 
@@ -140,12 +164,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   void _createImagenByProduct({required int productoId}) {
-    // context.read<ProductoBloc>().add(
-    //       ImageCreated(
-    //         idProducto: productoId,
-    //         imagen: imagen,
-    //       ),
-    //     );
+    context.read<ProductoBloc>().add(
+          ImageCreated(
+            idProducto: productoId,
+            imagen: imagenBase64!,
+          ),
+        );
   }
 
   void _filterProductos(String query) {
@@ -164,83 +188,85 @@ class _ProductsScreenState extends State<ProductsScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(isEdit ? 'Editar Usuario' : 'Crear Usuario'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                  controller: _nombre,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Descripcion'),
-                  controller: _descripcion,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Precio'),
-                  controller: _precio,
-                ),
-                DropdownButton(
-                  value: idTalla,
-                  onChanged: (value) {
-                    setState(() => idTalla = value);
-                  },
-                  items: tallas
-                      .map<DropdownMenuItem>((talla) => DropdownMenuItem(
-                            value: talla.idTalla,
-                            child: Text(talla.talla),
-                          ))
-                      .toList(),
-                ),
-                DropdownButton(
-                  value: idColor,
-                  onChanged: (value) {
-                    setState(() => idColor = value);
-                  },
-                  items: colores
-                      .map<DropdownMenuItem>((color) => DropdownMenuItem(
-                            value: color.idColor,
-                            child: Text(color.color),
-                          ))
-                      .toList(),
-                ),
-                DropdownButton(
-                  value: idProveedor,
-                  onChanged: (value) {
-                    setState(() => idProveedor = value);
-                  },
-                  items: proveedores
-                      .map<DropdownMenuItem>((proveedor) => DropdownMenuItem(
-                            value: proveedor.idProveedor,
-                            child: Text(proveedor.nombre),
-                          ))
-                      .toList(),
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Stock'),
-                  controller: _stock,
-                ),
-              ],
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(isEdit ? 'Editar Producto' : 'Crear Producto'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Nombre'),
+                    controller: _nombre,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Descripcion'),
+                    controller: _descripcion,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Precio'),
+                    controller: _precio,
+                  ),
+                  DropdownButton(
+                    value: idTalla,
+                    onChanged: (value) {
+                      setState(() => idTalla = value);
+                    },
+                    items: tallas
+                        .map<DropdownMenuItem>((talla) => DropdownMenuItem(
+                              value: talla.idTalla,
+                              child: Text(talla.talla),
+                            ))
+                        .toList(),
+                  ),
+                  DropdownButton(
+                    value: idColor,
+                    onChanged: (value) {
+                      setState(() => idColor = value);
+                    },
+                    items: colores
+                        .map<DropdownMenuItem>((color) => DropdownMenuItem(
+                              value: color.idColor,
+                              child: Text(color.color),
+                            ))
+                        .toList(),
+                  ),
+                  DropdownButton(
+                    value: idProveedor,
+                    onChanged: (value) {
+                      setState(() => idProveedor = value);
+                    },
+                    items: proveedores
+                        .map<DropdownMenuItem>((proveedor) => DropdownMenuItem(
+                              value: proveedor.idProveedor,
+                              child: Text(proveedor.nombre),
+                            ))
+                        .toList(),
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Stock'),
+                    controller: _stock,
+                  ),
+                ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                isEdit ? _editProducto() : _createProducto();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Guardar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-          ],
-        );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  isEdit ? _editProducto() : _createProducto();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Guardar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancelar'),
+              ),
+            ],
+          );
+        });
       },
     );
   }
@@ -378,6 +404,24 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 isError: true,
               );
               break;
+
+            case const (ProductoCategoriaSuccess):
+              final loadedState = state as ProductoCategoriaSuccess;
+              setState(() {
+                productosCategorias = loadedState.productoCategorias;
+                _isLoading = false;
+              });
+              break;
+            case const (ImagenProductoSuccess):
+              final loadedState = state as ImagenProductoSuccess;
+              setState(() {
+                imagenesProductos = loadedState.imagenesProductos;
+                _isLoading = false;
+              });
+              break;
+            case const (ImagenCreatedSuccess):
+              _getImagenproducto();
+              break;
           }
         },
         child: Stack(
@@ -419,8 +463,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           1: FlexColumnWidth(4),
                           2: FlexColumnWidth(2),
                           3: FlexColumnWidth(1),
-                          4: FixedColumnWidth(100),
+                          4: FlexColumnWidth(1),
                           5: FixedColumnWidth(100),
+                          6: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
@@ -431,7 +476,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Título',
+                                  'Imagen',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Nombre',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -476,6 +528,87 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             return TableRow(
                               children: [
                                 Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        obtenerImagenesProducto(
+                                                        producto.idProducto,
+                                                        imagenesProductos)
+                                                    .first
+                                                    .imagenProducto ==
+                                                "Sin Imagen"
+                                            ? Expanded(
+                                                child: SizedBox(
+                                                  height: 100,
+                                                  child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount:
+                                                        obtenerImagenesProducto(
+                                                                producto
+                                                                    .idProducto,
+                                                                imagenesProductos)
+                                                            .length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var imagenProducto =
+                                                          obtenerImagenesProducto(
+                                                                  producto
+                                                                      .idProducto,
+                                                                  imagenesProductos)[
+                                                              index];
+                                                      return Stack(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Container(
+                                                              width: 150,
+                                                              child:
+                                                                  Image.memory(
+                                                                convertirBase64ABytes(
+                                                                    imagenProducto
+                                                                        .imagenProducto),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            top: 0,
+                                                            right: 0,
+                                                            child: IconButton(
+                                                              icon: const Icon(
+                                                                Icons.edit,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                              onPressed: () {},
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                "Sin imagen",
+                                              ),
+                                        IconButton(
+                                          icon: const Icon(Icons.add,
+                                              color: Colors.black),
+                                          onPressed: () {
+                                            seleccionarImagen(
+                                                producto.idProducto);
+                                          },
+                                        ),
+                                      ],
+                                    )),
+                                Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(producto.nombre),
                                 ),
@@ -485,7 +618,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(producto.proveedor.nombre),
+                                  child: Text(obtenerCategoriaProducto(
+                                    producto.idProducto,
+                                    productosCategorias,
+                                  ).categoria.nombre),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -545,5 +681,65 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
       ),
     );
+  }
+
+  Uint8List convertirBase64ABytes(String base64String) {
+    return base64Decode(base64String);
+  }
+
+  CategoriaPorductoListModel obtenerCategoriaProducto(
+      int idProducto, List<CategoriaPorductoListModel> categoriasProducto) {
+    var categoriaProducto = categoriasProducto.firstWhere(
+      (cp) => cp.producto.idProducto == idProducto,
+      orElse: () => CategoriaPorductoListModel(
+        idProductoCategoria: 0,
+        producto: ProductoC(idProducto: idProducto),
+        categoria: Categoria(
+          idCategoria: 0,
+          nombre: "Sin categoría",
+        ),
+      ),
+    );
+    return categoriaProducto;
+  }
+
+  List<ImagenProductoModel> obtenerImagenesProducto(
+    int idProducto,
+    List<ImagenProductoModel> imagenesProducto,
+  ) {
+    List<ImagenProductoModel> imagenesEncontradas = imagenesProducto
+        .where(
+          (ip) => ip.producto.idProducto == idProducto,
+        )
+        .toList();
+
+    if (imagenesEncontradas.isEmpty) {
+      imagenesEncontradas.add(
+        ImagenProductoModel(
+          idImagen: 0,
+          imagenProducto: "Sin imagen",
+          producto: ProductoI(idProducto: idProducto),
+        ),
+      );
+    }
+    return imagenesEncontradas;
+  }
+
+  Future<void> seleccionarImagen(
+    int idProducto,
+  ) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null && result.files.single.bytes != null) {
+      setState(() {
+        imagenBytes = result.files.single.bytes;
+        imagenBase64 = base64Encode(imagenBytes!);
+      });
+      _createImagenByProduct(
+        productoId: idProducto,
+      );
+    }
   }
 }

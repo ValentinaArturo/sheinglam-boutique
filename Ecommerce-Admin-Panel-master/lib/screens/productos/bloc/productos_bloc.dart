@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/resources/constants.dart';
 import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/categoria_producto_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/imagen_producto_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_promocion_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_model.dart';
@@ -18,16 +20,115 @@ part 'productos_state.dart';
 
 class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
   ProductoBloc() : super(ProductoInitial()) {
-    on<ProductoShown>(getProducto);
     on<TallaShown>(getTalla);
     on<ColorShown>(getColor);
     on<ProveedorShown>(getProveedor);
     on<ProductoSaved>(createProducto);
     on<ProductoEdited>(updateProducto);
     on<ProductoDeleted>(deleteProducto);
+    on<CategoriaShown>(getCategoria);
+    on<ProductoShown>(getProducto);
+    on<ProductoPromocionShown>(getProductoPromocion);
+    on<ImageCreated>(createImagenProducto);
+    on<CategoriaSaved>(createCategoria);
+    on<ProductoPromocionSaved>(createProductoPromocion);
+    on<ProductoCategoriaShown>(getProductocategoria);
+    on<ProductoCategoriaEditedShown>(editProductoCategoria);
+    on<ImagenesProductoShown>(getImagenesProductos);
   }
 
   final ProductoService service = ProductoService();
+  Future<void> getImagenesProductos(
+      ImagenesProductoShown event,
+      Emitter<BaseState> emit,
+      ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      final List<ImagenProductoModel> resp =
+      await service.getImagenProducto();
+      emit(
+        ImagenProductoSuccess(imagenesProductos: resp),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+  Future<void> editProductoCategoria(
+    ProductoCategoriaEditedShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      await service.putCategoriaProducto(
+        idCategoria: event.idCategoria,
+        idProdcutoCategoria: event.idProductoCategoria,
+        idProducto: event.idProducto,
+      );
+      emit(
+        ProductoCategoriaEditedSuccess(),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> getProductocategoria(
+    ProductoCategoriaShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      ProductoInProgress(),
+    );
+    try {
+      final List<CategoriaPorductoListModel> resp =
+          await service.getCategoriaProducto();
+      emit(
+        ProductoCategoriaSuccess(productoCategorias: resp),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          ProductoError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> getProducto(
     ProductoShown event,
@@ -253,6 +354,9 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       await service.createImagenProducto(
         idProducto: event.idProducto,
         imagenProducto: event.imagen,
+      );
+      emit(
+        ImagenCreatedSuccess(),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||

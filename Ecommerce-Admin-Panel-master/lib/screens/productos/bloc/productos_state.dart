@@ -56,6 +56,27 @@ final class ColorSuccess extends ProductoState {
 
 final class ProductoCreatedSuccess extends ProductoState {}
 
+final class ProductoCategoriaSuccess extends ProductoState {
+  final List<CategoriaPorductoListModel> productoCategorias;
+
+  ProductoCategoriaSuccess({
+    required this.productoCategorias,
+  });
+}
+
+final class ProductoCategoriaEditedSuccess extends ProductoState {}
+
+final class ImagenProductoSuccess extends ProductoState {
+  final List<ImagenProductoModel> imagenesProductos;
+
+  ImagenProductoSuccess({
+    required this.imagenesProductos,
+  });
+}
+
+final class ImagenCreatedSuccess extends ProductoState {}
+
+
 final class CategoriaCreatedSuccess extends ProductoState {}
 
 final class ProductoPromocionCreatedSuccess extends ProductoState {}

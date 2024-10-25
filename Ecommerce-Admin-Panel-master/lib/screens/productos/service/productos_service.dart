@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/factory/client_factory.dart';
 import 'package:ecommerce_admin_panel/resources/api_constants.dart';
 import 'package:ecommerce_admin_panel/screens/categorias/model/categoria_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/productos/model/categoria_producto_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/color_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/imagen_producto_model.dart';
 import 'package:ecommerce_admin_panel/screens/productos/model/producto_list_model.dart';
@@ -27,6 +28,33 @@ class ProductoService {
         (categoria) => CategoriaListModel.fromJson(categoria),
       ),
     );
+  }
+
+  Future<List<CategoriaPorductoListModel>> getCategoriaProducto() async {
+    final response = await client.get(
+      categoriaProductoPath,
+    );
+    return List<CategoriaPorductoListModel>.from(
+      response.data.map(
+        (categoria) => CategoriaPorductoListModel.fromJson(categoria),
+      ),
+    );
+  }
+
+  Future<dynamic> putCategoriaProducto({
+    required int idProducto,
+    required int idCategoria,
+    required int idProdcutoCategoria,
+  }) async {
+    return await client
+        .put('$categoriaProductoPath/$idProdcutoCategoria', data: {
+      "producto": {
+        "idProducto": idProducto,
+      },
+      "categoria": {
+        "idCategoria": idCategoria,
+      }
+    });
   }
 
   Future<List<ProductoPromocionListModel>> getProductoPromocion() async {

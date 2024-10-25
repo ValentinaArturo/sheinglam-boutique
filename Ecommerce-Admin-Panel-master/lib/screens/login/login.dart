@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  bool iconOnFocus = true;
 
   late LoginBloc _loginBloc;
   bool _isLoading = false;
@@ -132,6 +133,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _passwordController,
                         decoration: InputDecoration(
                           labelText: 'Contraseña',
+                          suffixIcon: Container(
+                            margin: const EdgeInsets.only(
+                              right: 15.0,
+                            ),
+                            child: GestureDetector(
+                              child: !iconOnFocus
+                                  ? const Icon(
+                                      Icons.visibility_outlined,
+                                color: Colors.black,
+                                      size: 20.0,
+                                    )
+                                  : const Icon(
+                                      Icons.visibility_off_outlined,
+                                      color: Colors.grey,
+                                      size: 20.0,
+                                    ),
+                              onTap: () => setState(
+                                () => iconOnFocus = !iconOnFocus,
+                              ),
+                            ),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                             borderSide: const BorderSide(color: Colors.black),
@@ -148,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20.0, vertical: 15.0),
                         ),
-                        obscureText: true,
+                        obscureText: iconOnFocus,
                       ),
                     ),
                     const SizedBox(height: 20),
