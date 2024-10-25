@@ -58,6 +58,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
   bool _isLoading = false;
   late int? _idUsuario;
+  late int? _idCliente;
 
   @override
   void initState() {
@@ -137,9 +138,17 @@ class _UsersScreenState extends State<UsersScreen> {
         );
   }
 
-  void _deleteUsuario({required int id}) {
+  void _deleteUsuario({
+    required int idUsuario,
+    required int idCliente,
+    required int idDireccionEnvio,
+  }) {
     context.read<UsuarioBloc>().add(
-          UsuarioDeleted(id: id),
+          UsuarioDeleted(
+            idUsuario: idUsuario,
+            idCliente: idCliente,
+            idDireccionEnvio: idDireccionEnvio,
+          ),
         );
   }
 
@@ -155,7 +164,7 @@ class _UsersScreenState extends State<UsersScreen> {
         );
   }
 
-  void _updateDireccionEnvio({required int id, idDireccionEnvio}) {
+  void _updateDireccionEnvio({required int id, required int idDireccionEnvio}) {
     context.read<UsuarioBloc>().add(
           DireccionEnvioEdited(
             id: idDireccionEnvio,
@@ -268,7 +277,11 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
-  void _showdeleteModal({required int id}) async {
+  void _showdeleteModal({
+    required int idUsuario,
+    required int idCliente,
+    required int idDireccionEnvio,
+  }) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -287,7 +300,11 @@ class _UsersScreenState extends State<UsersScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteUsuario(id: id);
+                _deleteUsuario(
+                  idDireccionEnvio: idDireccionEnvio,
+                  idCliente: idCliente,
+                  idUsuario: idUsuario,
+                );
               },
               child: const Text('Eliminar'),
             ),
@@ -352,12 +369,11 @@ class _UsersScreenState extends State<UsersScreen> {
               );
               break;
             case const (UsuarioEditedSuccess):
-              _updateDireccionEnvio(id: _idUsuario!);
-              _loadUsuarios();
-              CustomStateDialog.showAlertDialog(
-                context,
-                title: 'Usuarios',
-                description: "Usuario editado correctamente",
+              _updateDireccionEnvio(
+                id: _idCliente!,
+                idDireccionEnvio:
+                    obtenerDireccionPorUsuario(_idCliente!, direccionesEnvio)!
+                        .idDireccion,
               );
               break;
             case const (UsuarioDeletedSuccess):
@@ -523,7 +539,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
                                         setState(() {
-                                          _idUsuario = usuario.usuario.idUsuario;
+                                          _idCliente = usuario.idCliente;
+                                          _idUsuario =
+                                              usuario.usuario.idUsuario;
                                           nombreController.text =
                                               usuario.usuario.nombre;
                                           correoController.text =
@@ -595,7 +613,7 @@ class _UsersScreenState extends State<UsersScreen> {
   DireccionEnvioListModel? obtenerDireccionPorUsuario(
       int idUsuario, List<DireccionEnvioListModel> direccionesEnvio) {
     return direccionesEnvio.firstWhere(
-      (direccion) => direccion.cliente.usuario.idUsuario == idUsuario,
+      (direccion) => direccion.cliente.idCliente == idUsuario,
       orElse: () => DireccionEnvioListModel(
         idDireccion: 0,
         cliente: Cliente(

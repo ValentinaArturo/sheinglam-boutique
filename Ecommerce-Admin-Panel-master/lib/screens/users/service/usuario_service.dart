@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/factory/client_factory.dart';
-import 'package:ecommerce_admin_panel/repository/repository_constants.dart';
 import 'package:ecommerce_admin_panel/resources/api_constants.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/ciudad_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/cliente_list_model.dart';
@@ -117,6 +116,22 @@ class UsuarioService {
     );
   }
 
+  Future<Response<dynamic>> deleteCliente({
+    required int id,
+  }) async {
+    return await client.delete(
+      '$clientePath/$id',
+    );
+  }
+
+  Future<Response<dynamic>> deleteDireccionEnvio({
+    required int id,
+  }) async {
+    return await client.delete(
+      '$direccionEnvioPath/$id',
+    );
+  }
+
   Future<Response<dynamic>> createDireccionEnvio({
     required int idCliente,
     required String direccion,
@@ -148,7 +163,7 @@ class UsuarioService {
     );
     return List<DireccionEnvioListModel>.from(
       response.data.map(
-            (ciudad) => DireccionEnvioListModel.fromJson(ciudad),
+        (ciudad) => DireccionEnvioListModel.fromJson(ciudad),
       ),
     );
   }
@@ -161,7 +176,7 @@ class UsuarioService {
     required String codigoPostal,
     required int idPais,
   }) async {
-    return await client.post(
+    return await client.put(
       '$direccionEnvioPath/$id',
       data: {
         "cliente": {

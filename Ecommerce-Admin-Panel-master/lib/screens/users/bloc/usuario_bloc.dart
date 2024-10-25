@@ -231,9 +231,18 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       UsuarioInProgress(),
     );
     try {
+      if (event.idDireccionEnvio != 0) {
+        await service.deleteDireccionEnvio(
+          id: event.idDireccionEnvio,
+        );
+      }
       await service.deleteUsuario(
-        id: event.id,
+        id: event.idUsuario,
       );
+      await service.deleteCliente(
+        id: event.idCliente,
+      );
+
       emit(
         UsuarioDeletedSuccess(),
       );

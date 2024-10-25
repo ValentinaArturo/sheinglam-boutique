@@ -58,10 +58,14 @@ final class UsuarioEdited extends UsuarioEvent {
 }
 
 final class UsuarioDeleted extends UsuarioEvent {
-  final int id;
+  final int idUsuario;
+  final int idCliente;
+  final int idDireccionEnvio;
 
   const UsuarioDeleted({
-    required this.id,
+    required this.idUsuario,
+    required this.idCliente,
+    required this.idDireccionEnvio,
   });
 }
 
