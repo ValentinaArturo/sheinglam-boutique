@@ -22,11 +22,31 @@ final class CiudadSuccess extends UsuarioState {
   });
 }
 
-final class UsuarioCreatedSuccess extends UsuarioState {}
+final class UsuarioCreatedSuccess extends UsuarioState {
+  final int user;
+
+  UsuarioCreatedSuccess({required this.user});
+}
 
 final class UsuarioEditedSuccess extends UsuarioState {}
 
 final class UsuarioDeletedSuccess extends UsuarioState {}
+
+final class DireccionEnvioSuccess extends UsuarioState {
+  final List<DireccionEnvioListModel> direcciones;
+
+  DireccionEnvioSuccess({
+    required this.direcciones,
+  });
+}
+
+final class RolSuccess extends UsuarioState {
+  final List<RolListmodel> roles;
+
+  RolSuccess({
+    required this.roles,
+  });
+}
 
 final class DireccionEnvioCreatedSuccess extends UsuarioState {}
 

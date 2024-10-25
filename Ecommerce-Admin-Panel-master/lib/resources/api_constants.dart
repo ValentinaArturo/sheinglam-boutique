@@ -6,7 +6,7 @@ const String ciudadPath = 'api/ciudades';
 const String categoriaPath = 'api/categorias';
 const String categoriaProductoPath = 'api/productos-categorias';
 const String pedidoPath = 'api/pedidos-estados';
-const String direccionEnvioPath = 'api/direcciones-envios';
+const String direccionEnvioPath = 'api/direcciones-envio';
 const String productoPath = 'api/productos';
 const String tallaPath = 'api/tallas';
 const String colorPath = 'api/colores';
@@ -18,4 +18,5 @@ const String productosPromocionesPath = 'api/productos-promociones';
 const String shipmentPath = 'pedidos-estados';
 const String facturasPath = 'facturas';
 const String detalleFacturasPath = 'detalles-factura';
+const String rolesPath = 'api/roles';
 

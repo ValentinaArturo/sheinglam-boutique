@@ -5,6 +5,8 @@ import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/screens/users/bloc/usuario_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/ciudad_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/cliente_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/direccion_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/rol_model_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,18 +34,27 @@ class _UsersScreenState extends State<UsersScreen> {
   TextEditingController apellidoController = TextEditingController();
   TextEditingController correoController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController rolController = TextEditingController();
+  TextEditingController direccionController = TextEditingController();
+  TextEditingController postalController = TextEditingController();
+  TextEditingController telefonoController = TextEditingController();
 
   List<CiudadListModel> ciudades = [];
   List<ClientListModel> usuarios = [];
   List<ClientListModel> filteredUsuarios = [];
+  List<DireccionEnvioListModel> direccionesEnvio = [];
 
   List<String> paises = [];
-  List<String> roles = [];
+  List<RolListmodel> roles = [];
 
   String selectedPais = '';
-  String selectedCiudad = '';
-  String selectedRol = '';
+  CiudadListModel selectedCiudad = CiudadListModel(
+    idCiudad: 0,
+    nombre: '',
+  );
+  RolListmodel selectedRol = RolListmodel(
+    idRol: 0,
+    nombre: '',
+  );
 
   bool _isLoading = false;
   late int? _idUsuario;
@@ -55,6 +66,8 @@ class _UsersScreenState extends State<UsersScreen> {
     _loadInitialData();
     _loadUsuarios();
     _loadCiudades();
+    _loadRoles();
+    _loadDirecciones();
   }
 
   void _loadInitialData() async {}
@@ -65,9 +78,21 @@ class _UsersScreenState extends State<UsersScreen> {
         );
   }
 
+  void _loadDirecciones() async {
+    context.read<UsuarioBloc>().add(
+          DireccionEncioShown(),
+        );
+  }
+
   void _loadUsuarios() async {
     context.read<UsuarioBloc>().add(
           UsuarioShown(),
+        );
+  }
+
+  void _loadRoles() async {
+    context.read<UsuarioBloc>().add(
+          RolShown(),
         );
   }
 
@@ -90,7 +115,11 @@ class _UsersScreenState extends State<UsersScreen> {
             apellido: apellidoController.text,
             correoElectronico: correoController.text,
             password: passwordController.text,
-            rol: int.parse(rolController.text),
+            rol: selectedRol.idRol,
+            postal: postalController.text,
+            phone: telefonoController.text,
+            address: direccionController.text,
+            ciudad: selectedCiudad.idCiudad,
           ),
         );
   }
@@ -103,7 +132,7 @@ class _UsersScreenState extends State<UsersScreen> {
             apellido: apellidoController.text,
             correoElectronico: correoController.text,
             password: passwordController.text,
-            rol: int.parse(rolController.text),
+            rol: selectedRol.idRol,
           ),
         );
   }
@@ -118,22 +147,22 @@ class _UsersScreenState extends State<UsersScreen> {
     context.read<UsuarioBloc>().add(
           DireccionEnvioSaved(
             idCliente: id,
-            direccion: 'direccion',
-            idCiudad: 0,
-            codigoPostal: '0000',
+            direccion: direccionController.text,
+            idCiudad: selectedCiudad.idCiudad,
+            codigoPostal: postalController.text,
             idPais: 1,
           ),
         );
   }
 
-  void _updateDireccionEnvio({required int id}) {
+  void _updateDireccionEnvio({required int id, idDireccionEnvio}) {
     context.read<UsuarioBloc>().add(
           DireccionEnvioEdited(
-            id: _idUsuario!,
+            id: idDireccionEnvio,
             idCliente: id,
-            direccion: 'direccion',
-            idCiudad: 0,
-            codigoPostal: '0000',
+            direccion: direccionController.text,
+            idCiudad: selectedCiudad.idCiudad,
+            codigoPostal: postalController.text,
             idPais: 1,
           ),
         );
@@ -143,51 +172,98 @@ class _UsersScreenState extends State<UsersScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(isEdit ? 'Editar Usuario' : 'Crear Usuario'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                  controller: nombreController,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Apellido'),
-                  controller: apellidoController,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Correo'),
-                  controller: correoController,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Contraseña'),
-                  controller: passwordController,
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Rol'),
-                  controller: rolController,
-                ),
-              ],
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(isEdit ? 'Editar Usuario' : 'Crear Usuario'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Nombre'),
+                    controller: nombreController,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Apellido'),
+                    controller: apellidoController,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Correo'),
+                    controller: correoController,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Contraseña'),
+                    controller: passwordController,
+                  ),
+                  DropdownButtonFormField<RolListmodel>(
+                    value: roles.firstWhere(
+                        (rol) => rol.idRol == selectedRol?.idRol,
+                        orElse: () => roles.first),
+                    decoration: const InputDecoration(labelText: 'Rol'),
+                    items: roles
+                        .map((rol) => DropdownMenuItem<RolListmodel>(
+                              value: rol,
+                              child: Text(rol.nombre),
+                            ))
+                        .toList(),
+                    onChanged: (RolListmodel? newValue) {
+                      setState(() {
+                        selectedRol = newValue!;
+                      });
+                    },
+                  ),
+                  DropdownButtonFormField<CiudadListModel>(
+                    value: ciudades.firstWhere(
+                      (ciudad) => ciudad.idCiudad == selectedCiudad?.idCiudad,
+                      orElse: () => ciudades.first,
+                    ),
+                    decoration:
+                        const InputDecoration(labelText: 'Departamento'),
+                    items: ciudades
+                        .map((ciudad) => DropdownMenuItem<CiudadListModel>(
+                              value: ciudad,
+                              child: Text(ciudad.nombre),
+                            ))
+                        .toList(),
+                    onChanged: (CiudadListModel? newValue) {
+                      setState(() {
+                        selectedCiudad = newValue!;
+                      });
+                    },
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Direccion'),
+                    controller: direccionController,
+                  ),
+                  TextField(
+                    decoration:
+                        const InputDecoration(labelText: 'Coidgo Postal'),
+                    controller: postalController,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(labelText: 'Telefono'),
+                    controller: telefonoController,
+                  ),
+                ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                isEdit ? _editUsuario() : _saveUsuario();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Guardar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-          ],
-        );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  isEdit ? _editUsuario() : _saveUsuario();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Guardar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancelar'),
+              ),
+            ],
+          );
+        });
       },
     );
   }
@@ -230,11 +306,17 @@ class _UsersScreenState extends State<UsersScreen> {
         actions: [
           TextButton.icon(
             onPressed: () {
-              // Lógica para agregar un nuevo usuario
               nombreController.clear();
               apellidoController.clear();
               correoController.clear();
               passwordController.clear();
+              postalController.clear();
+              direccionController.clear();
+              telefonoController.clear();
+              setState(() {
+                selectedRol = roles.first;
+                selectedCiudad = ciudades.first;
+              });
               _showEditModal();
             },
             icon: const Icon(Icons.add, color: Colors.black),
@@ -260,6 +342,8 @@ class _UsersScreenState extends State<UsersScreen> {
               });
               break;
             case const (UsuarioCreatedSuccess):
+              final loadedState = state as UsuarioCreatedSuccess;
+              _createDireccionEnvio(id: loadedState.user);
               _loadUsuarios();
               CustomStateDialog.showAlertDialog(
                 context,
@@ -268,6 +352,7 @@ class _UsersScreenState extends State<UsersScreen> {
               );
               break;
             case const (UsuarioEditedSuccess):
+              _updateDireccionEnvio(id: _idUsuario!);
               _loadUsuarios();
               CustomStateDialog.showAlertDialog(
                 context,
@@ -302,6 +387,21 @@ class _UsersScreenState extends State<UsersScreen> {
                 title: 'Direccion Envio',
                 description: "Direccion de Envio editada correctamente",
               );
+
+              break;
+            case const (RolSuccess):
+              final loadedState = state as RolSuccess;
+              setState(() {
+                _isLoading = false;
+                roles = loadedState.roles;
+              });
+              break;
+            case const (DireccionEnvioSuccess):
+              final loadedState = state as DireccionEnvioSuccess;
+              setState(() {
+                _isLoading = false;
+                direccionesEnvio = loadedState.direcciones;
+              });
               break;
             case const (UsuarioError):
               final stateError = state as UsuarioError;
@@ -361,9 +461,8 @@ class _UsersScreenState extends State<UsersScreen> {
                         columnWidths: const {
                           0: FlexColumnWidth(3),
                           1: FlexColumnWidth(4),
-                          2: FlexColumnWidth(3),
+                          2: FlexColumnWidth(4),
                           3: FixedColumnWidth(100),
-                          4: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
@@ -388,7 +487,7 @@ class _UsersScreenState extends State<UsersScreen> {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Contraseña',
+                                  'Rol',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -399,13 +498,6 @@ class _UsersScreenState extends State<UsersScreen> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Eliminar',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
                             ],
                           ),
                           for (var usuario in filteredUsuarios)
@@ -413,7 +505,8 @@ class _UsersScreenState extends State<UsersScreen> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(usuario.usuario.nombre),
+                                  child: Text(
+                                      '${usuario.usuario.nombre} ${usuario.usuario.apellido}'),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -422,7 +515,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(usuario.usuario.contrasea),
+                                  child: Text(usuario.usuario.rol.nombre),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -430,7 +523,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
                                         setState(() {
-                                          _idUsuario = usuario.idCliente;
+                                          _idUsuario = usuario.usuario.idUsuario;
                                           nombreController.text =
                                               usuario.usuario.nombre;
                                           correoController.text =
@@ -439,19 +532,42 @@ class _UsersScreenState extends State<UsersScreen> {
                                               usuario.usuario.apellido;
                                           passwordController.text =
                                               usuario.usuario.contrasea;
-                                          rolController.text =
-                                              '${usuario.usuario.rol.idRol}';
+                                          selectedRol = RolListmodel(
+                                            idRol: usuario.usuario.rol.idRol,
+                                            nombre: usuario.usuario.rol.nombre,
+                                          );
+                                          selectedCiudad = CiudadListModel(
+                                            idCiudad:
+                                                obtenerDireccionPorUsuario(
+                                                        usuario.idCliente,
+                                                        direccionesEnvio)!
+                                                    .ciudad!
+                                                    .idCiudad,
+                                            nombre: obtenerDireccionPorUsuario(
+                                                    usuario.idCliente,
+                                                    direccionesEnvio)!
+                                                .ciudad!
+                                                .nombre,
+                                          );
+                                          postalController.text =
+                                              obtenerDireccionPorUsuario(
+                                                      usuario.idCliente,
+                                                      direccionesEnvio)!
+                                                  .codigoPostal;
+                                          direccionController.text =
+                                              obtenerDireccionPorUsuario(
+                                                      usuario.idCliente,
+                                                      direccionesEnvio)!
+                                                  .direccion;
+                                          telefonoController.text =
+                                              obtenerDireccionPorUsuario(
+                                                      usuario.idCliente,
+                                                      direccionesEnvio)!
+                                                  .cliente
+                                                  .telefono!;
                                         });
                                         _showEditModal(true);
                                       }),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () =>
-                                        _showdeleteModal(id: usuario.idCliente),
-                                  ),
                                 ),
                               ],
                             ),
@@ -471,6 +587,42 @@ class _UsersScreenState extends State<UsersScreen> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  DireccionEnvioListModel? obtenerDireccionPorUsuario(
+      int idUsuario, List<DireccionEnvioListModel> direccionesEnvio) {
+    return direccionesEnvio.firstWhere(
+      (direccion) => direccion.cliente.usuario.idUsuario == idUsuario,
+      orElse: () => DireccionEnvioListModel(
+        idDireccion: 0,
+        cliente: Cliente(
+          idCliente: 0,
+          usuario: UsuarioD(
+            idUsuario: 0,
+            nombre: '',
+            apellido: '',
+            correoElectronico: '',
+            contrasea: '',
+            rol: RolD(
+              idRol: 0,
+              nombre: '',
+            ),
+          ),
+          direccion: '',
+          telefono: '',
+        ),
+        direccion: '',
+        ciudad: Ciudad(
+          idCiudad: 0,
+          nombre: '',
+        ),
+        codigoPostal: '',
+        pais: Pais(
+          idPais: 0,
+          nombre: '',
         ),
       ),
     );

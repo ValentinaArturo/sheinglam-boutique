@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:ecommerce_admin_panel/factory/client_factory.dart';
+import 'package:ecommerce_admin_panel/repository/repository_constants.dart';
 import 'package:ecommerce_admin_panel/resources/api_constants.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/ciudad_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/cliente_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/direccion_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/rol_model_list.dart';
 
 class UsuarioService {
   Dio client;
@@ -35,16 +38,30 @@ class UsuarioService {
     );
   }
 
-  Future<Response<dynamic>> createUsuario({
+  Future<List<RolListmodel>> getRoles() async {
+    final response = await client.get(
+      rolesPath,
+    );
+    return List<RolListmodel>.from(
+      response.data.map(
+        (ciudad) => RolListmodel.fromJson(ciudad),
+      ),
+    );
+  }
+
+  Future<Response<dynamic>> createCliente({
     required String nombre,
     required String apellido,
     required String correoElectronico,
     required String password,
+    required String address,
+    required String phone,
+    required String postal,
+    required int ciudad,
     required int rol,
   }) async {
-    return await client.post(
-      usuarioPath,
-      data: {
+    return await client.post(clientePath, data: {
+      "usuario": {
         "nombre": nombre,
         "apellido": apellido,
         "correoElectronico": correoElectronico,
@@ -53,7 +70,21 @@ class UsuarioService {
           "idRol": rol,
         }
       },
-    );
+      "cliente": {
+        "direccion": address,
+        "telefono": phone,
+      },
+      "direccionEnvio": {
+        "direccion": address,
+        "codigoPostal": postal,
+        "pais": {
+          "idPais": 1,
+        },
+        "ciudad": {
+          "idCiudad": ciudad,
+        }
+      }
+    });
   }
 
   Future<Response<dynamic>> updateUsuario({
@@ -108,6 +139,17 @@ class UsuarioService {
           "idPais": idPais,
         }
       },
+    );
+  }
+
+  Future<List<DireccionEnvioListModel>> getDireccionesEnvio() async {
+    final response = await client.get(
+      direccionEnvioPath,
+    );
+    return List<DireccionEnvioListModel>.from(
+      response.data.map(
+            (ciudad) => DireccionEnvioListModel.fromJson(ciudad),
+      ),
     );
   }
 

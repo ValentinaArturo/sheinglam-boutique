@@ -11,12 +11,20 @@ final class UsuarioShown extends UsuarioEvent {}
 
 final class CiudadShown extends UsuarioEvent {}
 
+final class RolShown extends UsuarioEvent {}
+
+final class DireccionEncioShown extends UsuarioEvent {}
+
 final class UsuarioSaved extends UsuarioEvent {
   final String nombre;
   final String apellido;
   final String correoElectronico;
   final String password;
   final int rol;
+  final String address;
+  final String phone;
+  final String postal;
+  final int ciudad;
 
   const UsuarioSaved({
     required this.nombre,
@@ -24,6 +32,10 @@ final class UsuarioSaved extends UsuarioEvent {
     required this.correoElectronico,
     required this.password,
     required this.rol,
+    required this.postal,
+    required this.address,
+    required this.phone,
+    required this.ciudad,
   });
 }
 

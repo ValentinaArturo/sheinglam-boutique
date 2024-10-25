@@ -3,6 +3,8 @@ import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/resources/constants.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/ciudad_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/cliente_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/direccion_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/users/model/rol_model_list.dart';
 import 'package:ecommerce_admin_panel/screens/users/service/usuario_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,9 +21,74 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
     on<CiudadShown>(getCiudad);
     on<DireccionEnvioSaved>(createDireccionEnvio);
     on<DireccionEnvioEdited>(updateDireccionEnvio);
+    on<RolShown>(getRoles);
+    on<DireccionEncioShown>(getDireccionEnvio);
   }
 
   final UsuarioService service = UsuarioService();
+
+  Future<void> getDireccionEnvio(
+    DireccionEncioShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      UsuarioInProgress(),
+    );
+    try {
+      final List<DireccionEnvioListModel> resp =
+          await service.getDireccionesEnvio();
+      emit(
+        DireccionEnvioSuccess(
+          direcciones: resp,
+        ),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          UsuarioError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> getRoles(
+    RolShown event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      UsuarioInProgress(),
+    );
+    try {
+      final List<RolListmodel> resp = await service.getRoles();
+      emit(
+        RolSuccess(
+          roles: resp,
+        ),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == null ||
+          error.response!.statusCode! >= 500 ||
+          error.response!.data[responseCode] == null) {
+        emit(
+          ServerClientError(),
+        );
+      } else {
+        emit(
+          UsuarioError(
+            message: error.response!.data[responseMessage],
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> getUsuario(
     UsuarioShown event,
@@ -89,15 +156,19 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       UsuarioInProgress(),
     );
     try {
-      await service.createUsuario(
+      final resp = await service.createCliente(
         nombre: event.nombre,
         apellido: event.apellido,
         correoElectronico: event.correoElectronico,
         password: event.password,
         rol: event.rol,
+        address: event.address,
+        phone: event.phone,
+        postal: event.postal,
+        ciudad: event.ciudad,
       );
       emit(
-        UsuarioCreatedSuccess(),
+        UsuarioCreatedSuccess(user: resp.data['idCliente']),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
