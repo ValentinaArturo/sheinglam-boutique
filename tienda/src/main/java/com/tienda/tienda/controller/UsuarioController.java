@@ -56,15 +56,25 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable int id, @RequestBody Usuario usuarioDetails) {
-        Usuario usuario = usuarioService.getUsuarioById(id);        
+        Usuario usuario = usuarioService.getUsuarioById(id);
+
         if (usuario != null) {
             usuario.setNombre(usuarioDetails.getNombre());
             usuario.setApellido(usuarioDetails.getApellido());
             usuario.setCorreoElectronico(usuarioDetails.getCorreoElectronico());
-            usuario.setContraseña(usuarioDetails.getContraseña());
             usuario.setRol(usuarioDetails.getRol());
-            String password = passwordEncoder.encode(usuario.getContraseña());
-            return ResponseEntity.ok(usuarioService.saveUsuario(usuario, password));
+
+            String passwordToSave;
+
+            if (!usuarioDetails.getContraseña().equals(usuario.getContraseña())) {
+                passwordToSave = passwordEncoder.encode(usuarioDetails.getContraseña());
+                usuario.setContraseña(passwordToSave);
+            } else {
+                passwordToSave = usuario.getContraseña();
+            }
+
+            Usuario usuarioActualizado = usuarioService.saveUsuario(usuario, passwordToSave);
+            return ResponseEntity.ok(usuarioActualizado);
         } else {
             return ResponseEntity.notFound().build();
         }
