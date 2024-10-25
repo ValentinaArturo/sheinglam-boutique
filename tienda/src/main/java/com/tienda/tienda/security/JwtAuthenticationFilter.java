@@ -26,7 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            // Validar el token sin `UserDetails`
             if (authService.validateToken(token)) { 
                 String username = authService.extractUsername(token);
                 UsernamePasswordAuthenticationToken authentication = 
