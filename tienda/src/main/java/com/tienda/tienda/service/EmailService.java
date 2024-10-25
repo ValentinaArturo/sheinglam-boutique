@@ -16,6 +16,7 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
+        message.setFrom("servicio@sheinglam-boutique.xyz");
         emailSender.send(message);
     }
 }
