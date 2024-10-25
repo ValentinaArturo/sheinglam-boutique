@@ -32,8 +32,7 @@ class OrdenBloc extends Bloc<OrdenEvent, OrdenState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -66,8 +65,7 @@ class OrdenBloc extends Bloc<OrdenEvent, OrdenState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -97,8 +95,7 @@ class OrdenBloc extends Bloc<OrdenEvent, OrdenState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );

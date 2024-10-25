@@ -45,6 +45,10 @@ final class UsuarioEdited extends UsuarioEvent {
   final String correoElectronico;
   final String password;
   final int rol;
+  final String address;
+  final String phone;
+  final String postal;
+  final int ciudad;
   final int id;
 
   const UsuarioEdited({
@@ -53,6 +57,10 @@ final class UsuarioEdited extends UsuarioEvent {
     required this.correoElectronico,
     required this.password,
     required this.rol,
+    required this.postal,
+    required this.address,
+    required this.phone,
+    required this.ciudad,
     required this.id,
   });
 }

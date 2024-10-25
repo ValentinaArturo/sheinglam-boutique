@@ -58,8 +58,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -85,8 +84,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
           idProductoPromocion: event.idProductoPromocion);
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -116,8 +114,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -145,8 +142,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -178,8 +174,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -208,8 +203,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -237,8 +231,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -266,8 +259,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -296,8 +288,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -325,8 +316,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -354,8 +344,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -383,8 +372,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -421,8 +409,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -453,8 +440,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -485,8 +471,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -517,8 +502,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -555,8 +539,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -586,8 +569,7 @@ class ProductoBloc extends Bloc<ProductoEvent, ProductoState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );

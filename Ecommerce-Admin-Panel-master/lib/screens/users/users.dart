@@ -141,6 +141,10 @@ class _UsersScreenState extends State<UsersScreen> {
             correoElectronico: correoController.text,
             password: passwordController.text,
             rol: selectedRol.idRol,
+            address: direccionController.text,
+            ciudad: selectedCiudad.idCiudad,
+            postal: postalController.text,
+            phone: telefonoController.text,
           ),
         );
   }
@@ -383,12 +387,6 @@ class _UsersScreenState extends State<UsersScreen> {
               setState(() => _isLoading = false);
               break;
             case const (UsuarioEditedSuccess):
-              // _updateDireccionEnvio(
-              //   id: _idCliente!,
-              //   idDireccionEnvio:
-              //       obtenerDireccionPorUsuario(_idCliente!, direccionesEnvio)!
-              //           .idDireccion,
-              // );
               setState(() => _isLoading = false);
               break;
             case const (UsuarioDeletedSuccess):

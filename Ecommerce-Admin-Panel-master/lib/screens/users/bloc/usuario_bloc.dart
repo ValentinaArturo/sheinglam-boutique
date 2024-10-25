@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'usuario_event.dart';
+
 part 'usuario_state.dart';
 
 class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
@@ -44,8 +45,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -75,8 +75,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -104,8 +103,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -133,8 +131,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -172,8 +169,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -202,14 +198,17 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
         password: event.password,
         rol: event.rol,
         id: event.id,
+        ciudad: event.ciudad,
+        address: event.address,
+        phone: event.phone,
+        postal: event.postal,
       );
       emit(
         UsuarioEditedSuccess(),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -248,8 +247,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -283,8 +281,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -319,8 +316,7 @@ class UsuarioBloc extends Bloc<UsuarioEvent, UsuarioState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );

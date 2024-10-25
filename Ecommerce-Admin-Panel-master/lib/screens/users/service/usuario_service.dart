@@ -87,22 +87,42 @@ class UsuarioService {
   }
 
   Future<Response<dynamic>> updateUsuario({
-    required int id,
     required String nombre,
     required String apellido,
     required String correoElectronico,
     required String password,
+    required String address,
+    required String phone,
+    required String postal,
+    required int ciudad,
     required int rol,
+    required int id,
   }) async {
     return await client.put(
-      '$usuarioPath/$id',
+      '$clientePath/$id',
       data: {
-        "nombre": nombre,
-        "apellido": apellido,
-        "correoElectronico": correoElectronico,
-        "contraseña": password,
-        "rol": {
-          "idRol": rol,
+        "usuario": {
+          "nombre": nombre,
+          "apellido": apellido,
+          "correoElectronico": correoElectronico,
+          "contraseña": password,
+          "rol": {
+            "idRol": rol,
+          }
+        },
+        "cliente": {
+          "direccion": address,
+          "telefono": phone,
+        },
+        "direccionEnvio": {
+          "direccion": address,
+          "codigoPostal": postal,
+          "pais": {
+            "idPais": 1,
+          },
+          "ciudad": {
+            "idCiudad": ciudad,
+          }
         }
       },
     );

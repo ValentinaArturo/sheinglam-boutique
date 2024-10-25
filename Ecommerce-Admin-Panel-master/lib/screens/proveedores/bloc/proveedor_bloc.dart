@@ -33,8 +33,7 @@ class ProveedorBloc extends Bloc<ProveedorEvent, ProveedorState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -68,8 +67,7 @@ class ProveedorBloc extends Bloc<ProveedorEvent, ProveedorState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -104,8 +102,7 @@ class ProveedorBloc extends Bloc<ProveedorEvent, ProveedorState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500 ) {
         emit(
           ServerClientError(),
         );
@@ -135,8 +132,7 @@ class ProveedorBloc extends Bloc<ProveedorEvent, ProveedorState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
