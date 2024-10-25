@@ -48,17 +48,24 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.local_shipping),
-            title: Text('Envíos'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/envios');
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.topic_outlined),
             title: Text('Categorias'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/categorias');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.topic_outlined),
+            title: Text('Promociones'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/promociones');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.topic_outlined),
+            title: Text('Porveedores'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/proveedores');
             },
           ),
           ListTile(
