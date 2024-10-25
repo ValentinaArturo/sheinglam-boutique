@@ -76,6 +76,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _getCategorias();
     _getProductoPromocion();
     _getProductoCategoria();
+    _getImagenproducto();
   }
 
   void _getProductos() {
@@ -126,14 +127,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
   }
 
-  void _getImagenesById({required int productoId}) {
-    context.read<ProductoBloc>().add(
-          ImagenByIdShown(
-            productoId: productoId,
-          ),
-        );
-  }
-
   void _createProducto() {
     context.read<ProductoBloc>().add(
           ProductoSaved(
@@ -163,7 +156,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
   }
 
-  void _createImagenByProduct({required int productoId}) {
+  void _createImagenByProduct({
+    required int productoId,
+  }) {
     context.read<ProductoBloc>().add(
           ImageCreated(
             idProducto: productoId,
@@ -528,86 +523,76 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             return TableRow(
                               children: [
                                 Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        obtenerImagenesProducto(
-                                                        producto.idProducto,
-                                                        imagenesProductos)
-                                                    .first
-                                                    .imagenProducto ==
-                                                "Sin Imagen"
-                                            ? Expanded(
-                                                child: SizedBox(
-                                                  height: 100,
-                                                  child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount:
-                                                        obtenerImagenesProducto(
-                                                                producto
-                                                                    .idProducto,
-                                                                imagenesProductos)
-                                                            .length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      var imagenProducto =
-                                                          obtenerImagenesProducto(
-                                                                  producto
-                                                                      .idProducto,
-                                                                  imagenesProductos)[
-                                                              index];
-                                                      return Stack(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Container(
-                                                              width: 150,
-                                                              child:
-                                                                  Image.memory(
-                                                                convertirBase64ABytes(
-                                                                    imagenProducto
-                                                                        .imagenProducto),
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: 100,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: obtenerImagenesProducto(
+                                                    producto.idProducto,
+                                                    imagenesProductos)
+                                                .length,
+                                            itemBuilder: (context, index) {
+                                              var imagenProducto =
+                                                  obtenerImagenesProducto(
+                                                      producto.idProducto,
+                                                      imagenesProductos)[index];
+                                              return imagenProducto
+                                                          .imagenProducto ==
+                                                      "Sin imagen"
+                                                  ? Text(
+                                                      "Sin imagen",
+                                                    )
+                                                  : Stack(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: SizedBox(
+                                                            width: 300,
+                                                            child: Image.memory(
+                                                              convertirBase64ABytes(
+                                                                  imagenProducto
+                                                                      .imagenProducto),
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
-                                                          Positioned(
-                                                            top: 0,
-                                                            right: 0,
-                                                            child: IconButton(
-                                                              icon: const Icon(
-                                                                Icons.edit,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                              onPressed: () {},
+                                                        ),
+                                                        Positioned(
+                                                          top: 0,
+                                                          right: 0,
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                              Icons.edit,
+                                                              color:
+                                                                  Colors.black,
                                                             ),
+                                                            onPressed: () {},
                                                           ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                              )
-                                            : Text(
-                                                "Sin imagen",
-                                              ),
-                                        IconButton(
-                                          icon: const Icon(Icons.add,
-                                              color: Colors.black),
-                                          onPressed: () {
-                                            seleccionarImagen(
-                                                producto.idProducto);
-                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                            },
+                                          ),
                                         ),
-                                      ],
-                                    )),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add,
+                                            color: Colors.black),
+                                        onPressed: () {
+                                          seleccionarImagen(
+                                              producto.idProducto);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(producto.nombre),
@@ -618,10 +603,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(obtenerCategoriaProducto(
-                                    producto.idProducto,
-                                    productosCategorias,
-                                  ).categoria.nombre),
+                                  child: Text(
+                                    obtenerCategoriaProducto(
+                                      producto.idProducto,
+                                      productosCategorias,
+                                    ).categoria.nombre,
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -688,7 +675,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   CategoriaPorductoListModel obtenerCategoriaProducto(
-      int idProducto, List<CategoriaPorductoListModel> categoriasProducto) {
+    int idProducto,
+    List<CategoriaPorductoListModel> categoriasProducto,
+  ) {
     var categoriaProducto = categoriasProducto.firstWhere(
       (cp) => cp.producto.idProducto == idProducto,
       orElse: () => CategoriaPorductoListModel(
