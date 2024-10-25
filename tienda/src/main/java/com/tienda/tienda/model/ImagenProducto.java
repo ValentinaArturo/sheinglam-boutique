@@ -11,7 +11,7 @@ public class ImagenProducto {
     
     private String imagenProducto;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
