@@ -1,6 +1,7 @@
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
+import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
 import 'package:ecommerce_admin_panel/screens/promociones/bloc/promociones_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/promociones/model/promociones_model.dart';
 import 'package:flutter/material.dart';
@@ -179,6 +180,25 @@ class _PromocionesBodyState extends State<PromocionesBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MenuDrawer(),
+      appBar: AppBar(
+        title: const Text('Lista de Promociones'),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              _nombre.clear();
+              _descripcion.clear();
+              _descuento.clear();
+              _showPromocionModal();
+            },
+            icon: const Icon(Icons.add, color: Colors.black),
+            label: const Text(
+              'Agregar',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
       body: BlocListener<PromocionesBloc, BaseState>(
         listener: (context, state) {
           switch (state.runtimeType) {
@@ -190,6 +210,7 @@ class _PromocionesBodyState extends State<PromocionesBody> {
               setState(() {
                 _isLoading = false;
                 promociones = loadedState.promociones;
+                filteredPromociones = loadedState.promociones;
               });
               break;
             case const (PromocionesCreatedSuccess):

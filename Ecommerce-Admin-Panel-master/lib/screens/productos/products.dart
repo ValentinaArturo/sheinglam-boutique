@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:html' as html;
 
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
@@ -16,8 +16,12 @@ import 'package:ecommerce_admin_panel/screens/productos/model/proveedor_list_mod
 import 'package:ecommerce_admin_panel/screens/productos/model/talla_list_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
@@ -314,6 +318,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
               'Agregar',
               style: TextStyle(color: Colors.black),
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              generatePdf();
+            },
+            child: const Text('Generar Reporte'),
           ),
         ],
       ),
@@ -772,7 +782,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     },
                                   ),
                                 ),
-
                               ],
                             );
                           }),
@@ -1038,5 +1047,99 @@ class _ProductsScreenState extends State<ProductsScreen> {
         );
       },
     );
+  }
+
+  void generatePdf() async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.crimsonTextRegular();
+    pdf.addPage(
+      pw.Page(
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.helvetica(),
+          bold: pw.Font.helvetica(),
+          italic: pw.Font.helvetica(),
+        ),
+        pageFormat: PdfPageFormat.letter,
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Text('Reporte de Productos',
+                  style: pw.TextStyle(fontSize: 24, font: font)),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  pw.TableRow(children: [
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('ID Producto',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Nombre', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Descripción',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Precio', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Talla', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Color', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Stock', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Proveedor',
+                            style: pw.TextStyle(font: font))),
+                  ]),
+                  ...productos.map((producto) {
+                    return pw.TableRow(
+                      children: [
+                        pw.Text('${producto.idProducto}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.nombre}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.descripcion}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.precio}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.talla.talla}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.color.color}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.stock}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${producto.proveedor.nombre}',
+                            style: pw.TextStyle(font: font)),
+                      ],
+                    );
+                  }).toList(),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+    Uint8List savedFile = await pdf.save();
+    List<int> fileInts = List<int>.from(savedFile);
+    html.AnchorElement(
+      href: 'data:application/octet-stream;charset=utf-16le;base64,'
+          '${base64.encode(fileInts)}',
+    )
+      ..setAttribute(
+          'download', 'productos-${DateTime.now().millisecondsSinceEpoch}.pdf')
+      ..click();
   }
 }

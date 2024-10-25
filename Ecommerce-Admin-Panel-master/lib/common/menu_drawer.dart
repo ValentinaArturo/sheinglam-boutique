@@ -55,14 +55,14 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.topic_outlined),
+            leading: Icon(Icons.discount_outlined),
             title: Text('Promociones'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/promociones');
             },
           ),
           ListTile(
-            leading: Icon(Icons.topic_outlined),
+            leading: Icon(Icons.bus_alert),
             title: Text('Porveedores'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/proveedores');

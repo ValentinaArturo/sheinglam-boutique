@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:typed_data';
+
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
@@ -6,8 +10,10 @@ import 'package:ecommerce_admin_panel/screens/ordenes/bloc/orden_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/ordenes/model/orden_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
@@ -139,12 +145,114 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
+  void generatePdf(List<OrdenListModel> orders) async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.crimsonTextRegular();
+
+    pdf.addPage(
+      pw.Page(
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.helvetica(),
+          bold: pw.Font.helvetica(),
+          italic: pw.Font.helvetica(),
+        ),
+        pageFormat: PdfPageFormat.letter,
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Text('Reporte de Órdenes',
+                  style: pw.TextStyle(fontSize: 24, font: font)),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  // Encabezados de la tabla
+                  pw.TableRow(children: [
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('ID Pedido Estado',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('ID Pedido',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Nombre Cliente',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Estado Pedido',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Fecha', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Total', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Método de Pago',
+                            style: pw.TextStyle(font: font))),
+                  ]),
+                  // Filas de datos
+                  ...orders.map((order) {
+                    return pw.TableRow(
+                      children: [
+                        pw.Text('${order.idPedidoEstado}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${order.pedido.idPedido}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text(
+                            '${order.pedido.cliente.usuario.nombre} ${order.pedido.cliente.usuario.apellido}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${order.estadoPedido.nombre}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${order.fecha}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${order.pedido.total.toStringAsFixed(2)}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${order.pedido.metodoPago.nombre}',
+                            style: pw.TextStyle(font: font)),
+                      ],
+                    );
+                  }).toList(),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Guardar el archivo PDF
+    Uint8List savedFile = await pdf.save();
+    List<int> fileInts = List<int>.from(savedFile);
+    html.AnchorElement(
+      href: 'data:application/octet-stream;charset=utf-16le;base64,'
+          '${base64.encode(fileInts)}',
+    )
+      ..setAttribute(
+          'download', 'ordenes-${DateTime.now().millisecondsSinceEpoch}.pdf')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MenuDrawer(),
       appBar: AppBar(
         title: const Text('Lista de Pedidos'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              generatePdf(pedidos);
+            },
+            child: const Text('Generar Reporte'),
+          ),
+        ],
       ),
       body: BlocListener<OrdenBloc, BaseState>(
         listener: (context, state) {

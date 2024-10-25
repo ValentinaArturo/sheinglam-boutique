@@ -215,6 +215,7 @@ class _ProveedorBodyState extends State<ProveedorBody> {
               setState(() {
                 _isLoading = false;
                 proveedores = loadedState.proveedores;
+                filteredProveedores = loadedState.proveedores;
               });
               break;
             case const (ProveedorCreatedSuccess):
@@ -348,7 +349,7 @@ class _ProveedorBodyState extends State<ProveedorBody> {
                                       onPressed: () {
                                         _idProveedor = proveedor.idProveedor;
                                         _nombre.text = proveedor.nombre;
-                                        _editProveedor();
+                                        _showProveedorModal(true);
                                       },
                                     ),
                                   ),
@@ -357,7 +358,8 @@ class _ProveedorBodyState extends State<ProveedorBody> {
                                     child: IconButton(
                                       icon: const Icon(Icons.delete,
                                           color: Colors.black),
-                                      onPressed: () => (proveedor.idProveedor),
+                                      onPressed: () => _showDeleteModal(proveedor.idProveedor)
+                                      ,
                                     ),
                                   ),
                                 ],

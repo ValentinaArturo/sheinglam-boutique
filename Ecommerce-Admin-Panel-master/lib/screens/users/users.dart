@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:typed_data';
+
 import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
@@ -9,6 +13,9 @@ import 'package:ecommerce_admin_panel/screens/users/model/direccion_list_model.d
 import 'package:ecommerce_admin_panel/screens/users/model/rol_model_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
@@ -342,6 +349,12 @@ class _UsersScreenState extends State<UsersScreen> {
               style: TextStyle(color: Colors.black),
             ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              generatePdf(usuarios);
+            },
+            child: const Text('Generar Reporte'),
+          ),
         ],
       ),
       body: BlocListener<UsuarioBloc, BaseState>(
@@ -644,5 +657,97 @@ class _UsersScreenState extends State<UsersScreen> {
         ),
       ),
     );
+  }
+
+  void generatePdf(List<ClientListModel> clients) async {
+    final pdf = pw.Document();
+    final font = await PdfGoogleFonts.crimsonTextRegular();
+
+    pdf.addPage(
+      pw.Page(
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.helvetica(),
+          bold: pw.Font.helvetica(),
+          italic: pw.Font.helvetica(),
+        ),
+        pageFormat: PdfPageFormat.letter,
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Text('Reporte de Clientes',
+                  style: pw.TextStyle(fontSize: 24, font: font)),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  // Encabezados de la tabla
+                  pw.TableRow(children: [
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('ID Cliente',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child:
+                            pw.Text('Nombre', style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Apellido',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Correo Electrónico',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Dirección',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Teléfono',
+                            style: pw.TextStyle(font: font))),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text('Rol', style: pw.TextStyle(font: font))),
+                  ]),
+                  // Filas de datos
+                  ...clients.map((client) {
+                    return pw.TableRow(
+                      children: [
+                        pw.Text('${client.idCliente}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.usuario.nombre}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.usuario.apellido}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.usuario.correoElectronico}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.direccion}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.telefono}',
+                            style: pw.TextStyle(font: font)),
+                        pw.Text('${client.usuario.rol.nombre}',
+                            style: pw.TextStyle(font: font)),
+                      ],
+                    );
+                  }).toList(),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Guardar el archivo PDF
+    Uint8List savedFile = await pdf.save();
+    List<int> fileInts = List<int>.from(savedFile);
+    html.AnchorElement(
+      href: 'data:application/octet-stream;charset=utf-16le;base64,'
+          '${base64.encode(fileInts)}',
+    )
+      ..setAttribute(
+          'download', 'clientes-${DateTime.now().millisecondsSinceEpoch}.pdf')
+      ..click();
   }
 }
