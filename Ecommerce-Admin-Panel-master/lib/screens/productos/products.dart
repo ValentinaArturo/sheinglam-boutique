@@ -573,7 +573,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                               color:
                                                                   Colors.black,
                                                             ),
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                            },
                                                           ),
                                                         ),
                                                       ],
@@ -607,7 +608,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     obtenerCategoriaProducto(
                                       producto.idProducto,
                                       productosCategorias,
-                                    ).categoria.nombre,
+                                    ).categoria!.nombre,
                                   ),
                                 ),
                                 Padding(

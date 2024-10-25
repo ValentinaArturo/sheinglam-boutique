@@ -13,7 +13,9 @@ class CategoriaPorductoListModel {
       CategoriaPorductoListModel(
         idProductoCategoria: json["idProductoCategoria"],
         producto: ProductoC.fromJson(json["producto"]),
-        categoria: Categoria.fromJson(json["categoria"]),
+        categoria: json['categoria'] == null
+            ? Categoria(idCategoria: 0, nombre: '')
+            : Categoria.fromJson(json["categoria"]),
       );
 }
 
