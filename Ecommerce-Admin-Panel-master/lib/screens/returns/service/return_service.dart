@@ -49,8 +49,8 @@ class ReturnService {
     required String fechaDevolucion,
     required String estado,
   }) async {
-    return await client.post(
-      returnsPath,
+    return await client.put(
+      '$returnsPath/$id',
       data: {
         "pedido": {
           "idPedido": idPedido,

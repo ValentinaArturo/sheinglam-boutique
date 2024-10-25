@@ -380,14 +380,16 @@ class _UsersScreenState extends State<UsersScreen> {
                 title: 'Usuarios',
                 description: "Usuario creado correctamente",
               );
+              setState(() => _isLoading = false);
               break;
             case const (UsuarioEditedSuccess):
-              _updateDireccionEnvio(
-                id: _idCliente!,
-                idDireccionEnvio:
-                    obtenerDireccionPorUsuario(_idCliente!, direccionesEnvio)!
-                        .idDireccion,
-              );
+              // _updateDireccionEnvio(
+              //   id: _idCliente!,
+              //   idDireccionEnvio:
+              //       obtenerDireccionPorUsuario(_idCliente!, direccionesEnvio)!
+              //           .idDireccion,
+              // );
+              setState(() => _isLoading = false);
               break;
             case const (UsuarioDeletedSuccess):
               _loadUsuarios();
@@ -401,9 +403,11 @@ class _UsersScreenState extends State<UsersScreen> {
               final loadedState = state as CiudadSuccess;
               setState(() {
                 ciudades = loadedState.ciudades;
+                _isLoading = false;
               });
               break;
             case const (DireccionEnvioCreatedSuccess):
+              setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Direccion Envio',
@@ -411,6 +415,7 @@ class _UsersScreenState extends State<UsersScreen> {
               );
               break;
             case const (DireccionEnvioEditedSuccess):
+              setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Direccion Envio',

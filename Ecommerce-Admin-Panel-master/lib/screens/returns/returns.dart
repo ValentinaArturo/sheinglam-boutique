@@ -33,7 +33,7 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   final TextEditingController _estado = TextEditingController();
 
   List<ReturnListModel> devoluciones = [];
-  late List<ReturnListModel> filteredDevoluciones;
+  late List<ReturnListModel> filteredDevoluciones = [];
 
   final Map<String, Color> estadoColor = {
     'Pendiente': Colors.orange,
@@ -101,7 +101,11 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
               return ListTile(
                 title: Text(estado),
                 onTap: () {
-                  Navigator.of(context).pop(estado);
+                  setState(() {
+                    _estado.text = estado;
+                  });
+                  _editReturn();
+                  Navigator.of(context).pop();
                 },
               );
             }).toList(),
@@ -347,12 +351,21 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
-                                    icon: const Icon(Icons.refresh,
-                                        color: Colors.black),
-                                    onPressed: () => _cambiarEstado(
-                                        filteredDevoluciones
-                                            .indexOf(devolucion)),
-                                  ),
+                                      icon: const Icon(Icons.refresh,
+                                          color: Colors.black),
+                                      onPressed: () {
+                                        _motivo.text = devolucion.motivo!;
+                                        _idPedido.text = devolucion
+                                            .pedido!.idPedido
+                                            .toString();
+                                        _idReturn = devolucion.idDevolucion;
+                                        _fechaDevolucion.text = devolucion
+                                            .fechaDevolucion
+                                            .toString();
+                                        _estado.text = devolucion.estado!;
+                                        _cambiarEstado(filteredDevoluciones
+                                            .indexOf(devolucion));
+                                      }),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),

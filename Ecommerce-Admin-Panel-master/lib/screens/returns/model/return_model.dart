@@ -2,7 +2,7 @@ class ReturnListModel {
   final int? idDevolucion;
   final Pedido? pedido;
   final String? motivo;
-  final DateTime? fechaDevolucion;
+  final String? fechaDevolucion;
   final String? estado;
 
   ReturnListModel({
@@ -19,8 +19,8 @@ class ReturnListModel {
         pedido: json["pedido"] == null ? null : Pedido.fromJson(json["pedido"]),
         motivo: json["motivo"],
         fechaDevolucion: json["fechaDevolucion"] == null
-            ? null
-            : DateTime.parse(json["fechaDevolucion"]),
+            ? ''
+            :  json["fechaDevolucion"] ,
         estado: json["estado"],
       );
 }
