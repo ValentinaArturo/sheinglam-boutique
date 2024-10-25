@@ -54,6 +54,23 @@ public class UsuarioController {
         return usuarioService.saveUsuario(usuario, password);
     }
 
+    @PutMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestParam String email, @RequestParam String password) {
+        Usuario usuario = usuarioService.getUsuarioByEmail(email);
+
+        if (usuario == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Encriptar la nueva contraseña
+        String passwordToSave = passwordEncoder.encode(password);
+        usuario.setContraseña(passwordToSave);
+
+        usuarioService.saveUsuario(usuario, passwordToSave);
+        return ResponseEntity.ok("Contraseña actualizada correctamente.");
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable int id, @RequestBody Usuario usuarioDetails) {
         Usuario usuario = usuarioService.getUsuarioById(id);
