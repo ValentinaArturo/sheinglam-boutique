@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 20),
                   Center(
                     child: Text(
-                      '${userProfile.usuario?.nombre}',
+                      '${userProfile.usuario?.nombre}' ?? '',
                       style: const TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 4),
                   Center(
                     child: Text(
-                      '${userProfile.usuario?.correoElectronico}',
+                      '${userProfile.usuario?.correoElectronico}' ?? '',
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.grey[600],
@@ -156,12 +156,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildProfileInfoRow(
                     icon: Icons.location_on,
                     label: 'Dirección:',
-                    value: '${userProfile.direccion}',
+                    value: '${userProfile.direccion}' ?? '',
                   ),
                   _buildProfileInfoRow(
                     icon: Icons.phone,
                     label: 'Teléfono:',
-                    value: '${userProfile.telefono}',
+                    value: '${userProfile.telefono}' ?? '',
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
@@ -214,8 +214,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 20),
                   Center(
                     child: TextButton(
-                      onPressed: () {
-                        // Implementar lógica para cerrar sesión
+                      onPressed: () async {
+                        final String userEmail =
+                            await UserRepository().getUserEmail();
+                        final String rememberUser =
+                            await UserRepository().getRememberUser();
+
+                        await UserRepository().clear();
+                        await UserRepository().setUserIsSession('false');
+                        if (rememberUser == 'true') {
+                          await UserRepository().setUserEmail(userEmail);
+                          await UserRepository().setRememberUser('true');
+                        }
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/',
+                          (route) => false,
+                        );
                       },
                       child: const Text(
                         'Cerrar Sesión',
