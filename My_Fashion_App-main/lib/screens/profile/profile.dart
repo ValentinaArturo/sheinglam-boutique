@@ -62,17 +62,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SpeedDialChild(
             child: const Icon(Icons.shopping_cart_outlined),
             label: 'Carrito',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/cart',(route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/cart',
+            ),
           ),
           SpeedDialChild(
             child: const Icon(Icons.list_alt),
             label: 'Pedidos',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/orders',(route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/orders',
+            ),
           ),
           SpeedDialChild(
             child: const Icon(Icons.person),
             label: 'Perfil',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/profile',(route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/profile',
+            ),
           ),
         ],
       ),

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/resources/constants.dart';
 import 'package:my_fashion_app/screens/RecoverPassword/service/recover_password_service.dart';
-import 'package:my_fashion_app/screens/register/bloc/register_bloc.dart';
 
 part 'recover_event.dart';
 part 'recover_state.dart';
@@ -34,8 +33,7 @@ class RecoverBloc extends Bloc<RecoverEvent, RecoverState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
@@ -66,15 +64,14 @@ class RecoverBloc extends Bloc<RecoverEvent, RecoverState> {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
       } else {
         emit(
           RecoverError(
-            message: error.response!.data[responseMessage],
+            message: "Pin inválido, inntenta de nuevo",
           ),
         );
       }
@@ -94,19 +91,18 @@ class RecoverBloc extends Bloc<RecoverEvent, RecoverState> {
         password: event.password,
       );
       emit(
-        RegisterUserUpdatedSuccess(),
+        RecoverUserUpdatedSuccess(),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == null ||
-          error.response!.statusCode! >= 500 ||
-          error.response!.data[responseCode] == null) {
+          error.response!.statusCode! >= 500) {
         emit(
           ServerClientError(),
         );
       } else {
         emit(
-          RegisterError(
-            message: error.response!.data[responseMessage],
+          RecoverError(
+            message: "Ocurrio un error ${error.response!.statusCode!}",
           ),
         );
       }

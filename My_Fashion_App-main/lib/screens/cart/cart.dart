@@ -119,68 +119,78 @@ class _CartScreenState extends State<CartScreen> {
               break;
           }
         },
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: cartItems.length,
-          itemBuilder: (context, index) {
-            final item = cartItems[index];
-            if (_isLoading) {
-              return const Loader();
-            }
-            return Dismissible(
-              key: Key(item.producto!.nombre!),
-              direction: DismissDirection.endToStart,
-              onDismissed: (direction) {
-                setState(() {
-                  cartItems.removeAt(index);
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:
-                        Text('${item.producto!.nombre} eliminado del carrito'),
+        child: Stack(
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                final item = cartItems[index];
+                if (_isLoading) return Container();
+                return Dismissible(
+                  key: Key(item.producto!.nombre!),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    setState(() {
+                      cartItems.removeAt(index);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('${item.producto!.nombre} eliminado del carrito'),
+                      ),
+                    );
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    color: Colors.red,
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 4,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16.0),
+                      leading: Image.memory(
+                        convertirBase64ABytes(
+                          imagenes
+                              .firstWhere(
+                                (element) =>
+                                    element.producto.idProducto ==
+                                    item.producto!.idProducto,
+                              )
+                              .imagenProducto,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                      title: Text(
+                        item.producto!.nombre!,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text('Cantidad: ${item.cantidad}'),
+                      trailing: Text(
+                        '\$${(item.producto!.precio! * item.cantidad!).toStringAsFixed(2)}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                 );
               },
-              background: Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                color: Colors.red,
-                child: const Icon(Icons.delete, color: Colors.white),
-              ),
-              child: Card(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                elevation: 4,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16.0),
-                  leading: Image.memory(
-                    convertirBase64ABytes(
-                      imagenes
-                          .firstWhere(
-                            (element) =>
-                                element.producto.idProducto ==
-                                item.producto!.idProducto,
-                          )
-                          .imagenProducto,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(
-                    item.producto!.nombre!,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text('Cantidad: ${item.cantidad}'),
-                  trailing: Text(
-                    '\$${(item.producto!.precio! * item.cantidad!).toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            );
-          },
+            ),
+            Builder(
+              builder: (context) {
+                if (_isLoading) {
+                  return const Loader();
+                }
+                return Container();
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Padding(

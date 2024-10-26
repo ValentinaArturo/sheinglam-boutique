@@ -109,12 +109,12 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
               break;
             case RecoverUserUpdatedSuccess:
               setState(() => _isLoading = false);
+              Navigator.pop(context);
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Usuario',
                 description: 'Contraseña actualizada correctamente.',
               );
-              Navigator.pop(context);
               break;
             case RecoverError:
               final stateError = state as RecoverError;
@@ -246,7 +246,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
-                          controller: _emailController,
+                          controller: _pinController,
                           validator: _inputValidator,
                           decoration: InputDecoration(
                             labelText: 'Pin',
@@ -324,7 +324,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
-                          controller: _emailController,
+                          controller: _passwordController,
                           validator: (text) {
                             if ((text == null || text.isEmpty)) {
                               return 'Campo requerido';

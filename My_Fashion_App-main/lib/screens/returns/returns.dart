@@ -82,57 +82,66 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
               break;
           }
         },
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: returns.length,
-          itemBuilder: (context, index) {
-            final returnItem = returns[index];
-            if (_isLoading) {
-              return const Loader();
-            }
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              elevation: 4,
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                title: Text(
-                  'Devolución #${returnItem.idDevolucion}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
+        child: Stack(
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: returns.length,
+              itemBuilder: (context, index) {
+                final returnItem = returns[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Text(
-                        'Monto: \$${returnItem.pedido!.total!.toStringAsFixed(2)}'),
-                    const SizedBox(height: 4),
-                    Row(
+                  elevation: 4,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16.0),
+                    title: Text(
+                      'Devolución #${returnItem.idDevolucion}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Estado: ',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
                         Text(
-                          returnItem.estado!,
-                          style: TextStyle(
-                            color: _getStatusColor(returnItem.estado!),
-                            fontWeight: FontWeight.bold,
-                          ),
+                            'Monto: \$${returnItem.pedido!.total!.toStringAsFixed(2)}'),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Text('Estado: ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              returnItem.estado!,
+                              style: TextStyle(
+                                color: _getStatusColor(returnItem.estado!),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-                onTap: () {
-                  // Implementar la navegación a la pantalla de detalles de la devolución
-                },
-              ),
-            );
-          },
+                    onTap: () {
+                      // Implementar la navegación a la pantalla de detalles de la devolución
+                    },
+                  ),
+                );
+              },
+            ),
+            Builder(
+              builder: (context) {
+                if (_isLoading) {
+                  return const Loader();
+                }
+                return Container();
+              },
+            ),
+          ],
         ),
       ),
     );

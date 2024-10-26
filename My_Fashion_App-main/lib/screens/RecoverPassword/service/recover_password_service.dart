@@ -30,7 +30,7 @@ class RecoveredService {
       validatePinPath,
       queryParameters: {
         'email': email,
-        'pin': email,
+        'pin': pin,
       },
     );
   }

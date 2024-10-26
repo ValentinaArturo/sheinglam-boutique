@@ -1,6 +1,5 @@
 import 'package:my_fashion_app/resources/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomStateDialog {
   static void showAlertDialog(
@@ -14,11 +13,13 @@ class CustomStateDialog {
       builder: (BuildContext context) {
         return AlertDialog(
           icon: isError
-              ? SvgPicture.asset(
-                  '${imagePath}error.svg',
+              ? Image.asset(
+                  '${imagePath}error.png',
+                  height: 70.0,
                 )
-              : SvgPicture.asset(
-                  '${imagePath}success.svg',
+              : Image.asset(
+                  '${imagePath}success.png',
+                  height: 70.0,
                 ),
           iconPadding: const EdgeInsets.all(16.0),
           shape: ContinuousRectangleBorder(

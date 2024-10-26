@@ -23,49 +23,49 @@ class MenuDrawer extends StatelessWidget {
             leading: Icon(Icons.supervised_user_circle_outlined),
             title: Text('Usuarios'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/usuarios');
+              Navigator.pushNamed(context, '/usuarios');
             },
           ),
           ListTile(
             leading: Icon(Icons.shopping_bag),
             title: Text('Productos'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/productos');
+              Navigator.pushNamed(context, '/productos');
             },
           ),
           ListTile(
             leading: Icon(Icons.receipt),
             title: Text('Pedidos'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/pedidos');
+              Navigator.pushNamed(context, '/pedidos');
             },
           ),
           ListTile(
             leading: Icon(Icons.assignment_return),
             title: Text('Devoluciones'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/devoluciones');
+              Navigator.pushNamed(context, '/devoluciones');
             },
           ),
           ListTile(
             leading: Icon(Icons.local_shipping),
             title: Text('Envíos'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/envios');
+              Navigator.pushNamed(context, '/envios');
             },
           ),
           ListTile(
             leading: Icon(Icons.topic_outlined),
             title: Text('Categorias'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/categorias');
+              Navigator.pushNamed(context, '/categorias');
             },
           ),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Cerrar Sesión'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushNamed(context, '/login');
             },
           ),
         ],

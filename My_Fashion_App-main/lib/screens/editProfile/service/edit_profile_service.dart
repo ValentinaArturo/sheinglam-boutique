@@ -71,8 +71,27 @@ class EditProfileService {
     required int id,
   }) async {
     final resp = await client.get(
-      '$addressPath/$id',
+      '$addressPath/9',
     );
     return AddressListModel.fromJson(resp.data);
+  }
+
+  Future<Response> updateDireccionEnvio() async {
+    return await client.put(
+      '$addressPath/9',
+      data: {
+        "cliente": {
+          "idCliente": 2,
+        },
+        "direccion": "123 Calle Ejemplo",
+        "ciudad": {
+          "idCiudad": 1,
+        },
+        "codigoPostal": "01010",
+        "pais": {
+          "idPais": 1,
+        }
+      },
+    );
   }
 }

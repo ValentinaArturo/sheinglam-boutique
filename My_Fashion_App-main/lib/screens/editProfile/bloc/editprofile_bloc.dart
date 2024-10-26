@@ -40,6 +40,7 @@ class EditprofileBloc extends Bloc<EditprofileEvent, EditprofileState> {
         idCiudad: event.idCiudad,
         idPais: event.idPais,
       );
+      await service.updateDireccionEnvio();
       emit(
         EditProfileSuccess(),
       );

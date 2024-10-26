@@ -92,7 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,20 +103,26 @@ class _HomeScreenState extends State<HomeScreen> {
           SpeedDialChild(
             child: const Icon(Icons.shopping_cart_outlined),
             label: 'Carrito',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(
-                context, '/cart', (route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/cart',
+            ),
           ),
           SpeedDialChild(
             child: const Icon(Icons.list_alt),
             label: 'Pedidos',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(
-                context, '/orders', (route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/orders',
+            ),
           ),
           SpeedDialChild(
             child: const Icon(Icons.person),
             label: 'Perfil',
-            onTap: () => Navigator.pushNamedAndRemoveUntil(
-                context, '/profile', (route) => false),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/profile',
+            ),
           ),
         ],
       ),
@@ -139,14 +144,12 @@ class _HomeScreenState extends State<HomeScreen> {
             case ProductoSuccess:
               final loadedState = state as ProductoSuccess;
               setState(() {
-                _isLoading = false;
                 productos = loadedState.productos;
               });
               break;
             case CategoriaSuccess:
               final loadedState = state as CategoriaSuccess;
               setState(() {
-                _isLoading = false;
                 categorias = loadedState.categorias;
               });
               break;

@@ -64,6 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context,
           title: 'Advertencia',
           description: 'Las contraseñas no coinciden',
+          isError: true,
         );
       } else {
         context.read<RegisterBloc>().add(
