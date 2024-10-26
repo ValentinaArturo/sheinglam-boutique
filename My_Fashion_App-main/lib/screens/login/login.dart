@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
+import 'package:my_fashion_app/common/validate_password.dart';
 import 'package:my_fashion_app/screens/login/bloc/login_bloc.dart';
 
 class LoginPage extends StatelessWidget {
@@ -33,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late LoginBloc _loginBloc;
   bool _isLoading = false;
+  bool iconOnFocus = true;
 
   @override
   void dispose() {
@@ -138,14 +140,42 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: Container(
+                            margin: const EdgeInsets.only(
+                              right: 15.0,
+                            ),
+                            child: GestureDetector(
+                              child: !iconOnFocus
+                                  ? const Icon(
+                                Icons.visibility_outlined,
+                                color: Colors.black,
+                                size: 20.0,
+                              )
+                                  : const Icon(
+                                Icons.visibility_off_outlined,
+                                color: Colors.grey,
+                                size: 20.0,
+                              ),
+                              onTap: () => setState(
+                                    () => iconOnFocus = !iconOnFocus,
+                              ),
+                            ),
+                          ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
+                        validator: (text) {
+                          if ((text == null || text.isEmpty)) {
                             return 'Campo requerido';
                           }
+
+                          validatePassword(
+                            text.trim(),
+                            context,
+                          );
+
                           return null;
                         },
-                        obscureText: true,
+                        obscureText: iconOnFocus,
+
                       ),
                       const SizedBox(height: 40),
                       ElevatedButton(

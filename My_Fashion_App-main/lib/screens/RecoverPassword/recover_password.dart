@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
+import 'package:my_fashion_app/common/validate_password.dart';
 import 'package:my_fashion_app/screens/RecoverPassword/bloc/recover_bloc.dart';
 
 class RecoverPasswordPage extends StatelessWidget {
@@ -29,6 +30,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
+  bool iconOnFocus = true;
 
   bool _isLoading = false;
   int page = 1;
@@ -323,15 +325,48 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: _emailController,
-                          validator: _inputValidator,
+                          validator: (text) {
+                            if ((text == null || text.isEmpty)) {
+                              return 'Campo requerido';
+                            }
+
+                            validatePassword(
+                              text.trim(),
+                              context,
+                            );
+
+                            return null;
+                          },
                           decoration: InputDecoration(
                             labelText: 'Nueva contraseñ',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
                             prefixIcon: const Icon(Icons.password),
+                            suffixIcon: Container(
+                              margin: const EdgeInsets.only(
+                                right: 15.0,
+                              ),
+                              child: GestureDetector(
+                                child: !iconOnFocus
+                                    ? const Icon(
+                                        Icons.visibility_outlined,
+                                        color: Colors.black,
+                                        size: 20.0,
+                                      )
+                                    : const Icon(
+                                        Icons.visibility_off_outlined,
+                                        color: Colors.grey,
+                                        size: 20.0,
+                                      ),
+                                onTap: () => setState(
+                                  () => iconOnFocus = !iconOnFocus,
+                                ),
+                              ),
+                            ),
                           ),
                           keyboardType: TextInputType.visiblePassword,
+                          obscureText: iconOnFocus,
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
