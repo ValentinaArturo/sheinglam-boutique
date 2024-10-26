@@ -293,7 +293,6 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                   ),
                 ),
               ),
-            
             if (page == 3)
               Form(
                 key: _formKey,

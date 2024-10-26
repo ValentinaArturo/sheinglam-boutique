@@ -92,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,17 +104,20 @@ class _HomeScreenState extends State<HomeScreen> {
           SpeedDialChild(
             child: const Icon(Icons.shopping_cart_outlined),
             label: 'Carrito',
-            onTap: () => Navigator.pushNamed(context, '/cart'),
+            onTap: () => Navigator.pushNamedAndRemoveUntil(
+                context, '/cart', (route) => false),
           ),
           SpeedDialChild(
             child: const Icon(Icons.list_alt),
             label: 'Pedidos',
-            onTap: () => Navigator.pushNamed(context, '/orders'),
+            onTap: () => Navigator.pushNamedAndRemoveUntil(
+                context, '/orders', (route) => false),
           ),
           SpeedDialChild(
             child: const Icon(Icons.person),
             label: 'Perfil',
-            onTap: () => Navigator.pushNamed(context, '/profile'),
+            onTap: () => Navigator.pushNamedAndRemoveUntil(
+                context, '/profile', (route) => false),
           ),
         ],
       ),
@@ -211,7 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSpacing: 8.0,
                       ),
                       itemCount: productos.length,
-                      // Usar el número de productos en la lista
                       itemBuilder: (context, index) {
                         final producto = productos[index];
                         return GestureDetector(

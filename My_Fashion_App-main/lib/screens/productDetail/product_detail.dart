@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -229,16 +230,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         color: Colors.grey[600],
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.args.detail.precio!.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       'Talla: ${widget.args.detail.talla!.talla}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 20),
-                    Text(
-                      'Color: ${widget.args.detail.color!.color}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Container(
+                      width: 100, // Ancho del container
+                      height: 100, // Altura del container
+                      decoration: BoxDecoration(
+                        color: Color(widget.args.detail.color!.color) , // Usar el int RGB directamente
+                        borderRadius: BorderRadius.circular(8), // Opcional: forma del contenedor
+                      ),
+                    )
                     const SizedBox(height: 16),
                     const Row(
                       children: [
