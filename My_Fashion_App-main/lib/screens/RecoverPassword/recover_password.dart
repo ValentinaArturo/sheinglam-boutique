@@ -31,6 +31,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   final TextEditingController _pinController = TextEditingController();
 
   bool _isLoading = false;
+  int page = 1;
 
   void _sendPinViaEmail() {
     if (_formKey.currentState!.validate()) {
@@ -82,7 +83,10 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
               setState(() => _isLoading = true);
               break;
             case RecoverPinSendSuccess:
-              setState(() => _isLoading = false);
+              setState(() {
+                _isLoading = false;
+                page = 2;
+              });
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Pin enviado',
@@ -91,7 +95,10 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
               );
               break;
             case RecoverPinValidatedSuccess:
-              setState(() => _isLoading = false);
+              setState(() {
+                _isLoading = false;
+                page = 3;
+              });
               CustomStateDialog.showAlertDialog(
                 context,
                 title: 'Pin validado',
@@ -105,6 +112,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                 title: 'Usuario',
                 description: 'Contraseña actualizada correctamente.',
               );
+              Navigator.pop(context);
               break;
             case RecoverError:
               final stateError = state as RecoverError;
@@ -129,83 +137,227 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
         },
         child: Stack(
           children: [
-            Form(
-              key: _formKey,
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Image.asset(
-                          'assets/images/SG.jpg'), // Imagen de logo o ilustración
-                      const SizedBox(height: 40),
-                      const Text(
-                        'Recuperar Contraseña',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Introduce tu correo electrónico para recibir un enlace de recuperación de contraseña.',
-                        style: TextStyle(fontSize: 16.0),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: _emailController,
-                        validator: _inputValidator,
-                        decoration: InputDecoration(
-                          labelText: 'Correo Electrónico',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
+            if (page == 1)
+              Form(
+                key: _formKey,
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Image.asset('assets/images/SG.jpg'),
+                        // Imagen de logo o ilustración
+                        const SizedBox(height: 40),
+                        const Text(
+                          'Recuperar Contraseña',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
-                          prefixIcon: const Icon(Icons.email),
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          _sendPinViaEmail();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                              0xFFAB9144), // Color dorado para el botón
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                30.0), // Bordes redondeados
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        ),
-                        child: const Text(
-                          'Enviar Enlace de Recuperación',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Volver al Login',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    color: const Color(0xFFAB9144),
-                                  ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Introduce tu correo electrónico para recibir un enlace de recuperación de contraseña.',
+                          style: TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _emailController,
+                          validator: _inputValidator,
+                          decoration: InputDecoration(
+                            labelText: 'Correo Electrónico',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            prefixIcon: const Icon(Icons.email),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _sendPinViaEmail();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                                0xFFAB9144), // Color dorado para el botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  30.0), // Bordes redondeados
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          ),
+                          child: const Text(
+                            'Enviar Pin de Recuperación',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Volver al Login',
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: const Color(0xFFAB9144),
+                                    ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            if (page == 2)
+              Form(
+                key: _formKey,
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Image.asset('assets/images/SG.jpg'),
+                        // Imagen de logo o ilustración
+                        const SizedBox(height: 40),
+                        const Text(
+                          'Recuperar Contraseña',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Introduce tu pin para validar',
+                          style: TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _emailController,
+                          validator: _inputValidator,
+                          decoration: InputDecoration(
+                            labelText: 'Pin',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            prefixIcon: const Icon(Icons.pin),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _validatePin();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                                0xFFAB9144), // Color dorado para el botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  30.0), // Bordes redondeados
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          ),
+                          child: const Text(
+                            'Validar Pin de Recuperación',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Volver al Login',
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: const Color(0xFFAB9144),
+                                    ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            if (page == 3)
+              Form(
+                key: _formKey,
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Image.asset('assets/images/SG.jpg'),
+                        // Imagen de logo o ilustración
+                        const SizedBox(height: 40),
+                        const Text(
+                          'Recuperar Contraseña',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Introduce tu nueva contraseña.',
+                          style: TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _emailController,
+                          validator: _inputValidator,
+                          decoration: InputDecoration(
+                            labelText: 'Nueva contraseñ',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            prefixIcon: const Icon(Icons.password),
+                          ),
+                          keyboardType: TextInputType.visiblePassword,
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _updateUserPassword();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                                0xFFAB9144), // Color dorado para el botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  30.0), // Bordes redondeados
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          ),
+                          child: const Text(
+                            'Enviar nueva contraseña',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             Builder(
               builder: (context) {
                 if (_isLoading) {
