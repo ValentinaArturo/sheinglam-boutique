@@ -61,7 +61,7 @@ public class EnvioController {
         }
     }
     
-    @GetMapping("/{departamento}")
+    @GetMapping("/tarifa/{departamento}")
     public TarifaEnvioDTO getTarifaEnvio(@PathVariable String departamento) {
         double tarifa = TarifaEnvio.getTarifa(departamento);
         if (tarifa != -1.0) {
