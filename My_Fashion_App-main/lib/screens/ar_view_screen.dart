@@ -20,10 +20,9 @@ class _AugmentedRealityState extends State<AugmentedReality> {
       appBar: AppBar(
         title: Text("Realidad Aumentada"),
       ),
-      body: Container(),
-      // body: Augmented(
-      //   args, // URL de la imagen
-      // ),
+      body: Augmented(
+        args, // URL de la imagen
+      ),
     );
   }
 }
