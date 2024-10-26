@@ -23,7 +23,7 @@ class FacturaListModel {
 class Pedido {
   final int? idPedido;
   final Cliente? cliente;
-  final DateTime? fecha;
+  final String? fecha;
   final double? total;
   final MetodoPago? metodoPago;
   final String? nit;
@@ -41,7 +41,7 @@ class Pedido {
         idPedido: json["idPedido"],
         cliente:
             json["cliente"] == null ? null : Cliente.fromJson(json["cliente"]),
-        fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
+        fecha: json["fecha"] == null ? null : json["fecha"],
         total: json["total"]?.toDouble(),
         metodoPago: json["metodoPago"] == null
             ? null

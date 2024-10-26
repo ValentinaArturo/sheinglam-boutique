@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/productos': (context) => const ProductsPage(),
         '/pedidos': (context) => const OrdersPage(),
         '/devoluciones': (context) => const ReturnPage(),
-        '/envios': (context) => ShipmentsScreen(),
+        '/envios': (context) => const ShipmentPage(),
         '/no-autorizado': (context) => Unauthorized(),
         '/usuarios': (context) => const UsersPage(),
         '/categorias': (context) => const CategoriaPage(),

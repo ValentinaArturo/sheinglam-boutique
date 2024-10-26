@@ -69,6 +69,13 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.monetization_on_outlined),
+            title: Text('Facturas'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/envios');
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.logout),
             title: Text('Cerrar Sesión'),
             onTap: () {
@@ -79,4 +86,5 @@ class MenuDrawer extends StatelessWidget {
       ),
     );
   }
+
 }

@@ -16,7 +16,7 @@ const String imagenProductoPath = 'api/imagenes-producto';
 const String returnsPath = 'api/devoluciones';
 const String productosPromocionesPath = 'api/productos-promociones';
 const String shipmentPath = 'pedidos-estados';
-const String facturasPath = 'facturas';
-const String detalleFacturasPath = 'detalles-factura';
+const String facturasPath = 'api/facturas';
+const String detalleFacturasPath = 'api/detalles-factura';
 const String rolesPath = 'api/roles';
 
