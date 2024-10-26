@@ -1,5 +1,21 @@
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
+import 'package:ecommerce_admin_panel/screens/shipment/bloc/shipment_bloc.dart';
+import 'package:ecommerce_admin_panel/screens/shipment/model/detalle_factura_list_model.dart';
+import 'package:ecommerce_admin_panel/screens/shipment/model/factura_list_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ShipmentPage extends StatelessWidget {
+  const ShipmentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ShipmentBloc(),
+      child: const ShipmentsScreen(),
+    );
+  }
+}
 
 class ShipmentsScreen extends StatefulWidget {
   const ShipmentsScreen({super.key});
@@ -9,28 +25,21 @@ class ShipmentsScreen extends StatefulWidget {
 }
 
 class _ShipmentsScreenState extends State<ShipmentsScreen> {
-  List<Map<String, dynamic>> _envios = [];
-  late List<Map<String, dynamic>> _filteredEnvios = [];
+  List<FacturaListModel> _facturas = [];
+  List<DetalleFacturaListModel> _detalleFacturas = [];
+
+  late List<FacturaListModel> _filteredfactura = [];
 
   @override
   void initState() {
     super.initState();
-    //_loadEnvios();
+
   }
-
-  Future<void> _loadEnvios() async {}
-
-  Future<void> _agregarEnvio(BuildContext context) async {}
-
-  Future<void> _editarEnvio(BuildContext context, int index) async {}
-
-  void _eliminarEnvio(int index) async {}
-
   void _filterEnvios(String query) {
     setState(() {
-      _filteredEnvios = _envios.where((envio) {
-        final nombreLower = envio['nombre'].toLowerCase();
-        final departamentoLower = envio['departamento'].toLowerCase();
+      _filteredfactura = _facturas.where((factura) {
+        final nombreLower = factura.pedido!.cliente!.usuario!.correoElectronico!.toLowerCase();
+        final departamentoLower = factura.pedido!.nit.toString();
         final queryLower = query.toLowerCase();
 
         return nombreLower.contains(queryLower) ||
@@ -44,135 +53,91 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
     return Scaffold(
       drawer: MenuDrawer(),
       appBar: AppBar(
-        title: Text('Lista de Envíos'),
-        actions: [
-          TextButton.icon(
-            onPressed: () => _agregarEnvio(context),
-            icon: Icon(Icons.add, color: Colors.black),
-            label: Text(
-              'Agregar',
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
+        title: Text('Lista de facturas'),
+        actions: [],
       ),
       body: Stack(
         children: [
-          // Imagen de fondo
           Positioned.fill(
             child: Image.asset(
-              'assets/images/fondo_agua.jpg', // Ruta de tu imagen de fondo
+              'assets/images/fondo_agua.jpg',
               fit: BoxFit.cover,
             ),
           ),
-          // Contenido principal
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 150.0),
+            margin: const EdgeInsets.symmetric(horizontal: 150.0),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
                   TextField(
                     decoration: InputDecoration(
-                      hintText: 'Buscar envíos...',
-                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Buscar facturas por nit o correo de usuario...',
+                      prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(color: Colors.black),
+                        borderSide: const BorderSide(color: Colors.black),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(color: Colors.black),
+                        borderSide: const BorderSide(color: Colors.black),
                       ),
                     ),
                     onChanged: _filterEnvios,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Table(
                         border: TableBorder.all(color: Colors.grey),
-                        columnWidths: {
+                        columnWidths: const {
                           0: FlexColumnWidth(3),
                           1: FlexColumnWidth(2),
                           2: FlexColumnWidth(2),
-                          3: FixedColumnWidth(100),
-                          4: FixedColumnWidth(100),
                         },
                         children: [
                           TableRow(
                             decoration: BoxDecoration(
                               color: Colors.grey[300],
                             ),
-                            children: [
+                            children: const [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Nombre',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Departamento',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Precio',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Editar',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Eliminar',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
                             ],
                           ),
-                          ..._filteredEnvios.map((envio) {
+                          ..._filteredfactura.map((factura) {
                             return TableRow(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(envio['nombre']),
+                                  child: Text(factura.pedido?.cliente?.usuario?.nombre ?? 'Sin nombre'),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(envio['departamento']),
+                                  child: Text(factura.pedido?.nit ?? 'Sin departamento'),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text('\$${envio['precio']}'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.black),
-                                    onPressed: () => _editarEnvio(context,
-                                        _filteredEnvios.indexOf(envio)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    icon:
-                                        Icon(Icons.delete, color: Colors.black),
-                                    onPressed: () => _eliminarEnvio(
-                                        _filteredEnvios.indexOf(envio)),
-                                  ),
+                                  child: Text('\$${factura.total?.toStringAsFixed(2) ?? '0.00'}'),
                                 ),
                               ],
                             );
@@ -187,93 +152,6 @@ class _ShipmentsScreenState extends State<ShipmentsScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _EnvioDialog extends StatefulWidget {
-  final Map<String, dynamic>? envio;
-
-  _EnvioDialog({this.envio});
-
-  @override
-  __EnvioDialogState createState() => __EnvioDialogState();
-}
-
-class __EnvioDialogState extends State<_EnvioDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nombreController;
-  late TextEditingController _departamentoController;
-  late TextEditingController _precioController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nombreController =
-        TextEditingController(text: widget.envio?['nombre'] ?? '');
-    _departamentoController =
-        TextEditingController(text: widget.envio?['departamento'] ?? '');
-    _precioController =
-        TextEditingController(text: widget.envio?['precio']?.toString() ?? '');
-  }
-
-  @override
-  void dispose() {
-    _nombreController.dispose();
-    _departamentoController.dispose();
-    _precioController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.envio == null ? 'Agregar Envío' : 'Editar Envío'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _nombreController,
-              decoration: InputDecoration(labelText: 'Nombre'),
-              validator: (value) =>
-                  value!.isEmpty ? 'El nombre es obligatorio' : null,
-            ),
-            TextFormField(
-              controller: _departamentoController,
-              decoration: InputDecoration(labelText: 'Departamento'),
-              validator: (value) =>
-                  value!.isEmpty ? 'El departamento es obligatorio' : null,
-            ),
-            TextFormField(
-              controller: _precioController,
-              decoration: InputDecoration(labelText: 'Precio'),
-              keyboardType: TextInputType.number,
-              validator: (value) =>
-                  value!.isEmpty ? 'El precio es obligatorio' : null,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              Navigator.of(context).pop({
-                'nombre': _nombreController.text,
-                'departamento': _departamentoController.text,
-                'precio': double.parse(_precioController.text),
-              });
-            }
-          },
-          child: Text(widget.envio == null ? 'Agregar' : 'Actualizar'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancelar'),
-        ),
-      ],
     );
   }
 }

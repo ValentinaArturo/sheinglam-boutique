@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\Users\walta\AppData\Local\Developer\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\walta\Dev\sheinglam\ecommerce_admin_panel"
+export "FLUTTER_ROOT=/Users/valentinaarturo/fvm/versions/3.24.4"
+export "FLUTTER_APPLICATION_PATH=/Users/valentinaarturo/Documents/sheinglam-boutique/Ecommerce-Admin-Panel-master"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

@@ -12,4 +12,6 @@ const List<Locale> supportedLocales = [
 ];
 const emailRegexp =
     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-const String passwordRegExp = r'^([^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$';
+
+const passwordRegex =
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*]).{8,}$';

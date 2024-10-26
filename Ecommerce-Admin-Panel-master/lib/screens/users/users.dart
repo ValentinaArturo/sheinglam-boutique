@@ -6,6 +6,7 @@ import 'package:ecommerce_admin_panel/common/bloc/base_state.dart';
 import 'package:ecommerce_admin_panel/common/dialog/custom_state_dialog.dart';
 import 'package:ecommerce_admin_panel/common/loader/loader.dart';
 import 'package:ecommerce_admin_panel/common/menu_drawer.dart';
+import 'package:ecommerce_admin_panel/common/validation/validate_password.dart';
 import 'package:ecommerce_admin_panel/screens/users/bloc/usuario_bloc.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/ciudad_list_model.dart';
 import 'package:ecommerce_admin_panel/screens/users/model/cliente_list_model.dart';
@@ -135,7 +136,7 @@ class _UsersScreenState extends State<UsersScreen> {
   void _editUsuario() {
     context.read<UsuarioBloc>().add(
           UsuarioEdited(
-            id: _idUsuario!,
+            id: _idCliente!,
             nombre: nombreController.text,
             apellido: apellidoController.text,
             correoElectronico: correoController.text,
@@ -211,9 +212,21 @@ class _UsersScreenState extends State<UsersScreen> {
                     decoration: const InputDecoration(labelText: 'Correo'),
                     controller: correoController,
                   ),
-                  TextField(
+                  TextFormField(
                     decoration: const InputDecoration(labelText: 'Contraseña'),
                     controller: passwordController,
+                    validator: (text) {
+                      if ((text == null || text.isEmpty)) {
+                        return 'Campo requerido';
+                      }
+
+                      validatePassword(
+                        text.trim(),
+                        context,
+                      );
+
+                      return null;
+                    },
                   ),
                   DropdownButtonFormField<RolListmodel>(
                     value: roles.firstWhere(
@@ -388,6 +401,8 @@ class _UsersScreenState extends State<UsersScreen> {
               break;
             case const (UsuarioEditedSuccess):
               setState(() => _isLoading = false);
+              _loadDirecciones();
+              _loadUsuarios();
               break;
             case const (UsuarioDeletedSuccess):
               _loadUsuarios();
