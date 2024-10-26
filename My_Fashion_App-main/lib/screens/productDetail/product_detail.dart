@@ -38,6 +38,7 @@ class ProductDetailPage extends StatelessWidget {
 
 class ProductDetailScreen extends StatefulWidget {
   final ScreenArguments args;
+
   const ProductDetailScreen({
     super.key,
     required this.args,
@@ -201,6 +202,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         convertirBase64ABytes(widget.args.imagen),
                         fit: BoxFit.cover,
                       ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/ar_view',
+                          arguments:  convertirBase64ABytes(widget.args.imagen)
+                        );
+                      },
+                      icon: Icon(Icons.camera_alt_outlined),
                     ),
                     const SizedBox(height: 16),
                     Text(

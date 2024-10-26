@@ -124,6 +124,7 @@ class ShoppingApp extends StatelessWidget {
         '/return_form': (context) => ReturnFormScreen(),
         '/payment': (context) => const PaymentPage(),
         '/edit_profile': (context) => const EditProfilePage(),
+        '/ar_view': (context) => const AugmentedReality(),
       },
     );
   }
