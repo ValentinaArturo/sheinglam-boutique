@@ -45,7 +45,9 @@ class Usuario {
         apellido: json["apellido"],
         correoElectronico: json["correoElectronico"],
         contrasea: json["contraseña"],
-        rol: Rol.fromJson(json["rol"]),
+        rol: json["rol"] == null
+            ? Rol(idRol: 0, nombre: '')
+            : Rol.fromJson(json["rol"]),
       );
 }
 

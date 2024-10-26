@@ -93,7 +93,7 @@ class UsuarioD {
   final String apellido;
   final String correoElectronico;
   final String contrasea;
-  final RolD rol;
+  final RolD? rol;
 
   UsuarioD({
     required this.idUsuario,
@@ -110,7 +110,7 @@ class UsuarioD {
         apellido: json["apellido"],
         correoElectronico: json["correoElectronico"],
         contrasea: json["contraseña"],
-        rol: RolD.fromJson(json["rol"]),
+        rol: json["rol"] == null ? RolD(idRol: 0, nombre: ''): RolD.fromJson(json["rol"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -119,7 +119,7 @@ class UsuarioD {
         "apellido": apellido,
         "correoElectronico": correoElectronico,
         "contraseña": contrasea,
-        "rol": rol.toJson(),
+        "rol": rol?.toJson(),
       };
 }
 
