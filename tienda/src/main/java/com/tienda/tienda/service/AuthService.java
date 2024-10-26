@@ -35,7 +35,7 @@ public class AuthService {
 	                .setClaims(claims)
 	                .setSubject(userName)
 	                .setIssuedAt(new Date())
-	                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // Token valid for 30 minutes
+	                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Token válido por 24 horas
 	                .signWith(getSignKey(), SignatureAlgorithm.HS256)
 	                .compact();
 	    }
