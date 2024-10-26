@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -206,11 +205,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          '/ar_view',
-                          arguments:  convertirBase64ABytes(widget.args.imagen)
-                        );
+                        Navigator.pushReplacementNamed(context, '/ar_view',
+                            arguments:
+                                convertirBase64ABytes(widget.args.imagen));
                       },
                       icon: Icon(Icons.camera_alt_outlined),
                     ),
@@ -244,14 +241,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 20),
-                    Container(
-                      width: 100, // Ancho del container
-                      height: 100, // Altura del container
-                      decoration: BoxDecoration(
-                        color: Color(widget.args.detail.color!.color) , // Usar el int RGB directamente
-                        borderRadius: BorderRadius.circular(8), // Opcional: forma del contenedor
-                      ),
-                    )
+                    Text(
+                      'Color: ${widget.args.detail.color!.color}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
                     const SizedBox(height: 16),
                     const Row(
                       children: [
