@@ -8,3 +8,5 @@ abstract class CartEvent extends Equatable {
 }
 
 class CartListShown extends CartEvent {}
+
+class ImagenShown extends CartEvent {}

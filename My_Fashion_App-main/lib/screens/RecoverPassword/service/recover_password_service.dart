@@ -11,12 +11,40 @@ class RecoveredService {
     this.guess,
   );
 
-  Future<Response> recoverPassword({
+  Future<Response> sendPinViaEmail({
     required String email,
   }) async {
     return await guess.post(
-      usuarioPath,
-      data: {},
+      sendPinPath,
+      queryParameters: {
+        'email': email,
+      },
+    );
+  }
+
+  Future<Response> validatePin({
+    required String email,
+    required String pin,
+  }) async {
+    return await guess.post(
+      validatePinPath,
+      queryParameters: {
+        'email': email,
+        'pin': email,
+      },
+    );
+  }
+
+  Future<Response> updatePassword({
+    required String email,
+    required String password,
+  }) async {
+    return await guess.put(
+      '$usuarioPath/update-password',
+      queryParameters: {
+        "email": email,
+        "password": password,
+      },
     );
   }
 }

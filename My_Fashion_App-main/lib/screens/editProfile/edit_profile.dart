@@ -4,9 +4,9 @@ import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
 import 'package:my_fashion_app/repository/user_repository.dart';
-import 'package:my_fashion_app/resources/constants.dart';
 import 'package:my_fashion_app/screens/editProfile/bloc/editprofile_bloc.dart';
 import 'package:my_fashion_app/screens/editProfile/model/edit_profile_model.dart';
+import 'package:my_fashion_app/screens/editProfile/model/profile_model.dart';
 
 class EditProfilePage extends StatelessWidget {
   const EditProfilePage({super.key});
@@ -32,54 +32,89 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   // Controladores de texto para los campos del formulario
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _shippingAddressController =
+      TextEditingController();
+  final TextEditingController _postalCodeController = TextEditingController();
 
   final UserRepository _userRepository = UserRepository();
 
-  late int _userId;
-  late AddressListModel addressModel;
+  late int? _userId;
+  late int? _cityId;
+  late int? _countryId;
+
+  AddressListModel addressModel = AddressListModel();
+  PerfilModel userProfile = PerfilModel();
+
   bool _isLoading = false;
 
   @override
   void initState() {
+    _userId = null;
+    _cityId = null;
+    _countryId = null;
     _getLocalUserId();
-    _getAddressUser();
     super.initState();
   }
 
   void _getLocalUserId() async {
-    _userId = int.parse(await _userRepository.getUserId());
+    _userId = int.parse(await _userRepository.getUserId()) - 1;
+    _getAddressUser();
+    _getUserProfile();
   }
 
   void _getAddressUser() {
     context.read<EditprofileBloc>().add(
-          AddressShown(id: _userId),
+          AddressShown(id: _userId!),
         );
   }
 
-  void _setDataToFields() {
-    _nameController.text = addressModel.cliente!.usuario!.nombre!;
-    _emailController.text = addressModel.cliente!.usuario!.correoElectronico!;
-    _emailController.text = addressModel.cliente!.usuario!.contrasea!;
-    _addressController.text = addressModel.cliente!.direccion ?? emptyString;
-    _phoneController.text = addressModel.cliente!.telefono ?? emptyString;
+  void _getUserProfile() {
+    context.read<EditprofileBloc>().add(
+          ProfileShown(id: _userId!),
+        );
   }
 
-  void _editProfile() {
+  void _editUserProfile() {
     context.read<EditprofileBloc>().add(
           ProfileEdited(
-            id: _userId,
-            name: _nameController.text.split(' ')[0],
-            lastName: _nameController.text.split(' ')[1],
+            id: _userId!,
+            name: _nameController.text,
+            lastName: _lastNameController.text,
             email: _emailController.text,
             password: _passwordController.text,
             address: _addressController.text,
             phone: _phoneController.text,
+            direccionEnvio: _shippingAddressController.text,
+            codigoPostal: _postalCodeController.text,
+            idCiudad: _cityId!,
+            idPais: _countryId!,
           ),
         );
+  }
+
+  void _setDataToFields() {
+    setState(() {
+      _nameController.text = '${userProfile.usuario?.nombre}';
+      _lastNameController.text = '${userProfile.usuario?.apellido}';
+      _emailController.text = '${userProfile.usuario?.correoElectronico}';
+      _passwordController.text = '${userProfile.usuario?.contrasea}';
+      _addressController.text = '${userProfile.direccion}';
+      _phoneController.text = '${userProfile.telefono}';
+    });
+  }
+
+  void _setAddressToFields() {
+    setState(() {
+      _shippingAddressController.text = '${addressModel.direccion}';
+      _postalCodeController.text = '${addressModel.codigoPostal}';
+      _cityId = addressModel.ciudad!.idCiudad;
+      _countryId = addressModel.pais!.idPais;
+    });
   }
 
   @override
@@ -92,18 +127,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: BlocListener<EditprofileBloc, BaseState>(
         listener: (context, state) {
           switch (state.runtimeType) {
-            case EditprofileInProgress:
+            case EditProfileInProgress:
               setState(() => _isLoading = true);
               break;
-            case EditprofileAddressSuccess:
-              final loadedData = state as EditprofileAddressSuccess;
+            case ProfileSuccess:
+              final loadedData = state as ProfileSuccess;
               setState(() {
-                _isLoading = true;
-                addressModel = loadedData.addressModel;
+                _isLoading = false;
+                userProfile = loadedData.userProfile;
               });
               _setDataToFields();
               break;
-            case EditprofileSuccess:
+            case AddressSuccess:
+              final loadedData = state as AddressSuccess;
+              setState(() {
+                _isLoading = false;
+                addressModel = loadedData.addressModel;
+                _setAddressToFields();
+              });
+              break;
+            case EditProfileSuccess:
               setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
                 context,
@@ -142,13 +185,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTextField(
-                        label: 'Nombre Completo',
+                        label: 'Nombre',
                         controller: _nameController,
+                        icon: Icons.person),
+                    _buildTextField(
+                        label: 'Apellido',
+                        controller: _lastNameController,
                         icon: Icons.person),
                     _buildTextField(
                         label: 'Correo Electrónico',
                         controller: _emailController,
                         icon: Icons.email),
+                    _buildTextField(
+                        label: 'Contraseña',
+                        controller: _passwordController,
+                        icon: Icons.person),
                     _buildTextField(
                         label: 'Dirección',
                         controller: _addressController,
@@ -157,12 +208,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         label: 'Teléfono',
                         controller: _phoneController,
                         icon: Icons.phone),
+                    _buildTextField(
+                        label: 'Direccion de envio',
+                        controller: _shippingAddressController,
+                        icon: Icons.person),
+                    _buildTextField(
+                        label: 'Codig Postal',
+                        controller: _postalCodeController,
+                        icon: Icons.person),
                     const SizedBox(height: 30),
                     Center(
                       child: ElevatedButton.icon(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _editProfile();
+                            _editUserProfile();
                           }
                         },
                         icon: const Icon(

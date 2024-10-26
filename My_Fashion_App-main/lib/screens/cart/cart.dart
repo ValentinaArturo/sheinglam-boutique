@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
-import 'package:my_fashion_app/resources/constants.dart';
+import 'package:my_fashion_app/repository/user_repository.dart';
 import 'package:my_fashion_app/screens/cart/bloc/cart_bloc.dart';
 import 'package:my_fashion_app/screens/cart/model/cart_model.dart';
+import 'package:my_fashion_app/screens/payment/payment.dart';
+import 'package:my_fashion_app/screens/productDetail/model/imagen_producto_model.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -28,27 +33,42 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   List<CartListModel> cartItems = [];
-  final double shippingCost = 20.0;
+  List<ImagenListModel> imagenes = [];
 
+  final UserRepository _userRepository = UserRepository();
+
+  late int _userId;
   bool _isLoading = false;
 
   @override
   void initState() {
-    _getCartList();
+    _getLocalUserId();
     super.initState();
   }
 
+  void _getLocalUserId() async {
+    _userId = int.parse(await _userRepository.getUserId()) - 1;
+    _getCartList();
+  }
+
   void _getCartList() {
-    context.read<CartBloc>().add(
-          CartListShown(),
-        );
+    context.read<CartBloc>()
+      ..add(
+        CartListShown(),
+      )
+      ..add(
+        ImagenShown(),
+      );
+  }
+
+  Uint8List convertirBase64ABytes(String base64String) {
+    return base64Decode(base64String);
   }
 
   @override
   Widget build(BuildContext context) {
     double total = cartItems.fold(
-            0.0, (sum, item) => sum + item.producto!.precio! * item.cantidad!) +
-        shippingCost;
+        0.0, (sum, item) => sum + item.producto!.precio! * item.cantidad!);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,8 +84,18 @@ class _CartScreenState extends State<CartScreen> {
             case CartListSuccess:
               final loadedState = state as CartListSuccess;
               setState(() {
+                cartItems = loadedState.carrito
+                    .where(
+                      (element) => element.carrito!.idCarrito == _userId,
+                    )
+                    .toList();
+              });
+              break;
+            case ImagenSuccess:
+              final loadedState = state as ImagenSuccess;
+              setState(() {
+                imagenes = loadedState.imagen;
                 _isLoading = false;
-                cartItems = loadedState.carrito;
               });
               break;
             case CartError:
@@ -125,10 +155,17 @@ class _CartScreenState extends State<CartScreen> {
                 elevation: 4,
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16.0),
-                  leading: Image.asset(
-                    '${imagePath}product${index + 1}.png',
-                    width: 50,
-                    height: 50,
+                  leading: Image.memory(
+                    convertirBase64ABytes(
+                      imagenes
+                          .firstWhere(
+                            (element) =>
+                                element.producto.idProducto ==
+                                item.producto!.idProducto,
+                          )
+                          .imagenProducto,
+                    ),
+                    fit: BoxFit.cover,
                   ),
                   title: Text(
                     item.producto!.nombre!,
@@ -168,7 +205,14 @@ class _CartScreenState extends State<CartScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/payment');
+                Navigator.pushNamed(
+                  context,
+                  '/payment',
+                  arguments: PaymentArguments(
+                    cartItems,
+                    imagenes,
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),

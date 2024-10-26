@@ -1,11 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
-import 'package:my_fashion_app/resources/constants.dart';
+import 'package:my_fashion_app/repository/user_repository.dart';
 import 'package:my_fashion_app/screens/productDetail/bloc/producto_detalle_bloc.dart';
 import 'package:my_fashion_app/screens/productos/model/producto_list_model.dart';
+
+class ScreenArguments {
+  final ProductoListModel detail;
+  final String imagen;
+
+  ScreenArguments(
+    this.detail,
+    this.imagen,
+  );
+}
 
 class ProductDetailPage extends StatelessWidget {
   const ProductDetailPage({super.key});
@@ -13,19 +26,21 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args =
-        (ModalRoute.of(context)!.settings.arguments) as ProductoListModel;
+        (ModalRoute.of(context)!.settings.arguments) as ScreenArguments;
     return BlocProvider(
       create: (context) => ProductoDetalleBloc(),
-      child: ProductDetailScreen(detail: args),
+      child: ProductDetailScreen(
+        args: args,
+      ),
     );
   }
 }
 
 class ProductDetailScreen extends StatefulWidget {
-  final ProductoListModel detail;
+  final ScreenArguments args;
   const ProductDetailScreen({
     super.key,
-    required this.detail,
+    required this.args,
   });
 
   @override
@@ -33,29 +48,75 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  String image = 'product1.png';
+  final UserRepository _userRepository = UserRepository();
+
+  late int _userId;
+  late int _carritoId;
+  late String image;
+
   bool _isLoading = false;
+  bool _existeCarrito = false;
 
   @override
   void initState() {
-    _getProductoImagen();
+    image = '';
+    _getLocalUserId();
     super.initState();
+  }
+
+  void _getLocalUserId() async {
+    _userId = int.parse(await _userRepository.getUserId()) - 1;
+    _getProductoImagen();
+    _getCart();
   }
 
   void _getProductoImagen() {
     context.read<ProductoDetalleBloc>().add(
           ImagenShown(
-            idProducto: widget.detail.producto.idProducto,
+            idProducto: widget.args.detail.idProducto!,
+          ),
+        );
+  }
+
+  void _getCart() {
+    context.read<ProductoDetalleBloc>().add(
+          CarritoShown(
+            idCliente: _userId,
+          ),
+        );
+  }
+
+  void _createCart() {
+    context.read<ProductoDetalleBloc>().add(
+          CarritoCreated(
+            idCliente: _userId,
           ),
         );
   }
 
   void _addToCart() {
-    context.read<ProductoDetalleBloc>().add(CarritoAdded(
-          idCarrito: 1,
-          idProducto: widget.detail.producto.idProducto,
-          cantidad: 1,
-        ));
+    context.read<ProductoDetalleBloc>().add(
+          CarritoAdded(
+            idCarrito: _carritoId,
+            idProducto: widget.args.detail.idProducto!,
+            cantidad: 1,
+          ),
+        );
+  }
+
+  void _updateCart() {
+    context.read<ProductoDetalleBloc>().add(
+          CarritoUpdated(
+            id: _userId,
+            idCarrito: _carritoId,
+            idProducto: widget.args.detail.idProducto!,
+            cantidad: 1,
+          ),
+        );
+  }
+
+  Uint8List convertirBase64ABytes(String base64String) {
+    return base64Decode(base64String);
   }
 
   @override
@@ -78,7 +139,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 image = loadedState.imagen.imagenProducto;
               });
               break;
+            case CarritoObtainedSuccess:
+              final loadedState = state as CarritoObtainedSuccess;
+              setState(() {
+                _isLoading = false;
+                _existeCarrito = true;
+                _carritoId = loadedState.carrito.idCarrito!;
+              });
+              break;
             case CarritoCreatedSuccess:
+              _addToCart();
+              break;
+            case CarritoAddedSuccess:
+              setState(() => _isLoading = false);
+              CustomStateDialog.showAlertDialog(
+                context,
+                title: 'Producto Detalle',
+                description: 'Producto agregado al carrito',
+              );
+              break;
+            case CarritoUpdatedSuccess:
               setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
                 context,
@@ -117,16 +197,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: Image.asset(
-                        '$imagePath$image',
-                        width: double.infinity,
-                        height: 250,
-                        fit: BoxFit.fitHeight,
+                      child: Image.memory(
+                        convertirBase64ABytes(widget.args.imagen),
+                        fit: BoxFit.cover,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      widget.detail.producto.nombre,
+                      widget.args.detail.nombre!,
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -134,7 +212,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      widget.detail.producto.descripcion,
+                      widget.args.detail.descripcion!,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -142,12 +220,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Talla: ${widget.detail.producto.talla.talla}',
+                      'Talla: ${widget.args.detail.talla!.talla}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 20),
                     Text(
-                      'Color: ${widget.detail.producto.color.color}',
+                      'Color: ${widget.args.detail.color!.color}',
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 16),
@@ -167,7 +245,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () => _addToCart(),
+                      onPressed: () =>
+                          _existeCarrito ? _addToCart() : _createCart(),
                       icon: const Icon(
                         Icons.shopping_cart,
                         color: Colors.white,
@@ -187,7 +266,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               BorderRadius.circular(30.0), // Bordes redondeados
                         ),
                         padding: const EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 20.0),
+                          vertical: 15.0,
+                          horizontal: 20.0,
+                        ),
                       ),
                     ),
                   ],

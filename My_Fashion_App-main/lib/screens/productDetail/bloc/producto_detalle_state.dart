@@ -14,7 +14,19 @@ class ProductoDetalleSuccess extends ProductoDetalleState {
   });
 }
 
+class CarritoObtainedSuccess extends ProductoDetalleState {
+  final CarritoListModel carrito;
+
+  CarritoObtainedSuccess({
+    required this.carrito,
+  });
+}
+
 class CarritoCreatedSuccess extends ProductoDetalleState {}
+
+class CarritoAddedSuccess extends ProductoDetalleState {}
+
+class CarritoUpdatedSuccess extends ProductoDetalleState {}
 
 class ProductoDetalleError extends ProductoDetalleState {
   final String message;

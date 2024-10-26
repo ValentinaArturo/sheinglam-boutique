@@ -14,6 +14,30 @@ class ProductoSuccess extends ProductoState {
   });
 }
 
+class ImagenSuccess extends ProductoState {
+  final List<ImagenListModel> imagen;
+
+  ImagenSuccess({
+    required this.imagen,
+  });
+}
+
+class CategoriaSuccess extends ProductoState {
+  final List<CategoriaListModel> categorias;
+
+  CategoriaSuccess({
+    required this.categorias,
+  });
+}
+
+class ProductoPromocionSuccess extends ProductoState {
+  final List<ProductoPromocionListModel> productosPromocion;
+
+  ProductoPromocionSuccess({
+    required this.productosPromocion,
+  });
+}
+
 class ProductoError extends ProductoState {
   final String message;
 

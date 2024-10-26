@@ -6,7 +6,11 @@ class RecoverInitial extends RecoverState {}
 
 class RecoverInProgress extends RecoverState {}
 
-class RecoverEmailSuccess extends RecoverState {}
+class RecoverPinSendSuccess extends RecoverState {}
+
+class RecoverPinValidatedSuccess extends RecoverState {}
+
+class RecoverUserUpdatedSuccess extends RecoverState {}
 
 class RecoverError extends RecoverState {
   final String message;

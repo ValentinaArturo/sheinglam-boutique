@@ -7,6 +7,22 @@ abstract class EditprofileEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ProfileShown extends EditprofileEvent {
+  final int id;
+
+  const ProfileShown({
+    required this.id,
+  });
+}
+
+class AddressShown extends EditprofileEvent {
+  final int id;
+
+  const AddressShown({
+    required this.id,
+  });
+}
+
 class ProfileEdited extends EditprofileEvent {
   final int id;
   final String name;
@@ -15,6 +31,10 @@ class ProfileEdited extends EditprofileEvent {
   final String password;
   final String address;
   final String phone;
+  final String direccionEnvio;
+  final String codigoPostal;
+  final int idCiudad;
+  final int idPais;
 
   const ProfileEdited({
     required this.id,
@@ -24,13 +44,9 @@ class ProfileEdited extends EditprofileEvent {
     required this.password,
     required this.address,
     required this.phone,
-  });
-}
-
-class AddressShown extends EditprofileEvent {
-  final int id;
-
-  const AddressShown({
-    required this.id,
+    required this.direccionEnvio,
+    required this.codigoPostal,
+    required this.idCiudad,
+    required this.idPais,
   });
 }

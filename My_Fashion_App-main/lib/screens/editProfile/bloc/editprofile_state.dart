@@ -2,19 +2,27 @@ part of 'editprofile_bloc.dart';
 
 abstract class EditprofileState extends BaseState {}
 
-class EditprofileInitial extends EditprofileState {}
+class EditProfileInitial extends EditprofileState {}
 
-class EditprofileInProgress extends EditprofileState {}
+class EditProfileInProgress extends EditprofileState {}
 
-class EditprofileSuccess extends EditprofileState {}
+class ProfileSuccess extends EditprofileState {
+  final PerfilModel userProfile;
 
-class EditprofileAddressSuccess extends EditprofileState {
+  ProfileSuccess({
+    required this.userProfile,
+  });
+}
+
+class AddressSuccess extends EditprofileState {
   final AddressListModel addressModel;
 
-  EditprofileAddressSuccess({
+  AddressSuccess({
     required this.addressModel,
   });
 }
+
+class EditProfileSuccess extends EditprofileState {}
 
 class EditprofileError extends EditprofileState {
   final String message;

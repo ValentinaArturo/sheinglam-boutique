@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
 import 'package:my_fashion_app/screens/register/bloc/register_bloc.dart';
+import 'package:my_fashion_app/screens/register/model/address_model.dart';
+import 'package:my_fashion_app/screens/register/model/cliente_model.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -29,22 +30,52 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPassController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPassController = TextEditingController();
+
+  List<ClienteListModel> clientes = [];
+  List<AddressListModel> direccionesEnvio = [];
 
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    _getInitialLists();
+    super.initState();
+  }
+
+  void _getInitialLists() {
+    context.read<RegisterBloc>()
+      ..add(
+        ClientListShown(),
+      )
+      ..add(
+        DireccionListShown(),
+      );
+  }
+
   void _handleRegisterUser() {
     if (_formKey.currentState!.validate()) {
-      context.read<RegisterBloc>().add(
-            RegisterNewUser(
-              name: _nameController.text,
-              email: _emailController.text,
-              password: _passwordController.text,
-            ),
-          );
+      if (_confirmPassController.text != _passwordController.text) {
+        CustomStateDialog.showAlertDialog(
+          context,
+          title: 'Advertencia',
+          description: 'Las contraseñas no coinciden',
+        );
+      } else {
+        context.read<RegisterBloc>().add(
+              RegisterNewUser(
+                name: _nameController.text,
+                lastName: _lastNameController.text,
+                email: _emailController.text,
+                password: _passwordController.text,
+                idRol: 1,
+              ),
+            );
+      }
     }
   }
 
@@ -65,6 +96,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             case RegisterInProgress:
               setState(() => _isLoading = true);
               break;
+            case RegisterClientListSuccess:
+              final loadedState = state as RegisterClientListSuccess;
+              setState(() {
+                _isLoading = false;
+                clientes = loadedState.clientes;
+              });
+              break;
+            case RegisterAddressListSuccess:
+              final loadedState = state as RegisterAddressListSuccess;
+              setState(() {
+                _isLoading = false;
+                direccionesEnvio = loadedState.direcciones;
+              });
+              break;
             case RegisterUserSuccess:
               setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
@@ -72,7 +117,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 title: 'Registro exitoso',
                 description: 'Usuario creado correctamente',
               );
-              Navigator.pop(context);
               break;
             case RegisterError:
               final stateError = state as RegisterError;
@@ -121,7 +165,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _nameController,
                         validator: _inputValidator,
                         decoration: InputDecoration(
-                          labelText: 'Nombre Completo',
+                          labelText: 'Nombre',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          prefixIcon: const Icon(Icons.person),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _lastNameController,
+                        validator: _inputValidator,
+                        decoration: InputDecoration(
+                          labelText: 'Apellido',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),

@@ -13,6 +13,14 @@ class CartListSuccess extends CartState {
   });
 }
 
+class ImagenSuccess extends CartState {
+  final List<ImagenListModel> imagen;
+
+  ImagenSuccess({
+    required this.imagen,
+  });
+}
+
 class CartError extends CartState {
   final String message;
 

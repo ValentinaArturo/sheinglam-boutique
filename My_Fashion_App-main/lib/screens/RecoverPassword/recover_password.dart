@@ -26,15 +26,39 @@ class RecoverPasswordScreen extends StatefulWidget {
 
 class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
 
   bool _isLoading = false;
 
-  void _handleRecoverEmail() {
+  void _sendPinViaEmail() {
     if (_formKey.currentState!.validate()) {
       context.read<RecoverBloc>().add(
-            EmailRecovered(
+            PinSent(
               email: _emailController.text,
+            ),
+          );
+    }
+  }
+
+  void _validatePin() {
+    if (_formKey.currentState!.validate()) {
+      context.read<RecoverBloc>().add(
+            PinValidated(
+              email: _emailController.text,
+              pin: _pinController.text,
+            ),
+          );
+    }
+  }
+
+  void _updateUserPassword() {
+    if (_formKey.currentState!.validate()) {
+      context.read<RecoverBloc>().add(
+            UserUpdatedPassword(
+              email: _emailController.text,
+              password: _passwordController.text,
             ),
           );
     }
@@ -57,13 +81,29 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
             case RecoverInProgress:
               setState(() => _isLoading = true);
               break;
-            case RecoverEmailSuccess:
+            case RecoverPinSendSuccess:
               setState(() => _isLoading = false);
               CustomStateDialog.showAlertDialog(
                 context,
-                title: 'Recuperacion exitosa',
+                title: 'Pin enviado',
                 description:
-                    'Se ha enviado un enlace de recuperación a tu correo.',
+                    'Se ha enviado un pin de recuperación a tu correo.',
+              );
+              break;
+            case RecoverPinValidatedSuccess:
+              setState(() => _isLoading = false);
+              CustomStateDialog.showAlertDialog(
+                context,
+                title: 'Pin validado',
+                description: 'El pin se ha validado correctamente.',
+              );
+              break;
+            case RecoverUserUpdatedSuccess:
+              setState(() => _isLoading = false);
+              CustomStateDialog.showAlertDialog(
+                context,
+                title: 'Usuario',
+                description: 'Contraseña actualizada correctamente.',
               );
               break;
             case RecoverError:
@@ -131,7 +171,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          _handleRecoverEmail();
+                          _sendPinViaEmail();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(

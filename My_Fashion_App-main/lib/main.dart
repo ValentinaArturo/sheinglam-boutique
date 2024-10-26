@@ -8,11 +8,11 @@ import 'package:my_fashion_app/screens/orders/orders.dart';
 import 'package:my_fashion_app/screens/payment/payment.dart';
 import 'package:my_fashion_app/screens/productDetail/product_detail.dart';
 import 'package:my_fashion_app/screens/productos/products.dart';
-import 'package:my_fashion_app/screens/profile.dart';
+import 'package:my_fashion_app/screens/profile/profile.dart';
 import 'package:my_fashion_app/screens/RecoverPassword/recover_password.dart';
 import 'package:my_fashion_app/screens/register/register.dart';
 import 'package:my_fashion_app/screens/return_form.dart';
-import 'package:my_fashion_app/screens/returns.dart';
+import 'package:my_fashion_app/screens/returns/returns.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -114,15 +114,15 @@ class ShoppingApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
-        '/recover': (context) => const RecoverPasswordScreen(),
+        '/recover': (context) => const RecoverPasswordPage(),
         '/home': (context) => const HomePage(),
         '/product_detail': (context) => const ProductDetailPage(),
         '/cart': (context) => const CartPage(),
         '/orders': (context) => const OrdersPage(),
-        '/profile': (context) => ProfileScreen(),
-        '/returns': (context) => ReturnsScreen(),
+        '/profile': (context) => const ProfilePage(),
+        '/returns': (context) => const ReturnPage(),
         '/return_form': (context) => ReturnFormScreen(),
-        '/payment': (context) => PaymentScreen(),
+        '/payment': (context) => const PaymentPage(),
         '/edit_profile': (context) => const EditProfilePage(),
       },
     );

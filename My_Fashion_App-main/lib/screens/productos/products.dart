@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
-import 'package:my_fashion_app/resources/constants.dart';
+import 'package:my_fashion_app/screens/productDetail/model/imagen_producto_model.dart';
+import 'package:my_fashion_app/screens/productDetail/product_detail.dart';
 import 'package:my_fashion_app/screens/productos/bloc/productos_bloc.dart';
+import 'package:my_fashion_app/screens/productos/model/categoria_list_model.dart';
 import 'package:my_fashion_app/screens/productos/model/producto_list_model.dart';
+import 'package:my_fashion_app/screens/productos/model/producto_promocion_model.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,32 +35,61 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<ProductoListModel> productos = [];
+  List<ImagenListModel> imagenes = [];
+  List<CategoriaListModel> categorias = [];
+  List<ProductoPromocionListModel> productosPromocion = [];
 
   bool _isLoading = false;
 
   @override
   void initState() {
     _getProductos();
+    _getCategorias();
+    _getProductosPromociones();
     super.initState();
   }
 
   void _getProductos() {
+    context.read<ProductoBloc>()
+      ..add(
+        ProductoShown(),
+      )
+      ..add(
+        ImagenShown(),
+      );
+  }
+
+  void _getCategorias() {
     context.read<ProductoBloc>().add(
-          ProductoShown(),
+          CategoriaShown(),
         );
   }
 
+  void _getProductosPromociones() {
+    context.read<ProductoBloc>().add(
+          ProductoPromocionShown(),
+        );
+  }
+
+  Uint8List convertirBase64ABytes(String base64String) {
+    return base64Decode(base64String);
+  }
+
   void _filterProductos(String query) {
-    final results = productos.where((producto) {
-      final tituloLower = producto.producto.nombre.toLowerCase();
-      final queryLower = query.toLowerCase();
+    if (query.isEmpty) {
+      _getProductos();
+    } else {
+      final results = productos.where((producto) {
+        final tituloLower = producto.nombre!.toLowerCase();
+        final queryLower = query.toLowerCase();
 
-      return tituloLower.contains(queryLower);
-    }).toList();
+        return tituloLower.contains(queryLower);
+      }).toList();
 
-    setState(() {
-      productos = results;
-    });
+      setState(() {
+        productos = results;
+      });
+    }
   }
 
   @override
@@ -102,6 +137,27 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 _isLoading = false;
                 productos = loadedState.productos;
+              });
+              break;
+            case CategoriaSuccess:
+              final loadedState = state as CategoriaSuccess;
+              setState(() {
+                _isLoading = false;
+                categorias = loadedState.categorias;
+              });
+              break;
+            case ImagenSuccess:
+              final loadedState = state as ImagenSuccess;
+              setState(() {
+                _isLoading = false;
+                imagenes = loadedState.imagen;
+              });
+              break;
+            case ProductoPromocionSuccess:
+              final loadedState = state as ProductoPromocionSuccess;
+              setState(() {
+                _isLoading = false;
+                productosPromocion = loadedState.productosPromocion;
               });
               break;
             case ProductoError:
@@ -161,9 +217,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         return GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
-                                context,
-                                '/product_detail',
-                              arguments: producto,
+                              context,
+                              '/product_detail',
+                              arguments: ScreenArguments(
+                                producto,
+                                imagenes
+                                    .firstWhere(
+                                      (element) =>
+                                          element.producto.idProducto ==
+                                          producto.idProducto,
+                                    )
+                                    .imagenProducto,
+                              ),
                             );
                           },
                           child: Card(
@@ -180,10 +245,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(15.0),
                                     ),
-                                    child: Image.asset(
-                                      '${imagePath}product${index+1}.png',
-                                      fit: BoxFit.fitHeight,
-                                      width: double.infinity,
+                                    child: Image.memory(
+                                      convertirBase64ABytes(
+                                        imagenes
+                                            .firstWhere(
+                                              (element) =>
+                                                  element.producto.idProducto ==
+                                                  producto.idProducto,
+                                            )
+                                            .imagenProducto,
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
@@ -194,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        producto.producto.nombre,
+                                        producto.nombre!,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16.0,
@@ -202,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        '\$${producto.producto.precio.toStringAsFixed(2)}',
+                                        '\$${producto.precio!.toStringAsFixed(2)}',
                                         style: TextStyle(
                                           color: Colors.grey[600],
                                         ),
@@ -227,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 return Container();
               },
-            )
+            ),
           ],
         ),
       ),
