@@ -1,42 +1,6 @@
+import 'dart:convert';
+
 class OrderListModel {
-  final int? idPedidoEstado;
-  final Pedido? pedido;
-  final EstadoPedido? estadoPedido;
-  final DateTime? fecha;
-
-  OrderListModel({
-    this.idPedidoEstado,
-    this.pedido,
-    this.estadoPedido,
-    this.fecha,
-  });
-
-  factory OrderListModel.fromJson(Map<String, dynamic> json) => OrderListModel(
-        idPedidoEstado: json["idPedidoEstado"],
-        pedido: json["pedido"] == null ? null : Pedido.fromJson(json["pedido"]),
-        estadoPedido: json["estadoPedido"] == null
-            ? null
-            : EstadoPedido.fromJson(json["estadoPedido"]),
-        fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
-      );
-}
-
-class EstadoPedido {
-  final int? idEstadoPedido;
-  final String? nombre;
-
-  EstadoPedido({
-    this.idEstadoPedido,
-    this.nombre,
-  });
-
-  factory EstadoPedido.fromJson(Map<String, dynamic> json) => EstadoPedido(
-        idEstadoPedido: json["idEstadoPedido"],
-        nombre: json["nombre"],
-      );
-}
-
-class Pedido {
   final int? idPedido;
   final Cliente? cliente;
   final DateTime? fecha;
@@ -44,7 +8,7 @@ class Pedido {
   final MetodoPago? metodoPago;
   final String? nit;
 
-  Pedido({
+  OrderListModel({
     this.idPedido,
     this.cliente,
     this.fecha,
@@ -53,7 +17,12 @@ class Pedido {
     this.nit,
   });
 
-  factory Pedido.fromJson(Map<String, dynamic> json) => Pedido(
+  factory OrderListModel.fromRawJson(String str) =>
+      OrderListModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory OrderListModel.fromJson(Map<String, dynamic> json) => OrderListModel(
         idPedido: json["idPedido"],
         cliente:
             json["cliente"] == null ? null : Cliente.fromJson(json["cliente"]),
@@ -64,6 +33,15 @@ class Pedido {
             : MetodoPago.fromJson(json["metodoPago"]),
         nit: json["nit"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "idPedido": idPedido,
+        "cliente": cliente?.toJson(),
+        "fecha": fecha?.toIso8601String(),
+        "total": total,
+        "metodoPago": metodoPago?.toJson(),
+        "nit": nit,
+      };
 }
 
 class Cliente {
@@ -79,6 +57,10 @@ class Cliente {
     this.telefono,
   });
 
+  factory Cliente.fromRawJson(String str) => Cliente.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory Cliente.fromJson(Map<String, dynamic> json) => Cliente(
         idCliente: json["idCliente"],
         usuario:
@@ -86,6 +68,13 @@ class Cliente {
         direccion: json["direccion"],
         telefono: json["telefono"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "idCliente": idCliente,
+        "usuario": usuario?.toJson(),
+        "direccion": direccion,
+        "telefono": telefono,
+      };
 }
 
 class Usuario {
@@ -105,6 +94,10 @@ class Usuario {
     this.rol,
   });
 
+  factory Usuario.fromRawJson(String str) => Usuario.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
         idUsuario: json["idUsuario"],
         nombre: json["nombre"],
@@ -113,6 +106,15 @@ class Usuario {
         contrasea: json["contraseña"],
         rol: json["rol"] == null ? null : Rol.fromJson(json["rol"]),
       );
+
+  Map<String, dynamic> toJson() => {
+        "idUsuario": idUsuario,
+        "nombre": nombre,
+        "apellido": apellido,
+        "correoElectronico": correoElectronico,
+        "contraseña": contrasea,
+        "rol": rol?.toJson(),
+      };
 }
 
 class Rol {
@@ -124,10 +126,19 @@ class Rol {
     this.nombre,
   });
 
+  factory Rol.fromRawJson(String str) => Rol.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory Rol.fromJson(Map<String, dynamic> json) => Rol(
         idRol: json["idRol"],
         nombre: json["nombre"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "idRol": idRol,
+        "nombre": nombre,
+      };
 }
 
 class MetodoPago {
@@ -139,8 +150,18 @@ class MetodoPago {
     this.nombre,
   });
 
+  factory MetodoPago.fromRawJson(String str) =>
+      MetodoPago.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory MetodoPago.fromJson(Map<String, dynamic> json) => MetodoPago(
         idMetodoPago: json["idMetodoPago"],
         nombre: json["nombre"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "idMetodoPago": idMetodoPago,
+        "nombre": nombre,
+      };
 }

@@ -14,7 +14,7 @@ class OrderService {
 
   Future<List<OrderListModel>> getOrders() async {
     final response = await client.get(
-      revisionesProducto,
+      pedidoPath,
     );
     return List<OrderListModel>.from(
       response.data.map(

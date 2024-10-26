@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fashion_app/common/bloc/base_state.dart';
 import 'package:my_fashion_app/common/dialog/custom_state_dialog.dart';
 import 'package:my_fashion_app/common/loader/loader.dart';
-import 'package:my_fashion_app/screens/order_detail.dart';
+import 'package:my_fashion_app/screens/orderDetal/order_detail.dart';
 import 'package:my_fashion_app/screens/orders/bloc/order_bloc.dart';
 import 'package:my_fashion_app/screens/orders/model/order_list_model.dart';
 
@@ -83,69 +83,79 @@ class _OrdersScreenState extends State<OrdersScreen> {
               break;
           }
         },
-        child: ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: 5, // Número de pedidos
-          itemBuilder: (context, index) {
-            // Simulación del estado del pedido
-            String estado = index % 2 == 0 ? 'Completado' : 'En Proceso';
-            if (_isLoading) {
-              return const Loader();
-            }
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              elevation: 4,
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                title: Text(
-                  'Pedido #$index',
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+        child: Stack(
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: productosPedido.length, // Número de pedidos
+              itemBuilder: (context, index) {
+                final producto = productosPedido[index];
+                String estado = index % 2 == 0 ? 'Completado' : 'En Proceso';
+                if (_isLoading) {
+                  return Container();
+                }
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    Text(
-                      'Total: \$200',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey[600],
+                  elevation: 4,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16.0),
+                    title: Text(
+                      'Pedido #${producto.idPedido}',
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Estado: $estado',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: estado == 'Completado'
-                            ? const Color(0xFFAB9144)
-                            : Colors.orangeAccent,
-                      ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Text(
+                          'Total: \$${producto.total}',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Estado: $estado',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: estado == 'Completado'
+                                ? const Color(0xFFAB9144)
+                                : Colors.orangeAccent,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderDetailScreen(
-                        productos: productosPedido,
-                        total: 200, // Total simulado
-                        estado: estado,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderDetailPage(
+                            idOrden: producto.idPedido!,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            Builder(
+              builder: (context) {
+                if (_isLoading) {
+                  return const Loader();
+                }
+                return Container();
+              },
+            ),
+          ],
         ),
       ),
     );
